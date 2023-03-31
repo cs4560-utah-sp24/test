@@ -39,6 +39,13 @@ class socket:
         self.connected = False
         self.ssl_hostname = None
 
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, type_, value, traceback):
+        # TODO: does not handle exit with exceptions differently
+        self.close()
+
     def setsockopt(self, *args):
         assert False, "In your server.py file place socket creation/bind/etc inside an if __name__ == \"__main__\""
 
