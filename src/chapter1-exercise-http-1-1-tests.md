@@ -36,6 +36,17 @@ This request/response pair was tested in the base tests, but now we are
     >>> version
     'HTTP/1.1'
 
+Use a new mock HTTP server with a new URL to avoid possible caching errors.
+
+    >>> url = 'http://test.test/example2'
+    >>> test.socket.respond(url=url,
+    ...   response=("HTTP/1.0 200 OK\r\n" +
+    ...             "Header2: Value2\r\n" + 
+    ...             "\r\n" +
+    ...             "Body text").encode(),
+    ...   method="GET")
+
+
 In addition to these changes, the signature of your `request` function should 
   now include an optional argument, `headers`, which is a dictionary mapping 
   strings to strings representing header names mapping to their values.
@@ -49,6 +60,16 @@ not be mutable objects like dictionaries, for reasons detailed in the
     >>> command, path, version, headers = test.socket.parse_last_request(url)
     >>> headers["clientheader"]
     '42'
+
+Use a new mock HTTP server with a new URL to avoid possible caching errors.
+
+    >>> url = 'http://test.test/example3'
+    >>> test.socket.respond(url=url,
+    ...   response=("HTTP/1.0 200 OK\r\n" +
+    ...             "Header2: Value2\r\n" + 
+    ...             "\r\n" +
+    ...             "Body text").encode(),
+    ...   method="GET")
 
 If the `headers` argument includes headers that are sent by default, like `User-Agent`,
     the `headers` argument should overwrite their value.
