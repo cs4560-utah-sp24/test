@@ -135,7 +135,7 @@ Clicking on a browser tab focuses it:
 
 Clicking on the address bar focuses it:
 
-    >>> this_browser.handle_click(test.Event(50, 41))
+    >>> this_browser.handle_click(test.Event(50, 51))
     >>> this_browser.focus
     'address bar'
 
@@ -146,13 +146,13 @@ The back button works:
     >>> this_browser.handle_click(test.Event(14, 21 + 100))
     >>> this_browser.tabs[1].history
     ['http://test.test/example2', 'http://test.test/example']
-    >>> this_browser.handle_click(test.Event(10, 40))
+    >>> this_browser.handle_click(test.Event(10, 50))
     >>> this_browser.tabs[1].history
     ['http://test.test/example2']
 
 Pressing enter with text in the address bar works:
 
-    >>> this_browser.handle_click(test.Event(50, 41))
+    >>> this_browser.handle_click(test.Event(50, 51))
     >>> this_browser.focus
     'address bar'
     >>> this_browser.address_bar = "http://test.test/example"
