@@ -30,7 +30,7 @@ Create a response, load it with the browser, then click on the address bar.
     >>> test.socket.respond_200(url, body="Something")
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
-    >>> this_browser.handle_click(test.Event(50, 41))
+    >>> this_browser.handle_click(test.Event(50, 51))
     >>> this_browser.focus
     'address bar'
 
