@@ -72,7 +72,7 @@ Load the second site by typing it in.
     >>> url_2 = 'http://site2.com/'
     >>> test.socket.respond_200(url_2, body="Site 2")
 
-    >>> this_browser.handle_click(test.Event(50, 41))
+    >>> this_browser.handle_click(test.Event(50, 51))
     >>> for c in url_2:
     ...   this_browser.handle_key(test.key_event(c))
     >>> this_browser.handle_enter(test.enter_event())
@@ -102,7 +102,7 @@ Check that it got bookmarked.
 
 Load the second site by typing it in again.
 
-    >>> this_browser.handle_click(test.Event(50, 41))
+    >>> this_browser.handle_click(test.Event(50, 51))
     >>> for c in url_2:
     ...   this_browser.handle_key(test.key_event(c))
     >>> this_browser.handle_enter(test.enter_event())
