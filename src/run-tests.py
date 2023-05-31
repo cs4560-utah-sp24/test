@@ -14,7 +14,7 @@ sys.path.append(os.getcwd())
 def getCurrentChapter():
     start_time = datetime.date(2023, 3, 27)
     current_time = datetime.date.today()
-    for i in range(10):
+    for i in range(11):
         if current_time >= start_time:
             start_time += datetime.timedelta(days = 7)
         else:
