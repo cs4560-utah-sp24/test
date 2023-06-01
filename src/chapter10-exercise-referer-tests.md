@@ -65,8 +65,6 @@ Now load a page setting the `Referrer-Policy` header to `no-referrer`, and
     >>> test.socket.respond_ok("http://test.diff.chapter10-referer-2/diff.js", "")
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
-    Script returned:  None
-    Script returned:  None
     >>> req = test.socket.last_request("http://test.test.chapter10-referer-2/same.js").decode().lower()
     >>> "referer:" in req
     False
@@ -89,8 +87,6 @@ Finally load a page setting the `Referrer-Policy` header to `same-origin`, and
     >>> test.socket.respond_ok("http://test.diff.chapter10-referer-3/diff.js", "")
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
-    Script returned:  None
-    Script returned:  None
     >>> req = test.socket.last_request("http://test.test.chapter10-referer-3/same.js").decode().lower()
     >>> "referer:" in req
     True
