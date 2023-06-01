@@ -48,7 +48,7 @@ Check that javascript doesn't see any cookies, and that the cookie jar is empty.
 
 Set the cookie and make sure the changes are applied.
 
-    >>> js.run('document.cookie = "yoo=hoo"')
+    >>> js.run('void(document.cookie = "yoo=hoo")')
     >>> js.run("console.log(document.cookie)")
     yoo=hoo
     >>> browser.COOKIE_JAR["test.test.chapter10-script-access"]
@@ -56,7 +56,7 @@ Set the cookie and make sure the changes are applied.
 
 Modify the key and see that change works.
 
-    >>> js.run('document.cookie = "yoo=hey"')
+    >>> js.run('void(document.cookie = "yoo=hey")')
     >>> js.run("console.log(document.cookie)")
     yoo=hey
     >>> browser.COOKIE_JAR["test.test.chapter10-script-access"]
@@ -64,7 +64,7 @@ Modify the key and see that change works.
 
 Set the cookie and use the parameter syntax.
 
-    >>> js.run('document.cookie = "summer=blowout; SameSite=Lax"')
+    >>> js.run('void(document.cookie = "summer=blowout; SameSite=Lax")')
     >>> js.run("console.log(document.cookie)")
     summer=blowout
     >>> browser.COOKIE_JAR["test.test.chapter10-script-access"]
@@ -89,7 +89,7 @@ Reading from javascript should show nothing, but the cookie jar will have the
 
 Assigning from javascript will not change the content of the cookie.
 
-    >>> js.run('document.cookie = "overwrite=attempt"')
+    >>> js.run('void(document.cookie = "overwrite=attempt")')
     >>> js.run("console.log(document.cookie)")
     <BLANKLINE>
     >>> browser.COOKIE_JAR["test.test.chapter10-script-access-http-only"][0]
