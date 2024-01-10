@@ -1,2 +1,3 @@
-src/__pycache__
-src/web_browser.py
+__pycache__
+tests/web_browser.py
+local_file.txt
