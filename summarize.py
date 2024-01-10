@@ -15,6 +15,7 @@ def summarize(data):
             grade += 1 - failure_count / test_count
         else:
             grade += 1
+    s += "\n"
     s += "**Overall Grade**: " + str(round(grade * 10)) + "/50\n"
     print(s)
     
