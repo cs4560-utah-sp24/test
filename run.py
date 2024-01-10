@@ -8,6 +8,7 @@ import sys
 import re
 import datetime
 import tests.wbemocks as wbemocks
+import json
 
 sys.path.append(os.getcwd())
 
@@ -229,6 +230,9 @@ def parse_arguments(argv):
                         type=int,
                         help="Run the nth test from the chapter. "
                         "(Requires passing a full chapter name.)")
+    parser.add_argument("--gh", action="store_true",
+                        help="Write results to gh.json"
+                        "(For generating grade summaries)")
     args = parser.parse_args(argv[1:])
 
     return args
@@ -253,6 +257,16 @@ def main(argv):
         print("{:>42}: {}".format(name, state))
     print("-" * 52)
     print("{:>42}: {} ".format("Final", total_state))
+
+    if args.gh:
+        if os.path.exists("gh.json"):
+            current_data = json.load(open("gh.json"))
+        else:
+            current_data = []
+        res = sorted(current_data + mapped_results.items(),
+                     key=lambda a: tests.index(a[0]))
+        with open("gh.json", "w") as f:
+            json.dump(res, f)
 
     return int(total_state == "failed")
 
