@@ -259,12 +259,13 @@ def main(argv):
     print("{:>42}: {} ".format("Final", total_state))
 
     if args.gh:
+        ALL_TESTS = CURRENT_TESTS[testkey.split("-", 1)[0]]
         if os.path.exists("gh.json"):
             current_data = json.load(open("gh.json"))
         else:
             current_data = []
         res = sorted(current_data + list(mapped_results.items()),
-                     key=lambda a: tests.index(a[0]))
+                     key=lambda a: ALL_TESTS.index(a[0]))
         with open("gh.json", "w") as f:
             json.dump(res, f)
 

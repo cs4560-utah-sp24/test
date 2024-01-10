@@ -10,7 +10,7 @@ def summarize(data):
     s += "|---|---|---|\n"
     grade = 0
     for name, (failure_count, test_count) in data:
-        s += f"| `{name}`, {failure_count} | {test_count} |\n"
+        s += f"| `{name}` | {failure_count} | {test_count} |\n"
         if test_count > 0:
             grade += 1 - failure_count / test_count
         else:
