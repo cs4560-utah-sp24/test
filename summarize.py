@@ -6,16 +6,16 @@ import json
 
 def summarize(data):
     s = ""
-    s += "| Test file | Failed | Total |"
-    s += "|---|---|---|"
+    s += "| Test file | Failed | Total |\n"
+    s += "|---|---|---|\n"
     grade = 0
     for name, (failure_count, test_count) in data:
-        s += f"| `{name}`, {failure_count} | {test_count} |"
+        s += f"| `{name}`, {failure_count} | {test_count} |\n"
         if test_count > 0:
             grade += 1 - failure_count / test_count
         else:
             grade += 1
-    s += "Overall Grade: " + str(round(grade * 10)) + "/50"
+    s += "**Overall Grade**: " + str(round(grade * 10)) + "/50\n"
     print(s)
     
 if __name__ == "__main__":
