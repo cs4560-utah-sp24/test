@@ -1,4 +1,4 @@
 #!/bin/sh
-set -e -o pipefail -x
+set -e -x
 
 pip install tk dukpy
