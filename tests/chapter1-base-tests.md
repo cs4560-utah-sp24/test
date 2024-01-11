@@ -51,13 +51,12 @@ To test it, we use the `wbemocks.socket` object, which mocks the HTTP server:
     >>> url = 'http://wbemocks.test/example1'
     >>> wbemocks.socket.respond(url=url,
     ...   response=("HTTP/1.0 200 OK\r\n" +
-    ...             "Header1: Value1\r\n" + 
     ...             "\r\n" +
     ...             "Body text").encode())
 
 Then we request the URL and test that the browser generated request is proper:
 
-    >>> response_headers, response_body = browser.request(url)
+    >>> response_body = browser.URL(url).request()
     >>> command, path, version, headers = wbemocks.socket.parse_last_request(url)
     >>> command
     'GET'
@@ -72,8 +71,6 @@ Also check that the browser parsed the response properly
 
     >>> response_body
     'Body text'
-    >>> response_headers
-    {'header1': 'Value1'}
 
 Testing SSL support
 -------------------
@@ -86,7 +83,7 @@ Since this next URL uses https as the scheme the browser should automatically us
     ...   response=("HTTP/1.0 200 OK\r\n" +
     ...             "\r\n" +
     ...             "SSL working").encode())
-    >>> response_headers, response_body = browser.request(url)
+    >>> response_body = browser.URL(url).request()
     >>> command, path, version, headers = wbemocks.socket.parse_last_request(url)
     >>> command
     'GET'
@@ -98,8 +95,6 @@ Since this next URL uses https as the scheme the browser should automatically us
     'wbemocks.test'
     >>> response_body
     'SSL working'
-    >>> response_headers
-    {}
 
 SSL support also means some support for specifying ports in the URL.
 
@@ -108,7 +103,7 @@ SSL support also means some support for specifying ports in the URL.
     ...   response=("HTTP/1.0 200 OK\r\n" +
     ...             "\r\n" +
     ...             "Ports working").encode())
-    >>> response_headers, response_body = browser.request(url)
+    >>> response_body = browser.URL(url).request()
     >>> command, path, version, headers = wbemocks.socket.parse_last_request(url)
     >>> command
     'GET'
@@ -120,12 +115,12 @@ SSL support also means some support for specifying ports in the URL.
     'wbemocks.test'
     >>> response_body
     'Ports working'
-    >>> response_headers
-    {}
 
 
 Requesting the wrong port is an error.
 
-    >>> wbemocks.errors(browser.request, "http://wbemocks.test:401/example3")
-    True
+    >>> browser.URL("http://wbemocks.test:401/example3").request()
+    Traceback (most recent call last):
+       ...
+    AssertionError: You are requesting a url that you shouldn't: http://wbemocks.test:401/example3
 
