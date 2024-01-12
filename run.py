@@ -208,15 +208,16 @@ def patch_doctest():
     doctest.DocTestParser.parse = patched_parse
     doctest.DocTestParser.get_doctest = patched_get_doctest
 
-def run_doctests(files):
+def run_doctests(files, early_exit=True):
     patch_doctest()
     mapped_results = dict()
     sys.modules["wbemocks"] = wbemocks
+    flags = doctest.ELLIPSIS
+    if early_exit: flags |= doctest.REPORT_ONLY_FIRST_FAILURE
     for fname in files:
         fname_abs = os.path.join(os.path.dirname(__file__), "tests", fname)
         mapped_results[fname] = doctest.testfile(
-            fname_abs, module_relative=False,
-            optionflags=doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE)
+            fname_abs, module_relative=False, optionflags=flags)
     return mapped_results
 
 def parse_arguments(argv):
@@ -264,7 +265,7 @@ def main(argv):
         ghsetup(tests)
         return 0
 
-    mapped_results = run_doctests(tests)
+    mapped_results = run_doctests(tests, early_exit=not args.gh)
     total_state = "all passed"
     print("\nSummarised results\n")
     for name, (failure_count, test_count) in mapped_results.items():
