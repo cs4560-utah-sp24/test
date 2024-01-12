@@ -20,7 +20,7 @@ def getCurrentChapter():
         if current_time >= start_time:
             start_time += datetime.timedelta(days = 7)
         else:
-            return i
+            return i + 1
 
     print("Error: current date not in the quarter!")
     return 1
