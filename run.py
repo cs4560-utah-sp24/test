@@ -114,6 +114,8 @@ CURRENT_TESTS["all"] = all_tests
 
 CURRENT_TESTS.update(specific_file_tests)
 
+REPORT_FIRST_ERROR = False
+
 # Below this are a variety of "fixes" to doctest that make it more user-friendly
 
 old_truncate = doctest._SpoofOut.truncate
@@ -125,6 +127,19 @@ def patched_truncate(self, size=None):
     self._old_getvalue = self.getvalue()
     old_truncate(self, size)
 
+def patched_report_failure(self, out, test, example, got):
+    """
+    Patch the failure printer to record the current example so we can
+    count failures on a block, not line basis.
+    """
+
+    test._failed_examples.append(example)
+    if REPORT_FIRST_ERROR and len(test._failed_examples) > 1: return
+
+    out(self._failure_header(test, example) +
+        self._checker.output_difference(example, got, self.optionflags))
+
+
 def patched_report_unexpected_exception(self, out, test, example, exc_info):
     """
     Patch the doctest printer to print output when exceptions occur.
@@ -132,6 +147,9 @@ def patched_report_unexpected_exception(self, out, test, example, exc_info):
     Note that this uses the _old_getvalue saved above, which doctest otherwise throws out
     when exceptions are thrown.
     """
+    test._failed_examples.append(example)
+    if REPORT_FIRST_ERROR and len(test._failed_examples) > 1: return
+
     got = self._fakeout._old_getvalue
     out(self._failure_header(test, example) +
         self._checker.output_difference(example, got, self.optionflags) +
@@ -154,9 +172,12 @@ def patched_get_doctest(self, string, globs, name, filename, lineno):
     """
     Copy the text introducing each example from the parser object to
     the doctest object, so that we can use it in the _failure_header.
+
+    Also set up the failed_examples list.
     """
     out = old_get_doctest(self, string, globs, name, filename, lineno)
     out._parsed = self._parsed
+    out._failed_examples = []
     return out
 
 def patched_failure_header(self, test, example):
@@ -201,19 +222,49 @@ def patched_failure_header(self, test, example):
     out.append(doctest._indent(s))
     return '\n'.join(out) + "\n"
 
+old_record_outcome = doctest.DocTestRunner._DocTestRunner__record_outcome
+
+def patched_record_outcome(self, test, failures, tries, skips=None):
+    """
+    Compute failures and successes on a per-block basis.
+    """
+
+    all_failures = set(test._failed_examples)
+    idx = 0
+    passed_blocks = 0
+    failed_blocks = 0
+    while idx < len(test._parsed):
+        assert isinstance(test._parsed[idx], str) and test._parsed[idx] != ''
+        idx += 1
+        did_fail = False
+        while idx < len(test._parsed):
+            if isinstance(test._parsed[idx], str) and test._parsed[idx] != '':
+                break
+            elif isinstance(test._parsed[idx], doctest.Example):
+                did_fail = did_fail or (test._parsed[idx] in all_failures)
+            idx += 1
+
+        if did_fail:
+            failed_blocks += 1
+        else:
+            passed_blocks += 1
+    skips_arg = [] if skips is None else [skips]
+    return old_record_outcome(self, test, failed_blocks, passed_blocks + failed_blocks, *skips_arg)
+
 def patch_doctest():
+    doctest.DocTestRunner.report_failure = patched_report_failure
     doctest.DocTestRunner.report_unexpected_exception = patched_report_unexpected_exception
     doctest.DocTestRunner._failure_header = patched_failure_header
     doctest._SpoofOut.truncate = patched_truncate
     doctest.DocTestParser.parse = patched_parse
     doctest.DocTestParser.get_doctest = patched_get_doctest
+    doctest.DocTestRunner._DocTestRunner__record_outcome = patched_record_outcome
 
-def run_doctests(files, early_exit=True):
+def run_doctests(files):
     patch_doctest()
     mapped_results = dict()
     sys.modules["wbemocks"] = wbemocks
     flags = doctest.ELLIPSIS
-    if early_exit: flags |= doctest.REPORT_ONLY_FIRST_FAILURE
     for fname in files:
         fname_abs = os.path.join(os.path.dirname(__file__), "tests", fname)
         mapped_results[fname] = doctest.testfile(
@@ -265,7 +316,9 @@ def main(argv):
         ghsetup(tests)
         return 0
 
-    mapped_results = run_doctests(tests, early_exit=not args.gh)
+    global REPORT_FIRST_ERROR
+    REPORT_FIRST_ERROR = not args.gh
+    mapped_results = run_doctests(tests)
     total_state = "all passed"
     print("\nSummarised results\n")
     for name, (failure_count, test_count) in mapped_results.items():
