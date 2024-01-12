@@ -244,7 +244,7 @@ def ghsetup(tests):
     assert os.getenv("GITHUB_ENV"), "Cannot execute gh subcommand without GITHUB_ENV set"
     with open(os.getenv("GITHUB_ENV"), "a") as ghenv:
         ghenv.write(f"HWPARTS={len(tests)}\n")
-        for test in tests:
+        for i, test in enumerate(tests):
             fname_abs = os.path.join(os.path.dirname(__file__), "tests", test)
             name = open(fname_abs).readline()
             name = name.removeprefix("Tests for WBE")
