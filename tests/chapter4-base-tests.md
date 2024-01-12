@@ -1,4 +1,4 @@
-Tests fsor WBE Chapter 4
+Tests for WBE Chapter 4
 =======================
 
 Chapter 4 (Constructing a Document Tree) adds support for the document tree

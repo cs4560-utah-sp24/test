@@ -237,14 +237,32 @@ def parse_arguments(argv):
 
     return args
 
+def ghsetup(tests):
+    assert os.getenv("GITHUB_ENV"), "Cannot execute gh subcommand without GITHUB_ENV set"
+    with open(os.getenv("GITHUB_ENV"), "a") as ghenv:
+        ghenv.write(f"HWPARTS={len(tests)}\n")
+        for test in tests:
+            fname_abs = os.path.join(os.path.dirname(__file__), "tests", tests)
+            name = open(fname_abs).readline()
+            name = name.removeprefix("Tests for WBE")
+            ghenv.write(f"HWPART{i+1}={name}\n")
+    print("Saved Github information in environment variables")
+    return 0
+
 def main(argv):
     args = parse_arguments(argv)
     testkey = args.chapter
-    if args.index is not None:
+    if args.index == "gh":
+        pass
+    elif args.index is not None:
         assert args.chapter.startswith("chapter")
         testkey = args.chapter + "-" + str(args.index)
 
     tests = CURRENT_TESTS[testkey]
+
+    if args.index == "gh":
+        ghsetup(tests)
+        return 0
 
     mapped_results = run_doctests(tests)
     total_state = "all passed"
