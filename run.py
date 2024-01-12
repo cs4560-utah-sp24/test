@@ -222,6 +222,8 @@ def patched_failure_header(self, test, example):
     out.append(doctest._indent(s))
     return '\n'.join(out) + "\n"
 
+LAST_TEST_RESULT = None
+
 old_record_outcome = doctest.DocTestRunner._DocTestRunner__record_outcome
 
 def patched_record_outcome(self, test, failures, tries, skips=None):
@@ -248,6 +250,9 @@ def patched_record_outcome(self, test, failures, tries, skips=None):
             failed_blocks += 1
         else:
             passed_blocks += 1
+    
+    global LAST_TEST_RESULT
+    LAST_TEST_RESULT = (failed_blocks, failed_blocks + passed_blocks)
     skips_arg = [] if skips is None else [skips]
     return old_record_outcome(self, test, failed_blocks, passed_blocks + failed_blocks, *skips_arg)
 
@@ -261,14 +266,16 @@ def patch_doctest():
     doctest.DocTestRunner._DocTestRunner__record_outcome = patched_record_outcome
 
 def run_doctests(files):
+    global LAST_TEST_RESULT
     patch_doctest()
     mapped_results = dict()
     sys.modules["wbemocks"] = wbemocks
     flags = doctest.ELLIPSIS
     for fname in files:
         fname_abs = os.path.join(os.path.dirname(__file__), "tests", fname)
-        mapped_results[fname] = doctest.testfile(
-            fname_abs, module_relative=False, optionflags=flags)
+        doctest.testfile(fname_abs, module_relative=False, optionflags=flags)
+        mapped_results[fname] = LAST_TEST_RESULT
+        LAST_TEST_RESULT = None
     return mapped_results
 
 def parse_arguments(argv):
