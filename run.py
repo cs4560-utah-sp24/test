@@ -234,6 +234,8 @@ def parse_arguments(argv):
     parser.add_argument("--gh", action="store_true",
                         help="Write results to gh.json"
                         "(For generating grade summaries)")
+    parser.add_argument("--ghsetup", action="store_true",
+                        help="Output environment variables for Github")
     args = parser.parse_args(argv[1:])
 
     return args
@@ -253,15 +255,13 @@ def ghsetup(tests):
 def main(argv):
     args = parse_arguments(argv)
     testkey = args.chapter
-    if args.index == "gh":
-        pass
-    elif args.index is not None:
+    if args.index is not None:
         assert args.chapter.startswith("chapter")
         testkey = args.chapter + "-" + str(args.index)
 
     tests = CURRENT_TESTS[testkey]
 
-    if args.index == "gh":
+    if args.ghsetup:
         ghsetup(tests)
         return 0
 
