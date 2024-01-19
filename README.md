@@ -11,7 +11,18 @@ In the Github repository we create for you, run:
 
 	git submodule update --init
 
-These commands download this repository in the `test` subdirectory.
+This command downloads this repository in the `test` subdirectory. If
+this command errors out and the error message contains the text
+`git@github.com: Permission denied (publickey)` you can fix it by
+either [adding an SSH key][ssh-key] to your Github account or by
+running
+
+[ssh-key]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+
+	git clone https://github.com/cs4560-utah-sp24/test.git
+
+from inside your repository.
+
 Throughout the class, we'll likely push new versions of this
 repository, to fix bugs or maybe update class-relevant files. You can
 update the copy on your computer by running:
