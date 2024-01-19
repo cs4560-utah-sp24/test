@@ -21,7 +21,7 @@ Here we make a file, put some text in it, and make a file scheme request.
     ...   f.write("Hello world")
     11
     >>> url = "file://{}".format(full_path)
-    >>> headers, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Hello world'
     

@@ -23,7 +23,7 @@ The browser should use the URL located in the __Location__ header
     ...   response=("HTTP/1.0 200 Ok\r\n" +
     ...             "\r\n" +
     ...             "You found me").encode())
-    >>> headers, body = browser.request(from_url)
+    >>> body = browser.URL(from_url).request()
     >>> body
     'You found me'
     
@@ -40,7 +40,7 @@ This __Location__ header may contain a full URL, as seen above, or
     ...   response=("HTTP/1.0 200 Ok\r\n"
     ...             "\r\n" +
     ...             "You found me again").encode())
-    >>> headers, body = browser.request(from_url)
+    >>> body = browser.URL(from_url).request()
     >>> body
     'You found me again'
     
@@ -58,7 +58,7 @@ Now that you have seen the content of the redirect response we
     ...   response=("HTTP/1.0 200 Ok\r\n" +
     ...             "\r\n" +
     ...             "I need to hide better").encode())
-    >>> headers, body = browser.request(start_url)
+    >>> body = browser.URL(start_url).request()
     >>> body
     'I need to hide better'
 
@@ -68,7 +68,7 @@ The simplest infinite loop is a redirect to itself.
 
     >>> url = 'http://wbemocks.test/redirect4'
     >>> wbemocks.socket.redirect_url(from_url=url, to_url=url)
-    >>> wbemocks.errors(browser.request, url)
+    >>> wbemocks.errors(browser.URL(url).request)
     True
 
 Infinite loops can be more complex, this is a two stage loop.
@@ -77,9 +77,9 @@ Infinite loops can be more complex, this is a two stage loop.
     >>> url2 = 'http://wbemocks.test/target5'
     >>> wbemocks.socket.redirect_url(from_url=url1, to_url=url2)
     >>> wbemocks.socket.redirect_url(from_url=url2, to_url=url1)
-    >>> wbemocks.errors(browser.request, url1)
+    >>> wbemocks.errors(browser.URL(url1).request)
     True
-    >>> wbemocks.errors(browser.request, url2)
+    >>> wbemocks.errors(browser.URL(url2).request)
     True
 
 The browser should not perform a redirect for non 3XX status codes, even if
@@ -96,7 +96,7 @@ The browser should not perform a redirect for non 3XX status codes, even if
     ...   response=("HTTP/1.0 200 Ok\r\n" +
     ...             "\r\n" +
     ...             "Too far").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Stay here'
 

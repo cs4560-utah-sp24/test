@@ -22,7 +22,7 @@ We can test if a browser is caching responses by changing the response and
     ...             "Cache-Control: max-age=9001\r\n" +
     ...             "\r\n" +
     ...             "Keep this for a while").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Keep this for a while'
     >>> wbemocks.socket.respond(url=url, 
@@ -30,7 +30,7 @@ We can test if a browser is caching responses by changing the response and
     ...             "Cache-Control: max-age=9001\r\n" +
     ...             "\r\n" +
     ...             "Don't even ask for this").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Keep this for a while'
 
@@ -44,7 +44,7 @@ In this case the response contains __no-store__ for the value of the
     ...             "Cache-Control: no-store\r\n" +
     ...             "\r\n" +
     ...             "Don't cache me").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     "Don't cache me"
     >>> wbemocks.socket.respond(url=url, 
@@ -52,7 +52,7 @@ In this case the response contains __no-store__ for the value of the
     ...             "Cache-Control: no-store\r\n" +
     ...             "\r\n" +
     ...             "Ask for this").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Ask for this'
     
@@ -66,7 +66,7 @@ Here we cache, then change, another URL and check that both of the URLs cached
     ...             "Cache-Control: max-age=9001\r\n" + 
     ...             "\r\n" +
     ...             "Keep this for a while, also").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Keep this for a while, also'
     >>> wbemocks.socket.respond(url=url, 
@@ -74,10 +74,10 @@ Here we cache, then change, another URL and check that both of the URLs cached
     ...             "Cache-Control: max-age=9001\r\n" +
     ...             "\r\n" +
     ...             "Don't even ask for this").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Keep this for a while, also'
-    >>> header, body = browser.request("http://wbemocks.test/cache_me1")
+    >>> body = browser.URL("http://wbemocks.test/cache_me1").request()
     >>> body
     'Keep this for a while'
     
@@ -90,27 +90,27 @@ A cached entry can be invalidated by time elapsing, so here we cache a response
     ...             "Cache-Control: max-age=1\r\n" + 
     ...             "\r\n" +
     ...             "Keep this for a short while").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Keep this for a short while'
     >>> wbemocks.socket.respond(url=url, 
     ...   response=("HTTP/1.0 200 Ok\r\n" +
     ...             "\r\n" +
     ...             "Don't ask for this immediately").encode())
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     'Keep this for a short while'
     >>> time.sleep(2)
-    >>> header, body = browser.request(url)
+    >>> body = browser.URL(url).request()
     >>> body
     "Don't ask for this immediately"
 
 Each cached response will have different lifetimes.
 The responses cached earlier should still be valid.
 
-    >>> header, body = browser.request("http://wbemocks.test/cache_me1")
+    >>> body = browser.URL("http://wbemocks.test/cache_me1").request()
     >>> body
     'Keep this for a while'
-    >>> header, body = browser.request("http://wbemocks.test/cache_me2")
+    >>> body = browser.URL("http://wbemocks.test/cache_me2").request()
     >>> body
     'Keep this for a while, also'

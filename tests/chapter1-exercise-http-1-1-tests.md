@@ -23,7 +23,7 @@ This request/response pair was tested in the base tests, but now we are
   checking that the __Connection__ header is present and contains __close__, that a
   __User-Agent__ header is present, and that the request is HTTP 1.1:
 
-    >>> response_headers, response_body = browser.request(url)
+    >>> response_body = browser.URL(url).request()
     >>> command, path, version, headers = wbemocks.socket.parse_last_request(url)
     >>> command
     'GET'
@@ -56,7 +56,7 @@ not be mutable objects like dictionaries, for reasons detailed in the
 [Python guide](https://docs.python-guide.org/writing/gotchas/#default-args).
     
     >>> extra_client_headers = {"ClientHeader" : "42"}
-    >>> headers, body = browser.request(url, headers=extra_client_headers)
+    >>> body = browser.URL(request).request(headers=extra_client_headers)
     >>> command, path, version, headers = wbemocks.socket.parse_last_request(url)
     >>> headers["clientheader"]
     '42'
@@ -76,7 +76,7 @@ If the `headers` argument includes headers that are sent by default, like `User-
 In other words, the request should only contain one occurrence of each header.
   
     >>> extra_client_headers = {"User-Agent" : "different/1.0"}
-    >>> headers, body = browser.request(url, headers=extra_client_headers)
+    >>> body = browser.URL(url).request(headers=extra_client_headers)
     >>> wbemocks.socket.count_header_last_request(url, "User-Agent")
     1
     >>> command, path, version, headers = wbemocks.socket.parse_last_request(url)
@@ -86,6 +86,6 @@ In other words, the request should only contain one occurrence of each header.
 Remember that headers are case-insensitive:
 
     >>> extra_client_headers = {"user-agent" : "a/1.0", "User-Agent" : "b/1.0"}
-    >>> headers, body = browser.request(url, headers=extra_client_headers)
+    >>> body = browser.URL(url).request(headers=extra_client_headers)
     >>> wbemocks.socket.count_header_last_request(url, "User-Agent")
     1
