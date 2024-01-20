@@ -27,5 +27,5 @@ Here we make a file, put some text in it, and make a file scheme request.
     
 Requesting a nonexistent file should result in error.
 
-    >>> wbemocks.errors(browser.request, "file:///this/file/does/not/exist")
+    >>> wbemocks.errors(browser.URL("file:///this/file/does/not/exist").request)
     True

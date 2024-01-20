@@ -47,7 +47,7 @@ Use a new mock HTTP server with a new URL to avoid possible caching errors.
     ...   method="GET")
 
 
-In addition to these changes, the signature of your `request` function should 
+In addition to these changes, the signature of your `request` method should 
   now include an optional argument, `headers`, which is a dictionary mapping 
   strings to strings representing header names mapping to their values.
 
@@ -56,7 +56,7 @@ not be mutable objects like dictionaries, for reasons detailed in the
 [Python guide](https://docs.python-guide.org/writing/gotchas/#default-args).
     
     >>> extra_client_headers = {"ClientHeader" : "42"}
-    >>> body = browser.URL(request).request(headers=extra_client_headers)
+    >>> body = browser.URL(url).request(headers=extra_client_headers)
     >>> command, path, version, headers = wbemocks.socket.parse_last_request(url)
     >>> headers["clientheader"]
     '42'
