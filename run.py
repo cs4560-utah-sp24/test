@@ -12,21 +12,34 @@ import json
 
 sys.path.append(os.getcwd())
 
+CHAPTER_DEADLINES = {
+    "chapter1": datetime.date(2024, 1, 28),
+    "chapter2": datetime.date(2024, 2,  4),
+    "chapter3": datetime.date(2024, 2, 11),
+    "chapter4": datetime.date(2024, 2, 18),
+    "chapter5": datetime.date(2024, 2, 25),
+    "chapter6": datetime.date(2024, 3,  3),
+    "chapter7": datetime.date(2024, 3, 10),
+    "chapter8": datetime.date(2024, 3, 17),
+    "chapter9": datetime.date(2024, 3, 24),
+    "chapter10": datetime.date(2024, 3, 31),
+}
 
 def getCurrentChapter():
-    start_time = datetime.date(2024, 1, 20)
-    current_time = datetime.date.today()
-    for i in range(10):
-        if current_time >= start_time:
-            start_time += datetime.timedelta(days = 7)
-        else:
-            return i + 1
+    chapter = min([
+        (chapter, deadline)
+        for chapter, deadline in CHAPTER_DEADLINES.items()
+        if datetime.date.today() <= deadline
+    ], default=None, key=lambda x: x[1])
 
-    print("Error: current date not in the quarter!")
-    return 1
+    if chapter:
+        return chapter[0]
+    else:
+        print("WARNING: No chapters outstanding, using chapter10", file=sys.stderr)
+        return "chapter10"
 
 
-DEFAULT_CICD = f"chapter{getCurrentChapter()}"
+DEFAULT_CICD = getCurrentChapter()
 
 CURRENT_TESTS = {
     "chapter1": ["chapter1-base-tests.md",
