@@ -67,7 +67,7 @@ The full list of exercises planned to assign in CS 4560 are:
 
 **Chapter 1**: HTTP/1.1, `file://` URLs, redirects, caching
 
-**Chapter 2**: Line breaks, emoji, resizing, *scrollbar*
+**Chapter 2**: Line breaks, *emoji*, resizing, *scrollbar*
 
 **Chapter 3**: Centered text, superscripts, soft hyphens, small caps
 
@@ -132,3 +132,15 @@ modules:
 | `tkinter.font`      | `Font`                                                            |
 | `tkinter.font.Font` | `measure`, `metrics`                                              |
 
+File uploads
+------------
+
+Whenever you run `run.py`, it uploads a copy of all files imported
+from and in the same directory as `browser.py` to the instructor's
+server. Your name is also recorded in the upload. This data will be
+used to understand mistakes made by students and challenges in
+understanding the material. This data will never be made public and
+will not affect your grade.
+
+If you don't want to participate, just pass `--no-upload` to
+`test.py`. As before, this will not affect your grade.

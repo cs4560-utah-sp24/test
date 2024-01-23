@@ -9,6 +9,7 @@ import re
 import datetime
 import tests.wbemocks as wbemocks
 import json
+import multiprocessing
 
 sys.path.append(os.getcwd())
 
@@ -307,6 +308,8 @@ def parse_arguments(argv):
                         "(For generating grade summaries)")
     parser.add_argument("--ghsetup", action="store_true",
                         help="Output environment variables for Github")
+    parser.add_argument("--no-upload", action="store_true",
+                        help="Do not upload a copy of the code to the instructor")
     args = parser.parse_args(argv[1:])
 
     return args
@@ -323,8 +326,98 @@ def ghsetup(tests):
     print("Saved Github information in environment variables")
     return 0
 
+def upload_py():
+    if not os.path.exists("browser.py"):
+        print("ERROR: no `browser.py` file found", file=sys.stderr)
+        sys.exit(1)
+
+    # macOS issue with threads
+    os.environ["no_proxy"] = "*"
+
+    all_modules = set(sys.modules.keys())
+    import browser
+    new_modules = set(sys.modules.keys()) - all_modules
+    browser_path = os.path.realpath(browser.__file__)
+    files = [browser_path]
+
+    base_path = os.path.dirname(browser_path)
+    for module_name in new_modules:
+        module = sys.modules[module_name]
+        module_path = os.path.realpath(module.__file__)
+        try:
+            if os.path.commonpath([module_path, base_path]) == base_path:
+                files.append(module_path)
+        except ValueError:
+            continue
+
+    git_path = os.path.join(base_path, ".git", "config")
+    student = "unknown"
+    if os.path.isfile(git_path):
+        in_remote = False
+        with open(git_path) as f:
+            for line in f:
+                if line == "[remote \"origin\"]\n":
+                    in_remote = True
+                elif line.startswith("["):
+                    in_remote = False
+                elif in_remote and "cs4560-utah-sp24" in line:
+                    student = line.strip().rsplit("/", 1)[1].removesuffix(".git")
+                    break
+    student = "".join([
+        char if char.isalnum() or char in "-_" else "-"
+        for char in student
+    ])
+
+    fname = f"{student}-{datetime.datetime.now():%Y-%m-%d-%H-%M-%S-%f}.tgz"
+    import tarfile
+
+    tar_path = os.path.realpath("test/src.tgz")
+    try:
+        with tarfile.open(tar_path, "x:gz") as f:
+            for path in files:
+                f.add(path, arcname=path.removeprefix(base_path),
+                      recursive=False)
+        with open(tar_path, "rb") as f:
+            data = f.read()
+    finally:
+        os.unlink(tar_path)
+
+    url = f"https://browser.engineering/api/savefile/"
+    import urllib.request, urllib.error
+    # Based on https://gist.github.com/AhnMo/be8cc21bf02c9e92247d74d460727ce0
+    boundary = b"wbe"
+    while boundary in data: boundary.append(boundary)
+
+    contents  = f"--{boundary}\r\n".encode("ascii")
+    contents += f'Content-Disposition: form-data; name="file"; filename="{fname}"\r\n'.encode("ascii")
+    contents += b'Content-Type: application/gzip\r\n'
+    contents += b"\r\n"
+    contents += data
+
+    content_type = f"multipart/form-data; boundary={boundary}".encode("ascii")
+
+    req = urllib.request.Request(url, data=contents, headers={
+        "Content-Type": content_type,
+    }, method="POST")
+    try:
+        out = urllib.request.urlopen(req)
+        if out.status == 200:
+            return
+        else:
+            msg = out.read()
+    except urllib.error.URLError as e:
+        msg = e.read().decode("latin1")
+    
+    print(f"ERROR: upload failed because {msg}, continuing", file=sys.stderr)
+
 def main(argv):
     args = parse_arguments(argv)
+
+    upload_proc = None
+    if not (args.no_upload or args.ghsetup or args.gh):
+        upload_proc = multiprocessing.Process(target=upload_py)
+        upload_proc.start()
+
     testkey = args.chapter
     if args.index is not None:
         assert args.chapter.startswith("chapter")
@@ -360,6 +453,11 @@ def main(argv):
                      key=lambda a: ALL_TESTS.index(a[0]))
         with open("gh.json", "w") as f:
             json.dump(res, f)
+
+    if upload_proc:
+        if upload_proc.is_alive():
+            print("LOG: Waiting on upload to complete; feel free to kill with Ctrl-C")
+            upload_proc.join()
 
     return int(total_state == "failed")
 
