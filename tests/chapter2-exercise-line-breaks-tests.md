@@ -31,8 +31,7 @@ Testing `resize`
 Let's override text spacing to make it easy to do math
 when testing:
 
-    >>> browser.HSTEP = 1
-    >>> browser.VSTEP = 1
+	>>> browser.set_parameters(HSTEP=1, VSTEP=1)
 
 Let's mock a URL to load:
 
@@ -47,9 +46,9 @@ Note that the newline characters are not present in the output,
   but instead cause the text to be moved down by twice the `VSTEP`
 
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
-    create_text: x=1 y=1 text=u...
-    create_text: x=1 y=3 text=d...
+    >>> this_browser.load(browser.URL(url))
+    create_text: x=1 y=1 text=u
+    create_text: x=1 y=3 text=d
 
 Each additional newline moves the text down by twice `VSTEP`
 
@@ -59,6 +58,6 @@ Each additional newline moves the text down by twice `VSTEP`
     ...         "\r\n" +
     ...         "\r\n" +
     ...         "d"))
-    >>> this_browser.load(url)
+    >>> this_browser.load(browser.URL(url))
     create_text: x=1 y=1 text=u...
     create_text: x=1 y=7 text=d...

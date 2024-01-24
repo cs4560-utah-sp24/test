@@ -9,6 +9,22 @@ file contains tests for this functionality.
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> import browser
+	
+Please also define a `set_parameters` function in your browser, with
+the following contents:
+
+``` {.python}
+def set_parameters(**params):
+	global WIDTH, HEIGHT, HSTEP, VSTEP, SCROLL_STEP
+	if "WIDTH" in params: WIDTH = params["WIDTH"]
+	if "HEIGHT" in params: HEIGHT = params["HEIGHT"]
+	if "HSTEP" in params: HSTEP = params["HSTEP"]
+	if "VSTEP" in params: VSTEP = params["VSTEP"]
+	if "SCROLL_STEP" in params: SCROLL_STEP = params["SCROLL_STEP"]
+```
+
+This function makes it possible to put the actual constant definitions
+in another file, if you'd like to do that.
 
 Testing `lex`
 -------------
@@ -48,19 +64,17 @@ Newlines should not be removed:
 Testing `layout`
 ----------------
 
-The layout function takes in text and outputs a display list. It uses WIDTH to
-determine the maximum length of a line, HSTEP for the horizontal distance
-between letters, and VSTEP for the vertical distance between lines. Each entry
-in the display list is of the form (x, y, c), where x is the horizontal offset
-to the right, y is the vertical offset downward, and c is the character to
+The layout function takes in text and outputs a display list. It uses `WIDTH` to
+determine the maximum length of a line, `HSTEP` for the horizontal distance
+between letters, and `VSTEP` for the vertical distance between lines. Each entry
+in the display list is of the form `(x, y, c)`, where `x` is the horizontal offset
+to the right, `y` is the vertical offset downward, and `c` is the character to
 draw.
 
 Let's override those values to convenient ones that make it easy to do math
 when testing:
 
-    >>> browser.WIDTH = 11
-    >>> browser.HSTEP = 1
-    >>> browser.VSTEP = 1
+	>>> browser.set_parameters(WIDTH=11, HSTEP=1, VSTEP=1)
 
 Both of these fit on one line:
 
@@ -69,7 +83,7 @@ Both of these fit on one line:
     >>> browser.layout("hello mom")
     [(1, 1, 'h'), (2, 1, 'e'), (3, 1, 'l'), (4, 1, 'l'), (5, 1, 'o'), (6, 1, ' '), (7, 1, 'm'), (8, 1, 'o'), (9, 1, 'm')]
 
-This does not though (notice that the 's' has a 2 in the y coordinate):
+This does not though (notice that the `'s'` has a 2 in the `y` coordinate):
 
     >>> browser.layout("hello moms")
     [(1, 1, 'h'), (2, 1, 'e'), (3, 1, 'l'), (4, 1, 'l'), (5, 1, 'o'), (6, 1, ' '), (7, 1, 'm'), (8, 1, 'o'), (9, 1, 'm'), (1, 2, 's')]
@@ -81,8 +95,7 @@ Testing `Browser`
 The Browser class defines a simple web browser, with methods to load,
 draw to the screen, and scroll down.
 
-Testing `Browser.load`
-----------------------
+# Testing `Browser.load`
 
 Let's first mock a URL to load:
 
@@ -96,20 +109,19 @@ Let's first mock a URL to load:
 Loading that URL results in a display list:
 
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.load(browser.URL(url))
     >>> this_browser.display_list
     [(1, 1, 'B'), (2, 1, 'o'), (3, 1, 'd'), (4, 1, 'y'), (5, 1, ' '), (6, 1, 't'), (7, 1, 'e'), (8, 1, 'x'), (9, 1, 't')]
 
 
-Testing `Browser.scrolldown`
-----------------------------
+# Testing `Browser.scrolldown`
 
 Let's install a mock canvas that prints out the x and y coordinates, plus
 the text drawn:
 
     >>> wbemocks.patch_canvas()
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.load(browser.URL(url))
     create_text: x=1 y=1 text=B...
     create_text: x=2 y=1 text=o...
     create_text: x=3 y=1 text=d...
@@ -122,7 +134,7 @@ the text drawn:
 SCROLL_STEP configures how much to scroll by each time. Let's set it to
 a convenient value:
 
-    >>> browser.SCROLL_STEP = browser.VSTEP + 2
+	>>> browser.set_parameters(SCROLL_STEP=3)
 
 After scrolling, all of the text is off screen, so no text is output to the
 canvas:
@@ -138,7 +150,7 @@ Now let's load a different URL that provides three lines of text:
     ...               "\r\n" +
     ...               "Body text that is longer").encode())
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.load(browser.URL(url))
     create_text: x=1 y=1 text=B...
     create_text: x=2 y=1 text=o...
     create_text: x=3 y=1 text=d...
