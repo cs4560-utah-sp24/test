@@ -384,7 +384,8 @@ def upload_py():
     finally:
         os.unlink(tar_path)
 
-    url = f"https://browser.engineering/api/savefile/"
+    # Don't use SSL because one student had issues with that
+    url = f"http://browser.engineering/api/savefile/"
     import urllib.request, urllib.error
     # Based on https://gist.github.com/AhnMo/be8cc21bf02c9e92247d74d460727ce0
     boundary = b"wbe"
