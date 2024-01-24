@@ -17,9 +17,7 @@ Make sure that your `Browser` class handles resize events in a `resize` method.
 Let's override text spacing and line width to make it easy to do math
 when testing:
 
-    >>> browser.WIDTH = 1
-    >>> browser.HSTEP = 1
-    >>> browser.VSTEP = 1
+	>>> browser.set_parameters(WIDTH=1, HSTEP=1, VSTEP=1)
 
 Let's mock a URL to load:
 
@@ -32,7 +30,7 @@ The `x` value is always one, but `y` increments, since the canvas is of width
  one.
 
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.load(browser.URL(url))
     create_text: x=1 y=1 text=a...
     create_text: x=1 y=2 text=b...
     create_text: x=1 y=3 text=c...
