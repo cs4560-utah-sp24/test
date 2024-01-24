@@ -326,7 +326,7 @@ def ghsetup(tests):
     print("Saved Github information in environment variables")
     return 0
 
-def upload_py():
+def upload_py(testkey):
     if not os.path.exists("browser.py"):
         print("ERROR: no `browser.py` file found", file=sys.stderr)
         sys.exit(1)
@@ -370,7 +370,7 @@ def upload_py():
         for char in student
     ])
 
-    fname = f"{student}-{datetime.datetime.now():%Y-%m-%d-%H-%M-%S-%f}.tgz"
+    fname = f"{student}-{testkey}-{datetime.datetime.now():%Y-%m-%d-%H-%M-%S-%f}.tgz"
     import tarfile
 
     tar_path = os.path.realpath("test/src.tgz")
@@ -416,17 +416,17 @@ def upload_py():
 def main(argv):
     args = parse_arguments(argv)
 
-    upload_proc = None
-    if not (args.no_upload or args.ghsetup or args.gh):
-        upload_proc = multiprocessing.Process(target=upload_py)
-        upload_proc.start()
-
     testkey = args.chapter
     if args.index is not None:
         assert args.chapter.startswith("chapter")
         testkey = args.chapter + "-" + str(args.index)
 
     tests = CURRENT_TESTS[testkey]
+
+    upload_proc = None
+    if not (args.no_upload or args.ghsetup or args.gh):
+        upload_proc = multiprocessing.Process(target=upload_py, args=(testkey,))
+        upload_proc.start()
 
     if args.ghsetup:
         ghsetup(tests)
