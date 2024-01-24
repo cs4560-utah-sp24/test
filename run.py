@@ -338,7 +338,7 @@ def upload_py():
     import browser
     new_modules = set(sys.modules.keys()) - all_modules
     browser_path = os.path.realpath(browser.__file__)
-    files = [browser_path]
+    files = []
 
     base_path = os.path.dirname(browser_path)
     for module_name in new_modules:
@@ -361,7 +361,9 @@ def upload_py():
                 elif line.startswith("["):
                     in_remote = False
                 elif in_remote and "cs4560-utah-sp24" in line:
-                    student = line.strip().rsplit("/", 1)[1].removesuffix(".git")
+                    student = line.strip().rsplit("/", 1)[1]
+                    if student.endswith(".git"):
+                        student = student[:-4] # Remove the extension
                     break
     student = "".join([
         char if char.isalnum() or char in "-_" else "-"
@@ -455,6 +457,9 @@ def main(argv):
             json.dump(res, f)
 
     if upload_proc:
+        if upload_proc.is_alive():
+            # Give the upload 0.25s to complete before complaining
+            upload_proc.join(.25)
         if upload_proc.is_alive():
             print("LOG: Waiting on upload to complete; feel free to kill with Ctrl-C")
             upload_proc.join()
