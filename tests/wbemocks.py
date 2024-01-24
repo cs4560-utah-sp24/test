@@ -9,6 +9,7 @@ import tkinter
 import tkinter.font
 import email
 import os
+import weakref
 from unittest import mock
 from ssl import SSLCertVerificationError
 
@@ -213,12 +214,74 @@ class ssl:
         _ = mock.patch("ssl.SSLContext", wraps=cls).start()
         return mock.patch("ssl.create_default_context", wraps=cls)
 
-
 class SilentTk:
     def bind(self, event, callback):
         pass
 
 tkinter.Tk = SilentTk
+    
+class PhotoImage:
+    DO_NOT_GC = weakref.WeakKeyDictionary()
+
+    def __init__(self, file, *, secret_width=None, secret_height=None):
+        self.filename = file
+        width, height = secret_width, secret_height
+
+        if width == None and height == None:
+            assert os.path.isfile(file), "Could not find image file {}".format(file)
+            with open(file, "rb") as f:
+                # I can't rely on any library being available so I
+                # manually parse the image formats to figure out their
+                # sizes. Only GIF and PNG supported.
+                header = f.read(6)
+                if header == b"\211PNG\r\n":
+                    # It's a PNG file
+                    more_header = f.read(2)
+                    length = f.read(4)
+                    type = f.read(4)
+                    assert more_header == b"\032\n" and \
+                        length == b"\0\0\0\x0d" and \
+                        type == b"IHDR", \
+                        "PNG file {} appears invalid".format(file)
+                    width = f.read(4)
+                    height = f.read(4)
+                    width = width[3] + (width[2]<<8) + (width[1]<<16) + (width[0]<<24)
+                    height = height[3] + (height[2]<<8) + (height[1]<<16) + (height[0]<<24)
+                elif header == b"GIF89a":
+                    # It's a GIF file
+                    width = f.read(2)
+                    height = f.read(2)
+                    width = width[0] + (width[1]<<8)
+                    height = height[0] + (height[1]<<8)
+                else:
+                    raise ValueError("{} does not appear to be a PNG or GIF file".format(file))
+        self.w = width
+        self.h = height
+
+    def zoom(self, zoom_x, zoom_y):
+        ret = PhotoImage(self.filename,
+                         secret_width=self.w * zoom_x, secret_height=self.h * zoom_y)
+        return ret
+
+    def subsample(self, zoom_x, zoom_y):
+        ret = PhotoImage(self.filename,
+                         secret_width=self.w // zoom_x, secret_height=self.h // zoom_y)
+        return ret
+
+    def __del__(self):
+        if self in PhotoImage.DO_NOT_GC:
+            print("{} used in create_image() was garbage collected.".format(self))
+            print("This is bad and is probably a bug in your code.")
+            "A PhotoImage used in create_image() has been garbage collected; this is bad"
+
+    def __repr__(self):
+        return "PhotoImage(" + repr(self.filename) + ")"
+
+    @classmethod
+    def cleanup(cls):
+        cls.DO_NOT_GC = weakref.WeakKeyDictionary()
+
+tkinter.PhotoImage = PhotoImage
 
 TK_CANVAS_CALLS = list()
 class SilentCanvas:
@@ -286,27 +349,59 @@ def check_not_bookmarked():
 def check_bookmarked():
     return check_bookmark_button("yellow")
 
+def maybeint(x):
+    return int(x) if x == int(x) else x
 
 tkinter.Canvas = SilentCanvas
 
 class MockCanvas:
+    HIDE_COMMANDS = set()
+    IMAGE_SIZE = None
+
     def __init__(self, *args, **kwargs):
         pass
 
     def create_rectangle(self, x1, y1, x2, y2, width=None, fill=None, outline=None):
+        if "create_rectangle" in self.HIDE_COMMANDS: return
+        x1 = maybeint(x1)
+        x2 = maybeint(x2)
+        y1 = maybeint(y1)
+        y2 = maybeint(y2)
+        width = maybeint(width)
         print("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
             x1, y1, x2, y2, width, repr(fill)))
 
     def create_line(self, x1, y1, x2, y2, fill=None):
-        pass
+        if "create_line" in self.HIDE_COMMANDS: return
+        x1 = maybeint(x1)
+        x2 = maybeint(x2)
+        y1 = maybeint(y1)
+        y2 = maybeint(y2)
+        print("create_line: x1={} y1={} x2={} y2={} fill={}".format(
+            x1, y1, x2, y2, repr(fill)))
 
     def create_oval(self, x1, y1, x2, y2):
-        pass
+        if "create_oval" in self.HIDE_COMMANDS: return
+        x1 = maybeint(x1)
+        x2 = maybeint(x2)
+        y1 = maybeint(y1)
+        y2 = maybeint(y2)
+        print("create_oval: x1={} y1={} x2={} y2={}".format(
+            x1, y1, x2, y2))
 
-    def create_polygon(self, *args, **kwargs):
-        pass
+    def create_image(self, x, y, image):
+        if "create_image" in self.HIDE_COMMANDS: return
+        x = maybeint(x)
+        y = maybeint(y)
+        PhotoImage.DO_NOT_GC[image] = True
+        if self.IMAGE_SIZE:
+            assert self.IMAGE_SIZE == (image.w, image.h), \
+                "Expecting a {}x{} image but got a {}x{} image".format(
+                    *self.IMAGE_SIZE, image.w, image.h)
+        print("create_oval: x={} y={} image={}".format(x, y, image))
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):
+        if "create_text" in self.HIDE_COMMANDS: return
         if text.isspace():
             return
         if font or anchor:
@@ -321,6 +416,20 @@ class MockCanvas:
 
     def delete(self, v):
         pass
+
+    @classmethod
+    def hide_command(cls, name):
+        cls.HIDE_COMMANDS.add(name)
+
+    @classmethod
+    def require_image_size(cls, w, h):
+        cls.IMAGE_SIZE = (w, h)
+
+    @classmethod
+    def reset(cls):
+        cls.HIDE_COMMANDS = set()
+        cls.IMAGE_SIZE = None
+        
 
 original_tkinter_canvas = tkinter.Canvas
 
@@ -386,6 +495,7 @@ class tab_event:
         pass
 
 def patch_canvas():
+    MockCanvas.reset()
     tkinter.Canvas = MockCanvas
 
 def patch_skip_chrome_canvas():
