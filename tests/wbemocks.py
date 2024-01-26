@@ -199,7 +199,7 @@ class ssl:
         s.scheme = "https"
         return s
 
-    def load_default_certs(self):
+    def load_default_certs(self, *args):
         pass
 
     def load_verify_locations(self, **kwargs):
