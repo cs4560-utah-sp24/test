@@ -548,7 +548,13 @@ class MockFont:
             return "Font size={} weight={} slant={} style={}".format(
                 self.size, self.weight, self.slant, self.style)
 
+class MockLabel:
+    def __init__(self, font=None):
+        pass
+
 tkinter.font.Font = MockFont
+
+tkinter.Label = MockLabel
 
 def errors(f, *args, **kwargs):
     try:

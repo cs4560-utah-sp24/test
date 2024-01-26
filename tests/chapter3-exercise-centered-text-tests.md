@@ -8,15 +8,24 @@ Testing boilerplate:
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
     >>> import browser
+
+The headers mentioned in the exercise description are centered due to
+CSS, which is the subject of chapter 6. In this exercise, we will just
+treat `h1 class="title"` as a special centering tag. Among other
+things, both the open and close tags should flush lines, because it
+doesn't make sense to have a line where half the line is centered and
+the other half isn't.
+
+Let's define some testing shortcuts:
+
+    >>> browser.WIDTH
+    800
     >>> def test_layout(text):
     ...   dl = browser.Layout(browser.lex(text)).display_list
     ...   return wbemocks.normalize_display_list(dl)
 
-The headers mentioned in the exercise description are centered due to CSS, 
-  which is the subject of chapter 6.
-For now we will just center text inside any `h1 class="title"` tag.
+Centering a line of text works:
 
-    >>> browser.WIDTH = 800
     >>> test_layout('<h1 class="title">center me</h1>') #doctest: +NORMALIZE_WHITESPACE
     [(328.0, 21.0, 'center', Font size=16 weight=normal slant=roman style=None), 
      (440.0, 21.0, 'me', Font size=16 weight=normal slant=roman style=None)]
@@ -32,14 +41,14 @@ Encountering the opening `h1 class="title"`  should trigger a `flush`.
 
 Centering should be aware of the `WIDTH`.
 
-    >>> browser.WIDTH = 200
+    >>> browser.set_parameters(WIDTH=200)
     >>> test_layout('<h1 class="title">center me</h1>') #doctest: +NORMALIZE_WHITESPACE
     [(28.0, 21.0, 'center', Font size=16 weight=normal slant=roman style=None), 
      (140.0, 21.0, 'me', Font size=16 weight=normal slant=roman style=None)]
 
 Centering should also be able to center different lines with different widths
 
-    >>> browser.WIDTH = 800
+    >>> browser.set_parameters(WIDTH=800)
     >>> test_layout('<h1 class="title">center me</h1><br><h1 class="title">also center me </h1>') #doctest: +NORMALIZE_WHITESPACE   
     [(328.0, 21.0, 'center', Font size=16 weight=normal slant=roman style=None), 
      (440.0, 21.0, 'me', Font size=16 weight=normal slant=roman style=None), 

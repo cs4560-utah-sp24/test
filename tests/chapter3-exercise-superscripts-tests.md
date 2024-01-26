@@ -12,8 +12,8 @@ Testing boilerplate:
     ...   dl = browser.Layout(browser.lex(text)).display_list
     ...   return wbemocks.normalize_display_list(dl)
 
-A superscript should have half the normal font size and be aligned to the top 
-  of other text on the line.
+A superscript should have half the normal font size and be aligned to
+the top of other text on the line.
 
     >>> test_layout("E=mc<sup>2</sup>") #doctest: +NORMALIZE_WHITESPACE
     [(13.0, 21.0, 'E=mc', Font size=16 weight=normal slant=roman style=None),

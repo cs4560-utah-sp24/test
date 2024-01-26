@@ -123,7 +123,7 @@ Now let's test integration of layout into the Browser class.
     >>> wbemocks.socket.respond_200(url=url, 
     ...   body="<small>abc<i>def</i></small>")
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.load(browser.URL(url))
 
 Testing the display list output of this URL:
 
@@ -135,7 +135,7 @@ And the canvas:
 
     >>> wbemocks.patch_canvas()
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.load(browser.URL(url))
     create_text: x=13 y=20.625 text=abc font=Font size=14 weight=normal slant=roman style=None anchor=nw
     create_text: x=69 y=20.625 text=def font=Font size=14 weight=normal slant=italic style=None anchor=nw
     >>> wbemocks.unpatch_canvas()

@@ -12,18 +12,19 @@ Testing boilerplate:
     ...   dl = browser.Layout(browser.lex(text)).display_list
     ...   return wbemocks.normalize_display_list(dl)
 
-Soft hyphens allow text to hint at where breaks can be inserted.
-If a word is too wide to fit on the current line and contains a soft 
-  hyphen it can be split and a literal hyphen placed at the break.
+Soft hyphens allow text to hint at where breaks can be inserted. If a
+word is too wide to fit on the current line and contains a soft hyphen
+it can be split and a literal hyphen placed at the break. For any
+given word, only one display list item should be generated per line.
 
-    >>> browser.WIDTH = 128
+    >>> browser.set_parameters(WIDTH=128)
     >>> test_layout("Hello\N{soft hyphen}World") #doctest: +NORMALIZE_WHITESPACE
     [(13.0, 21.0, 'Hello-', Font size=16 weight=normal slant=roman style=None),
      (13.0, 41.0, 'World', Font size=16 weight=normal slant=roman style=None)]
 
 If the word fits without splitting then no literal hyphens are present.
 
-    >>> browser.WIDTH = 800
+    >>> browser.set_parameters(WIDTH=800)
     >>> test_layout("Hello\N{soft hyphen}World")
     [(13.0, 21.0, 'HelloWorld', Font size=16 weight=normal slant=roman style=None)]
 
