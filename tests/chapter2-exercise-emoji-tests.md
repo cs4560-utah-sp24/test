@@ -14,7 +14,8 @@ Notes
 -----
     
 You'll want to test your browser by running it on some example pages
-before you run these tests.
+before you run these tests. The smiley face emoji is spelled
+`\N{GRINNING FACE}` in Python.
 
 This exercise has a few difficult pieces:
 
