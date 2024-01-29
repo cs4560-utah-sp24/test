@@ -13,24 +13,27 @@ import multiprocessing
 
 sys.path.append(os.getcwd())
 
+MST = datetime.timezone(datetime.timedelta(hours=-7), "MST")
+MDT = datetime.timezone(datetime.timedelta(hours=-6), "MDT")
+
 CHAPTER_DEADLINES = {
-    "chapter1": datetime.date(2024, 1, 28),
-    "chapter2": datetime.date(2024, 2,  4),
-    "chapter3": datetime.date(2024, 2, 11),
-    "chapter4": datetime.date(2024, 2, 18),
-    "chapter5": datetime.date(2024, 2, 25),
-    "chapter6": datetime.date(2024, 3,  3),
-    "chapter7": datetime.date(2024, 3, 10),
-    "chapter8": datetime.date(2024, 3, 17),
-    "chapter9": datetime.date(2024, 3, 24),
-    "chapter10": datetime.date(2024, 3, 31),
+    "chapter1": datetime.datetime(2024, 1, 29, tzinfo=MST),
+    "chapter2": datetime.datetime(2024, 2,  5, tzinfo=MST),
+    "chapter3": datetime.datetime(2024, 2, 12, tzinfo=MST),
+    "chapter4": datetime.datetime(2024, 2, 19, tzinfo=MST),
+    "chapter5": datetime.datetime(2024, 2, 26, tzinfo=MST),
+    "chapter6": datetime.datetime(2024, 3,  4, tzinfo=MST),
+    "chapter7": datetime.datetime(2024, 3, 11, tzinfo=MDT),
+    "chapter8": datetime.datetime(2024, 3, 18, tzinfo=MDT),
+    "chapter9": datetime.datetime(2024, 3, 25, tzinfo=MDT),
+    "chapter10": datetime.datetime(2024,4,  1, tzinfo=MDT),
 }
 
 def getCurrentChapter():
     chapter = min([
         (chapter, deadline)
         for chapter, deadline in CHAPTER_DEADLINES.items()
-        if datetime.date.today() <= deadline
+        if datetime.datetime.now(datetime.timezone.utc) <= deadline
     ], default=None, key=lambda x: x[1])
 
     if chapter:
