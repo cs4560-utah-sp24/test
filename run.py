@@ -15,6 +15,7 @@ sys.path.append(os.getcwd())
 
 MST = datetime.timezone(datetime.timedelta(hours=-7), "MST")
 MDT = datetime.timezone(datetime.timedelta(hours=-6), "MDT")
+GH_JSON_PATH = "test/gh.json"
 
 CHAPTER_DEADLINES = {
     "chapter1": datetime.datetime(2024, 1, 29, tzinfo=MST),
@@ -307,7 +308,7 @@ def parse_arguments(argv):
                         help="Run the nth test from the chapter. "
                         "(Requires passing a full chapter name.)")
     parser.add_argument("--gh", action="store_true",
-                        help="Write results to gh.json"
+                        help="Write results to " + GH_JSON_PATH +
                         "(For generating grade summaries)")
     parser.add_argument("--ghsetup", action="store_true",
                         help="Output environment variables for Github")
@@ -327,6 +328,8 @@ def ghsetup(tests):
             name = name.removeprefix("Tests for WBE")
             ghenv.write(f"HWPART{i+1}={name}\n")
     print("Saved Github information in environment variables")
+    if os.path.isfile(GH_JSON_PATH):
+        os.unlink(GH_JSON_PATH)
     return 0
 
 def upload_py(testkey):
@@ -451,13 +454,13 @@ def main(argv):
 
     if args.gh:
         ALL_TESTS = CURRENT_TESTS[testkey.split("-", 1)[0]]
-        if os.path.exists("gh.json"):
-            current_data = json.load(open("gh.json"))
+        if os.path.isfile(GH_JSON_PATH):
+            current_data = json.load(open(GH_JSON_PATH))
         else:
             current_data = []
         res = sorted(current_data + list(mapped_results.items()),
                      key=lambda a: ALL_TESTS.index(a[0]))
-        with open("gh.json", "w") as f:
+        with open(GH_JSON_PATH, "w") as f:
             json.dump(res, f)
 
     if upload_proc:
