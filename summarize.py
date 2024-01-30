@@ -23,6 +23,6 @@ def summarize(data):
     print(s)
     
 if __name__ == "__main__":
-    data = json.load(open("gh.json"))
+    data = json.load(open("test/gh.json"))
     summarize(data)
 
