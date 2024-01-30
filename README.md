@@ -67,7 +67,7 @@ The full list of exercises planned to assign in CS 4560 are:
 
 **Chapter 1**: HTTP/1.1, `file://` URLs, redirects, caching
 
-**Chapter 2**: Line breaks, *emoji*, resizing, *scrollbar*
+**Chapter 2**: Line breaks, resizing, scrollbar, emoji
 
 **Chapter 3**: Centered text, superscripts, soft hyphens, small caps
 
