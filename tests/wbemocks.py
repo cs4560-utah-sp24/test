@@ -350,7 +350,7 @@ def check_bookmarked():
     return check_bookmark_button("yellow")
 
 def maybeint(x):
-    return int(x) if x == int(x) else x
+    return int(x) if (isinstance(x, float) and x == int(x)) else x
 
 tkinter.Canvas = SilentCanvas
 
