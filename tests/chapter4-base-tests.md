@@ -6,16 +6,18 @@ Chapter 4 (Constructing a Document Tree) adds support for the document tree
 
     >>> import wbemocks
     >>> import browser
-    >>> def test_parse(text):
-    ...     parser = browser.HTMLParser(text)
-    ...     browser.print_tree(parser.parse())
 
 
 Testing HTMLParser
 ==================
 
-HTMLParser is a class whose constructor takes HTML body text as an argument, and
-can parse it.
+`HTMLParser` is a class whose constructor takes HTML body text as an argument, and
+can parse it. We can test it by parsing a document and printing the
+resulting tree.
+
+    >>> def test_parse(text):
+    ...     parser = browser.HTMLParser(text)
+    ...     browser.print_tree(parser.parse())
 
 The implicit ``html` and `body` (and `head` when needed) tags are added:
 
@@ -71,3 +73,23 @@ Attributes can be set on tags:
 	   <body>
 	     <div name1="value1" name2="value2">
 	       'text'
+
+Testing Layout
+==============
+
+First, let's test that basic layout works as expected:
+
+	>>> parser = lab4.HTMLParser("<p>text</p>")
+	>>> tree = parser.parse()
+    >>> lo = lab4.Layout(tree)
+    >>> lo.display_list
+    [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]
+
+Moreover, layout should work even if we don't use the
+explicitly-supported tags like `p`:
+
+	>>> parser = lab4.HTMLParser("<div>text</div>")
+	>>> tree = parser.parse()
+    >>> lo = lab4.Layout(tree)
+    >>> lo.display_list
+    [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]

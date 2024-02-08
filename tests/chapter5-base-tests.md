@@ -16,8 +16,8 @@ Testing layout_mode
 The `layout_mode` function returns "inline" if the object is a `Text` node
 or has all inline children, and otherwise returns "block".
 
-    >>> parser = browser.HTMLParser("text")
-    >>> document_tree = parser.parse()
+    >>> html = "text"
+    >>> document_tree = browser.HTMLParser(html).parse()
     >>> browser.print_tree(document_tree)
      <html>
        <body>
@@ -29,9 +29,8 @@ or has all inline children, and otherwise returns "block".
     
 Here's some tests on a bigger, more complex document
 
-    >>> sample_html = "<div></div><div>text</div><div><div></div>text</div><span></span><span>text</span>"
-    >>> parser = browser.HTMLParser(sample_html)
-    >>> document_tree = parser.parse()
+    >>> html = "<div></div><div>text</div><div><div></div>text</div><span></span><span>text</span>"
+    >>> document_tree = browser.HTMLParser(html).parse()
     >>> browser.print_tree(document_tree)
      <html>
        <body>
@@ -78,8 +77,7 @@ The span has block layout mode, even though spans are inline normally:
 Testing the layout tree
 =======================
 
-    >>> url = 'http://wbemocks.test/chapter5_example1'
-    >>> wbemocks.socket.respond_200(url, sample_html)
+    >>> url = browser.URL(wbemocks.serve(html))
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.nodes)
@@ -117,8 +115,8 @@ Testing background painting
 
 `<pre>` elements have a gray background.
 
-    >>> url = 'http://wbemocks.test/chapter5_example2'
-    >>> wbemocks.socket.respond_200(url, "<pre>pre text</pre>")
+    >>> html = "<pre>pre text</pre>"
+    >>> url = browser.URL(wbemocks.serve(html))
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.nodes)
