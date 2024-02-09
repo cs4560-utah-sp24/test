@@ -79,17 +79,17 @@ Testing Layout
 
 First, let's test that basic layout works as expected:
 
-	>>> parser = lab4.HTMLParser("<p>text</p>")
+	>>> parser = browser.HTMLParser("<p>text</p>")
 	>>> tree = parser.parse()
-    >>> lo = lab4.Layout(tree)
+    >>> lo = browser.Layout(tree)
     >>> lo.display_list
     [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]
 
 Moreover, layout should work even if we don't use the
 explicitly-supported tags like `p`:
 
-	>>> parser = lab4.HTMLParser("<div>text</div>")
+	>>> parser = browser.HTMLParser("<div>text</div>")
 	>>> tree = parser.parse()
-    >>> lo = lab4.Layout(tree)
+    >>> lo = browser.Layout(tree)
     >>> lo.display_list
     [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]
