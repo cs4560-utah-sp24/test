@@ -18,6 +18,10 @@ def normalize_display_list(dl):
     dl = [(float(t[0]), float(t[1]), t[2].replace("\xad", ""), *t[3:]) for t in dl]
     return dl
 
+def print_list(dl):
+    for l in dl:
+        print(l)
+
 class certifi:
     def where(self):
         return os.getcwd()
