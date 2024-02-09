@@ -22,9 +22,10 @@ or has all inline children, and otherwise returns "block".
      <html>
        <body>
          'text'
-    >>> browser.layout_mode(document_tree)
+    >>> lmode = lambda n: browser.BlockLayout(n, None, None).layout_mode()
+    >>> lmode(document_tree)
     'block'
-    >>> browser.layout_mode(document_tree.children[0])
+    >>> lmode(document_tree.children[0])
     'inline'
     
 Here's some tests on a bigger, more complex document
@@ -46,38 +47,38 @@ Here's some tests on a bigger, more complex document
 
 The body element has block layout mode, because it has two block-element children.
 
-    >>> browser.layout_mode(document_tree.children[0])
+    >>> lmode(document_tree.children[0])
     'block'
 
 The first div has block layout mode, because it has no children.
 
-    >>> browser.layout_mode(document_tree.children[0].children[0])
+    >>> lmode(document_tree.children[0].children[0])
     'block'
 
 The second div has inline layout mode, because it has one text child.
 
-    >>> browser.layout_mode(document_tree.children[0].children[1])
+    >>> lmode(document_tree.children[0].children[1])
     'inline'
 
 The third div has block layout mode, because it has one block and one inline child.
 
-    >>> browser.layout_mode(document_tree.children[0].children[2])
+    >>> lmode(document_tree.children[0].children[2])
     'block'
 
 The first span has block layout mode, even though spans are inline normally:
 
-    >>> browser.layout_mode(document_tree.children[0].children[3])
+    >>> lmode(document_tree.children[0].children[3])
     'block'
 
 The span has block layout mode, even though spans are inline normally:
 
-    >>> browser.layout_mode(document_tree.children[0].children[4])
+    >>> lmode(document_tree.children[0].children[4])
     'inline'
 
 Testing the layout tree
 =======================
 
-    >>> url = browser.URL(wbemocks.serve(html))
+    >>> url = browser.URL(wbemocks.socket.serve(html))
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.nodes)
@@ -98,12 +99,12 @@ Testing the layout tree
        BlockLayout(x=13, y=18, width=774, height=60.0)
          BlockLayout(x=13, y=18, width=774, height=60.0)
            BlockLayout(x=13, y=18, width=774, height=0)
-           InlineLayout(x=13, y=18, width=774, height=20.0)
+           BlockLayout(x=13, y=18, width=774, height=20.0)
            BlockLayout(x=13, y=38.0, width=774, height=20.0)
              BlockLayout(x=13, y=38.0, width=774, height=0)
-             InlineLayout(x=13, y=38.0, width=774, height=20.0)
+             BlockLayout(x=13, y=38.0, width=774, height=20.0)
            BlockLayout(x=13, y=58.0, width=774, height=0)
-           InlineLayout(x=13, y=58.0, width=774, height=20.0)
+           BlockLayout(x=13, y=58.0, width=774, height=20.0)
 
     >>> this_browser.display_list #doctest: +NORMALIZE_WHITESPACE
     [DrawText(top=21.0 left=13 bottom=37.0 text=text font=Font size=16 weight=normal slant=roman style=None), 
@@ -116,7 +117,7 @@ Testing background painting
 `<pre>` elements have a gray background.
 
     >>> html = "<pre>pre text</pre>"
-    >>> url = browser.URL(wbemocks.serve(html))
+    >>> url = browser.URL(wbemocks.socket.serve(html))
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.nodes)
@@ -129,7 +130,7 @@ Testing background painting
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=20.0)
          BlockLayout(x=13, y=18, width=774, height=20.0)
-           InlineLayout(x=13, y=18, width=774, height=20.0)
+           BlockLayout(x=13, y=18, width=774, height=20.0)
 
 The first display list entry is now a gray rect, since it's for a `<pre>` element:
 
