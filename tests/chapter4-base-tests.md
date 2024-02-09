@@ -7,6 +7,22 @@ Chapter 4 (Constructing a Document Tree) adds support for the document tree
     >>> import wbemocks
     >>> import browser
 
+Notes
+=====
+
+You'll need to modify the `__repr__` method on `Element` to print the
+attributes in each element. The method should now have this
+definition:
+
+```
+class Element:
+    def __repr__(self):
+        attrs = [" " + k + "=\"" + v + "\"" for k, v  in self.attributes.items()]
+        attr_str = ""
+        for attr in attrs:
+            attr_str += attr
+        return "<" + self.tag + attr_str + ">"
+```
 
 Testing HTMLParser
 ==================
