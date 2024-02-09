@@ -1,6 +1,48 @@
 Tests for WBE Chapter 2 Exercise `Emoji`
 ========================================
 
+Emoji: Add support for emoji to your browser. Emoji are characters,
+and you can call `create_text` to draw them, but the results aren’t
+very good. Instead, head to the OpenMoji project, download the emoji
+for “grinning face” as a PNG file, convert to GIF, resize it to 16x16
+pixels, and save it to the same folder as the browser. Use Tk’s
+`PhotoImage` class to load the image and then the create_image method to
+draw it to the canvas. In fact, download the whole OpenMoji library
+(look for the “Get OpenMojis” button at the top right)--then your
+browser can look up whatever emoji is used in the page.
+    
+You'll want to test your browser by running it on some example pages
+before you run these tests. The smiley face emoji is a single
+character that you can refer to with `\N{GRINNING FACE}` in Python.
+
+This exercise has a few difficult pieces:
+
+- Download the OpenMoji 72x72 PNG images and call the resulting folder
+  of emoji images `openmoji`, placed in the same directory as `browser.py`
+  The grinning face emoji is in `1F600.png`.
+
+- Resize the emoji images to 16x16 manually. When you do so, overwrite
+  the original file so that it's still called `1F600.png`.
+  (Technically there are also `zoom` and `subsample` methods on
+  `PhotoImage` objects but they are hard to use and work poorly.)
+
+- On a recent Python, you don't need to convert PNG images to GIF. But
+  if you have a really old Python, you might need to convert to GIF
+  for the image to show up.
+
+- When you create a `PhotoImage` object, you need to make sure that it
+  is not garbage collected. If it is garbage collected, it won't show
+  up on the screen. You can do this by storing the `PhotoImage` in a
+  field on your `Browser` or in a global.
+
+- Make sure to draw the emoji in the right place!
+
+For these tests, you only need to handle the "Grinning Face" emoji,
+not any others (though you're free to handle others if you'd like).
+
+Tests
+-----
+
 Testing boilerplate; hiding create_rectangle because of scrollbar tests:
 
     >>> import wbemocks
@@ -11,39 +53,6 @@ Testing boilerplate; hiding create_rectangle because of scrollbar tests:
     >>> wbemocks.tkinter.Canvas.hide_command("create_rectangle")
     
 Notes
------
-    
-You'll want to test your browser by running it on some example pages
-before you run these tests. The smiley face emoji is spelled
-`\N{GRINNING FACE}` in Python.
-
-This exercise has a few difficult pieces:
-
-- Download the OpenMoji 72x72 PNG images and call the resulting folder
-  of emoji images `openmoji`, placed in the same directory as `browser.py`
-  The grinning face emoji is in `1F600.png`.
-
-- When you create a `PhotoImage` object, you need to make sure that it
-  is not object collected. If it is garbage collected, it won't show
-  up on the screen. You can do this by storing the `PhotoImage` in a
-  field on your `Browser` or in a global.
-
-- On a recent Python, you don't need to convert PNG images to GIF. But
-  if you have a really old Python, you might need to convert to GIF
-  for the image to show up.
-
-- You need to resize the emoji images to 16x16 manually. When you do
-  same, overwrite the original file so that it's still called
-  `1F600.png`. (Technically there are also `zoom` and `subsample`
-  methods on `PhotoImage` objects but they are hard to use and work
-  poorly.)
-
-- You have to make sure to draw the emoji in the right place!
-
-For these tests, you only need to handle the "Grinning Face" emoji,
-not any others (though you're free to handle others if you'd like).
-
-Tests
 -----
 
 We make the window small and create a test page with several grinning
