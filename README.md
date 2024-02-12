@@ -73,7 +73,7 @@ The full list of exercises planned to assign in CS 4560 are:
 
 **Chapter 4**: Comments, paragraphs, scripts, quoted attributes
 
-**Chapter 5**: Links bar, hidden head, bullets, *anonymous block boxes*
+**Chapter 5**: Links bar, hidden head, bullets, anonymous block boxes
 
 **Chapter 6**: Fonts, width/height, class selectors, shorthand properties
 
