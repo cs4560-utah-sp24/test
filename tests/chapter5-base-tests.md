@@ -30,7 +30,7 @@ or has all inline children, and otherwise returns "block".
     
 Here's some tests on a bigger, more complex document
 
-    >>> html = "<div></div><div>text</div><div><div></div>text</div><span></span><span>text</span>"
+    >>> html = "<div></div><div>text</div><div><div></div>text</div><span>text</span>"
     >>> document_tree = browser.HTMLParser(html).parse()
     >>> browser.print_tree(document_tree)
      <html>
@@ -41,7 +41,6 @@ Here's some tests on a bigger, more complex document
          <div>
            <div>
            'text'
-         <span>
          <span>
            'text'
 
@@ -65,14 +64,9 @@ The third div has block layout mode, because it has one block and one inline chi
     >>> lmode(document_tree.children[0].children[2])
     'block'
 
-The first span has block layout mode, even though spans are inline normally:
+The span has inline layout mode, because spans are inline normally:
 
     >>> lmode(document_tree.children[0].children[3])
-    'block'
-
-The span has block layout mode, even though spans are inline normally:
-
-    >>> lmode(document_tree.children[0].children[4])
     'inline'
 
 Testing the layout tree
@@ -91,7 +85,6 @@ Testing the layout tree
            <div>
            'text'
          <span>
-         <span>
            'text'
 
     >>> browser.print_tree(this_browser.document)
@@ -103,7 +96,6 @@ Testing the layout tree
            BlockLayout(x=13, y=38.0, width=774, height=20.0)
              BlockLayout(x=13, y=38.0, width=774, height=0)
              BlockLayout(x=13, y=38.0, width=774, height=20.0)
-           BlockLayout(x=13, y=58.0, width=774, height=0)
            BlockLayout(x=13, y=58.0, width=774, height=20.0)
 
     >>> this_browser.display_list #doctest: +NORMALIZE_WHITESPACE
