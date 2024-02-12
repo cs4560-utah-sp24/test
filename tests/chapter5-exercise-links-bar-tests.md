@@ -2,7 +2,6 @@ Tests for WBE Chapter 5 Exercise `Links Bar`
 ============================================
 
     >>> import sys
-    >>> sys.path.append("/Users/pavpan/wbe/src/")
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
