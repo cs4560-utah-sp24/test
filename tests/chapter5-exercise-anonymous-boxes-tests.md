@@ -21,6 +21,10 @@ Some quick notes:
   argument. You can assume that in block layout mode, there will only
   be one node in the list.
   
+- However, some of the tests will create `BlockLayout` elements by
+  passing a single node in. So check if the "list" of nodes is
+  actually a single `Element` and if so wrap that in a list.
+  
 - When creating child `BlockLayout` elements, put consecutive text
   nodes and elements not in `BLOCK_ELEMENTS` into the same
   `BlockLayout`
