@@ -1,52 +1,48 @@
 Tests for WBE Chapter 6
 =======================
 
-Chapter 6 (Applying User Styles) introduces a CSS parser for the style attribute
-and style sheets, and adds support for inherited properties, tag selectors, and
-descendant selectors.
+Chapter 6 (Applying User Styles) introduces a CSS parser for the style
+attribute and style sheets, and adds support for inherited properties,
+tag selectors, and descendant selectors.
 
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> import browser
 
-    >>> url = 'http://wbemocks.test/chapter6_example1'
-    >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\n" +
-    ... b"Header1: Value1\r\n\r\n" +
-    ... b"<div>Test</div>")
+Testing resolve
+===============
 
-Testing resolve_url
-===================
+    >>> browser.URL("http://bar.com/").resolve("http://foo.com")
+    URL(scheme=http, host=foo.com, port=80, path='/')
 
-    >>> browser.resolve_url("http://foo.com", "http://bar.com/")
-    'http://foo.com'
+    >>> browser.URL("http://bar.com/").resolve("/url")
+    URL(scheme=http, host=bar.com, port=80, path='/url')
 
-    >>> browser.resolve_url("/url", "http://bar.com/")
-    'http://bar.com/url'
+    >>> browser.URL("http://bar.com/url1").resolve("url2")
+    URL(scheme=http, host=bar.com, port=80, path='/url2')
 
-    >>> browser.resolve_url("url2", "http://bar.com/url1")
-    'http://bar.com/url2'
-
-    >>> browser.resolve_url("url2", "http://bar.com/url1/")
-    'http://bar.com/url1/url2'
+    >>> browser.URL("http://bar.com/url1/").resolve("url2")
+    URL(scheme=http, host=bar.com, port=80, path='/url1/url2')
 
 Testing tree_to_list
 ====================
 
+    >>> url = browser.URL(wbemocks.socket.serve("<div>Test</div>"))
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=15.0)
          BlockLayout(x=13, y=18, width=774, height=15.0)
-           InlineLayout(x=13, y=18, width=774, height=15.0)
+           BlockLayout(x=13, y=18, width=774, height=15.0)
     >>> list = []
     >>> retval = browser.tree_to_list(this_browser.document, list)
     >>> retval #doctest: +NORMALIZE_WHITESPACE
     [DocumentLayout(),
      BlockLayout(x=13, y=18, width=774, height=15.0),
      BlockLayout(x=13, y=18, width=774, height=15.0),
-     InlineLayout(x=13, y=18, width=774, height=15.0)]
+     BlockLayout(x=13, y=18, width=774, height=15.0)]
     >>> retval == list
     True
 
@@ -117,38 +113,39 @@ with a scannerless parser like used here:
     >>> browser.CSSParser("a {p:v } ").parse()
     [(TagSelector(tag=a, priority=1), {'p': 'v'})]
 
-    
-
 Testing compute_style
 =====================
 
     >>> html = browser.Element("html", {}, None)
     >>> body = browser.Element("body", {}, html)
     >>> div = browser.Element("div", {}, body)
+    >>> html.children.append(body)
+    >>> body.children.append(div)
 
-Other than `font-size`, this just returns the value:
+Let's give all of them a percentage font size:
 
-    >>> browser.compute_style(body, "property", "value")
-    'value'
+    >>> html.attributes["style"] = "font-size:150%"
+    >>> body.attributes["style"] = "font-size:150%"
+    >>> div.attributes["style"] = "font-size:150%"
+    >>> browser.style(html, [])
 
-Values for `font-size` ending in "px" return the value:
+The font size of the `<div>` is computed relatively:
 
-    >>> browser.compute_style(body, "font-size", "12px")
-    '12px'
+    >>> browser.INHERITED_PROPERTIES["font-size"]
+    '16px'
+    >>> 16 * 1.5 * 1.5 * 1.5
+    54.0
+    >>> div.style["font-size"]
+    '54.0px'
+    
+If we change the `<body>` to be absolute, then the `<div>` is relative
+to that:
 
-Percentage values are computed against the parent
+    >>> body.attributes["style"] = "font-size:10px"
+    >>> browser.style(html, [])
+    >>> div.style["font-size"]
+    '15.0px'
 
-    >>> html.style = {"font-size": "30px"}
-    >>> browser.compute_style(body, "font-size", "100%")
-    '30.0px'
-    >>> browser.compute_style(body, "font-size", "80%")
-    '24.0px'
-
-    >>> body.style = {"font-size": "10px"}
-    >>> browser.compute_style(div, "font-size", "100%")
-    '10.0px'
-    >>> browser.compute_style(div, "font-size", "80%")
-    '8.0px'
 
 Testing style
 =============
@@ -316,15 +313,11 @@ Priorities work (descendant selectors high higher priority than tag selectors):
     font-style: normal
     font-weight: normal
 
-    >>> url2 = 'http://wbemocks.test/chapter6_example2'
-    >>> wbemocks.socket.respond(url2, b"HTTP/1.0 200 OK\r\n" +
-    ... b"Header1: Value1\r\n\r\n" +
-    ... b"<div style=\"color:blue\">Test</div>")
-
-
 Style attributes have the highest priority:
 
+    >>> content = "<div style=\"color:blue\">Test</div>"
+    >>> url2 = browser.URL(wbemocks.socket.serve(content))
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url2)
-    >>> this_browser.document.children[0].children[0].children[0].node.style['color']
+    >>> this_browser.nodes.children[0].children[0].style['color']
     'blue'
