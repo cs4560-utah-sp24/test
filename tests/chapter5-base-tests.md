@@ -5,13 +5,42 @@ Chapter 5 (Laying Out Pages) introduces inline and block layout modes on
 the document tree, and introduces the concept of the document tree, and
 adds support for drawing the background colors of document tree elements.
 
+To pass the tests, you'll need to add `__repr__` methods to the new
+layout classes:
+
+```
+class BlockLayout:
+    def __repr__(self):
+        return "BlockLayout(x={}, y={}, width={}, height={})".format(
+            self.x, self.y, self.width, self.height)
+
+class DocumentElement:
+    def __repr__(self):
+        return "DocumentLayout()"
+```
+
+You'll also need `__repr__` methods for drawing commands:
+
+```
+class DrawText:
+    def __repr__(self):
+        return "DrawText(top={} left={} bottom={} text={} font={})" \
+            .format(self.top, self.left, self.bottom, self.text, self.font)
+
+class DrawRect:
+    def __repr__(self):
+        return "DrawRect(top={} left={} bottom={} right={} color={})".format(
+            self.top, self.left, self.bottom, self.right, self.color)
+```
+
+
+Testing layout_mode
+===================
+
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> import browser
-
-Testing layout_mode
-===================
 
 The `layout_mode` function returns "inline" if the object is a `Text` node
 or has all inline children, and otherwise returns "block".
