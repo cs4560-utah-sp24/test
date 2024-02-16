@@ -5,13 +5,27 @@ Chapter 6 (Applying User Styles) introduces a CSS parser for the style
 attribute and style sheets, and adds support for inherited properties,
 tag selectors, and descendant selectors.
 
+You'll need to add `__repr__` methods to the selector classes:
+
+```
+class TagSelector:
+    def __repr__(self):
+        return "TagSelector(tag={}, priority={})".format(
+            self.tag, self.priority)
+
+class DescendantSelector:
+    def __repr__(self):
+        return ("DescendantSelector(ancestor={}, descendant={}, priority={})") \
+            .format(self.ancestor, self.descendant, self.priority)
+```
+
+Testing resolve
+===============
+
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> import browser
-
-Testing resolve
-===============
 
     >>> browser.URL("http://bar.com/").resolve("http://foo.com")
     URL(scheme=http, host=foo.com, port=80, path='/')
