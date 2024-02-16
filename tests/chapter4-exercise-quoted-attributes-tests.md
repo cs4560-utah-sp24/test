@@ -1,13 +1,17 @@
 Tests for WBE Chapter 4 Exercise `Quoted attributes`
 ====================================================
 
+Quoted attributes can contain spaces and right angle brackets. Fix the
+lexer so that this is supported properly. Hint: the current lexer is a
+finite state machine, with two states (determined by in_tag). You’ll
+need more states.
+
+For this assignment, you don't need to handle left or right angle
+brackets in attributes, but you do need to handle spaces.
+
 Description
 ------------
 
-Quoted attributes can contain spaces and right angle brackets. 
-Fix the lexer so that this is supported properly.
-Hint: the current lexer is a finite state machine, with two states 
-  (determined by in_tag). You’ll need more states.
 
 Testing boilerplate:
 
@@ -42,14 +46,6 @@ The issue when adding spaces to an attribute is how the text is split into
        <body>
          <div a="b"c">
 
-
-Allowing the greater than symbol in a quoted attribute requires the additional 
-  states mentioned in the exercise.
-
-    >>> test_parse("<br confusing='why does a <br> have an attribute?'>")
-     <html>
-       <body>
-         <br confusing="why does a <br> have an attribute?">
 
 There are some edge cases that should be handled
 
