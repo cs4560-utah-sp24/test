@@ -14,7 +14,7 @@ class BlockLayout:
         return "BlockLayout(x={}, y={}, width={}, height={})".format(
             self.x, self.y, self.width, self.height)
 
-class DocumentElement:
+class DocumentLayout:
     def __repr__(self):
         return "DocumentLayout()"
 ```
