@@ -458,6 +458,7 @@ def main(argv):
             current_data = json.load(open(GH_JSON_PATH))
         else:
             current_data = []
+        current_data = [t for t in current_data if t[0] in ALL_TESTS]
         res = sorted(current_data + list(mapped_results.items()),
                      key=lambda a: ALL_TESTS.index(a[0]))
         with open(GH_JSON_PATH, "w") as f:
