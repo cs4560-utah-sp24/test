@@ -314,6 +314,7 @@ def parse_arguments(argv):
                         help="Output environment variables for Github")
     parser.add_argument("--no-upload", action="store_true",
                         help="Do not upload a copy of the code to the instructor")
+    parser.add_argument('-b', '--browser_path', help='browser path')
     args = parser.parse_args(argv[1:])
 
     return args
@@ -428,7 +429,8 @@ def main(argv):
         testkey = args.chapter + "-" + str(args.index)
 
     tests = CURRENT_TESTS[testkey]
-
+    bpath = args.browser_path
+    sys.path.append(bpath)
     upload_proc = None
     if not (args.no_upload or args.ghsetup or args.gh):
         upload_proc = multiprocessing.Process(target=upload_py, args=(testkey,))
