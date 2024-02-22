@@ -372,6 +372,7 @@ tkinter.Canvas = SilentCanvas
 
 class MockCanvas:
     HIDE_COMMANDS = set()
+    HIDE_ABOVE = 0
     IMAGE_SIZE = None
 
     def __init__(self, *args, **kwargs):
@@ -379,6 +380,7 @@ class MockCanvas:
 
     def create_rectangle(self, x1, y1, x2, y2, width=None, fill=None, outline=None):
         if "create_rectangle" in self.HIDE_COMMANDS: return
+        if max(y1, y2) <= self.HIDE_ABOVE: return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
@@ -389,6 +391,7 @@ class MockCanvas:
 
     def create_line(self, x1, y1, x2, y2, fill=None, width=None):
         if "create_line" in self.HIDE_COMMANDS: return
+        if max(y1, y2) <= self.HIDE_ABOVE: return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
@@ -399,6 +402,7 @@ class MockCanvas:
 
     def create_oval(self, x1, y1, x2, y2):
         if "create_oval" in self.HIDE_COMMANDS: return
+        if max(y1, y2) <= self.HIDE_ABOVE: return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
@@ -408,6 +412,7 @@ class MockCanvas:
 
     def create_image(self, x, y, image):
         if "create_image" in self.HIDE_COMMANDS: return
+        if y + image.h <= self.HIDE_ABOVE: return
         x = maybeint(x)
         y = maybeint(y)
         PhotoImage.DO_NOT_GC[image] = True
@@ -419,6 +424,7 @@ class MockCanvas:
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):
         if "create_text" in self.HIDE_COMMANDS: return
+        if y + font.metrics("linespace") <= self.HIDE_ABOVE: return
         if text.isspace():
             return
         if font or anchor:
@@ -439,12 +445,17 @@ class MockCanvas:
         cls.HIDE_COMMANDS.add(name)
 
     @classmethod
+    def hide_above(cls, y):
+        cls.HIDE_ABOVE = y
+
+    @classmethod
     def require_image_size(cls, w, h):
         cls.IMAGE_SIZE = (w, h)
 
     @classmethod
     def reset(cls):
         cls.HIDE_COMMANDS = set()
+        cls.HIDE_ABOVE = 0
         cls.IMAGE_SIZE = None
         
 
@@ -469,7 +480,7 @@ class SkipChromeCanvas:
             print("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
                 x1, y1, x2, y2, width, repr(fill)))
 
-    def create_line(self, x1, y1, x2, y2, fill=None):
+    def create_line(self, x1, y1, x2, y2, fill=None, width=None):
         pass
 
     def create_oval(self, x1, y1, x2, y2):

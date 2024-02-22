@@ -234,8 +234,8 @@ def patched_failure_header(self, test, example):
         if isinstance(x, str):
             s += x
         else:
-            s += ">>> " + x.source
-            if x.want:
+            s += ">>> " + "\n... ".join(x.source.strip("\n").split("\n")) + "\n"
+            if x.want and i != example_idx:
                 s += x.want
     out.append(doctest._indent(s))
     return '\n'.join(out) + "\n"
