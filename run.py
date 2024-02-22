@@ -314,7 +314,7 @@ def parse_arguments(argv):
                         help="Output environment variables for Github")
     parser.add_argument("--no-upload", action="store_true",
                         help="Do not upload a copy of the code to the instructor")
-    parser.add_argument('-b', '--browser_path', help='browser path')
+    parser.add_argument('-b', '--browser_path', help='Directory containing browser.py')
     args = parser.parse_args(argv[1:])
 
     return args
