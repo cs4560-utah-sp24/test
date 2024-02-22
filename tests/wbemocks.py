@@ -20,7 +20,7 @@ def normalize_display_list(dl):
 
 def print_list(dl):
     for l in dl:
-        print(l)
+        print(repr(l))
 
 class certifi:
     def where(self):
@@ -321,7 +321,7 @@ class SilentCanvas:
         TK_CANVAS_CALLS.append("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
             x1, y1, x2, y2, width, repr(fill)))
 
-    def create_line(self, x1, y1, x2, y2, fill=None):
+    def create_line(self, x1, y1, x2, y2, fill=None, width=None):
         pass
 
     def create_oval(self, x1, y1, x2, y2):
@@ -387,14 +387,15 @@ class MockCanvas:
         print("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
             x1, y1, x2, y2, width, repr(fill)))
 
-    def create_line(self, x1, y1, x2, y2, fill=None):
+    def create_line(self, x1, y1, x2, y2, fill=None, width=None):
         if "create_line" in self.HIDE_COMMANDS: return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
         y2 = maybeint(y2)
-        print("create_line: x1={} y1={} x2={} y2={} fill={}".format(
-            x1, y1, x2, y2, repr(fill)))
+        width = maybeint(width)
+        print("create_line: x1={} y1={} x2={} y2={} width={} fill={}".format(
+            x1, y1, x2, y2, width, repr(fill)))
 
     def create_oval(self, x1, y1, x2, y2):
         if "create_oval" in self.HIDE_COMMANDS: return
