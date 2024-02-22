@@ -4,8 +4,9 @@ Tests for WBE Chapter 7 Exercise `Middle Click`
 Add support for middle-clicking on a link (`Button-2`) to open it in a
 new tab. You might need a mouse to test this easily.
 
-Name the method in the `Browser` class that handles the middle click event
-`handle_middle_click`. The new tabs should be opened in the background
+Name the method in the `Browser` class that handles the middle click
+event `handle_middle_click`. The new tabs should be opened in the
+background. You will need to give each `Tab` access to its `Browser`.
 
 Test code
 ---------

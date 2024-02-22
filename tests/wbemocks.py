@@ -349,11 +349,12 @@ def check_bookmark_button(fill_color):
         x2 = float(parts[3].split("=")[1])
         y2 = float(parts[4].split("=")[1])
         fill = parts[6].split("=")[1][1:-1]
+        print(x1, y1, x2, y2, fill)
 
         if (755 < x1 < 775 and
-           40 < y1 < 60 and
+           30 < y1 < 40 and
            780 < x2 < 800 and
-           80 < y2 < 100 and
+           50 < y2 < 60 and
            fill == fill_color):
             return True
 
@@ -378,9 +379,14 @@ class MockCanvas:
     def __init__(self, *args, **kwargs):
         pass
 
+    def _allow(self, cmdname, ytop):
+        if self.HIDE_COMMANDS == "*": return False
+        if cmdname in self.HIDE_COMMANDS: return False
+        if ytop <= self.HIDE_ABOVE: return False
+        return True
+
     def create_rectangle(self, x1, y1, x2, y2, width=None, fill=None, outline=None):
-        if "create_rectangle" in self.HIDE_COMMANDS: return
-        if max(y1, y2) <= self.HIDE_ABOVE: return
+        if not self._allow("create_rectangle", max(y1, y2)): return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
@@ -390,8 +396,7 @@ class MockCanvas:
             x1, y1, x2, y2, width, repr(fill)))
 
     def create_line(self, x1, y1, x2, y2, fill=None, width=None):
-        if "create_line" in self.HIDE_COMMANDS: return
-        if max(y1, y2) <= self.HIDE_ABOVE: return
+        if not self._allow("create_line", max(y1, y2)): return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
@@ -401,8 +406,7 @@ class MockCanvas:
             x1, y1, x2, y2, width, repr(fill)))
 
     def create_oval(self, x1, y1, x2, y2):
-        if "create_oval" in self.HIDE_COMMANDS: return
-        if max(y1, y2) <= self.HIDE_ABOVE: return
+        if not self._allow("create_oval", max(y1, y2)): return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
@@ -411,8 +415,7 @@ class MockCanvas:
             x1, y1, x2, y2))
 
     def create_image(self, x, y, image):
-        if "create_image" in self.HIDE_COMMANDS: return
-        if y + image.h <= self.HIDE_ABOVE: return
+        if not self._allow("create_image", y + image.h): return
         x = maybeint(x)
         y = maybeint(y)
         PhotoImage.DO_NOT_GC[image] = True
@@ -423,10 +426,8 @@ class MockCanvas:
         print("create_oval: x={} y={} image={}".format(x, y, image))
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):
-        if "create_text" in self.HIDE_COMMANDS: return
-        if y + font.metrics("linespace") <= self.HIDE_ABOVE: return
-        if text.isspace():
-            return
+        if not self._allow("create_text", y + font.metrics("linespace")): return
+        if text.isspace(): return
         if font or anchor:
             print("create_text: x={} y={} text={} font={} anchor={}".format(
                 x, y, text, font, anchor))
@@ -449,6 +450,10 @@ class MockCanvas:
         cls.HIDE_ABOVE = y
 
     @classmethod
+    def hide_all(cls):
+        cls.HIDE_COMMANDS = "*"
+
+    @classmethod
     def require_image_size(cls, w, h):
         cls.IMAGE_SIZE = (w, h)
 
@@ -460,41 +465,6 @@ class MockCanvas:
         
 
 original_tkinter_canvas = tkinter.Canvas
-
-class SkipChromeCanvas:
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def create_text(self, x, y, text, font=None, anchor=None, fill=None):
-        if text.isspace() or y < 100:
-            return
-        if font or anchor:
-            print("create_text: x={} y={} text={} font={} anchor={}".format(
-                x, y, text, font, anchor))
-        else:
-            print("create_text: x={} y={} text={}".format(
-                x, y, text))
-
-    def create_rectangle(self, x1, y1, x2, y2, width=None, fill=None, outline=None):
-        if y1 > 100 and fill != "blue":
-            print("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
-                x1, y1, x2, y2, width, repr(fill)))
-
-    def create_line(self, x1, y1, x2, y2, fill=None, width=None):
-        pass
-
-    def create_oval(self, x1, y1, x2, y2):
-        pass
-
-    def create_polygon(self, *args, **kwargs):
-        pass
-
-    def pack(self, expand=None, fill=None):
-        pass
-
-    def delete(self, v):
-        pass
-
 
 class Event:
     pass
@@ -516,9 +486,6 @@ class ResizeEvent:
 def patch_canvas():
     MockCanvas.reset()
     tkinter.Canvas = MockCanvas
-
-def patch_skip_chrome_canvas():
-    tkinter.Canvas = SkipChromeCanvas
 
 def patch_silent_canvas():
     tkinter.Canvas = SilentCanvas
