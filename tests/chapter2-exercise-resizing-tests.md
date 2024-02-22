@@ -39,7 +39,7 @@ The `x` value is always one, but `y` increments, since the canvas is of width
 Calling `resize` with a wider window should allow the text to be on one line.
 Now all the characters have the same `y`, but different `x` increments.
 
-    >>> e = wbemocks.resize_event(width=100, height=10)
+    >>> e = wbemocks.ResizeEvent(width=100, height=10)
     >>> this_browser.resize(e)
     create_text: x=1 y=1 text=a...
     create_text: x=2 y=1 text=b...
@@ -48,7 +48,7 @@ Now all the characters have the same `y`, but different `x` increments.
 
 Calling `resize` with a narrower window should split the text across two lines.
 
-    >>> e = wbemocks.resize_event(width=4, height=10)
+    >>> e = wbemocks.ResizeEvent(width=4, height=10)
     >>> this_browser.resize(e)
     create_text: x=1 y=1 text=a...
     create_text: x=2 y=1 text=b...

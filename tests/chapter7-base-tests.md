@@ -131,17 +131,17 @@ Clicking on a browser tab focuses it:
     >>> this_browser.active_tab
     Tab(history=[URL(scheme=http, host=test, port=80, path='/1')])
     >>> rect = this_browser.chrome.tab_rect(0)
-    >>> this_browser.handle_click(wbemocks.Event(rect.left + 1, rect.top + 1))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(rect.left + 1, rect.top + 1))
     >>> this_browser.active_tab
     Tab(history=[URL(scheme=http, host=test, port=80, path='/0')])
     >>> rect = this_browser.chrome.tab_rect(1)
-    >>> this_browser.handle_click(wbemocks.Event(rect.left + 1, rect.top + 1))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(rect.left + 1, rect.top + 1))
     >>> this_browser.active_tab
     Tab(history=[URL(scheme=http, host=test, port=80, path='/1')])
 
 Clicking on the address bar focuses it:
 
-    >>> this_browser.handle_click(wbemocks.Event(50, 51))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(50, 51))
     >>> this_browser.chrome.focus
     'address bar'
 
@@ -149,21 +149,21 @@ The back button works:
 
     >>> wbemocks.print_list(this_browser.tabs[1].history)
     URL(scheme=http, host=test, port=80, path='/1')
-    >>> this_browser.handle_click(wbemocks.Event(14, this_browser.chrome.bottom + 21))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(14, this_browser.chrome.bottom + 21))
     >>> wbemocks.print_list(this_browser.tabs[1].history)
     URL(scheme=http, host=test, port=80, path='/1')
     URL(scheme=http, host=test, port=80, path='/0')
-    >>> this_browser.handle_click(wbemocks.Event(10, 50))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(10, 50))
     >>> wbemocks.print_list(this_browser.tabs[1].history)
     URL(scheme=http, host=test, port=80, path='/1')
 
 Pressing enter with text in the address bar works:
 
-    >>> this_browser.handle_click(wbemocks.Event(50, 51))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(50, 51))
     >>> this_browser.chrome.focus
     'address bar'
     >>> this_browser.chrome.address_bar = "http://test/0"
-    >>> this_browser.handle_enter(wbemocks.Event(0, 0))
+    >>> this_browser.handle_enter(wbemocks.Event())
     >>> wbemocks.print_list(this_browser.tabs[1].history)
     URL(scheme=http, host=test, port=80, path='/1')
     URL(scheme=http, host=test, port=80, path='/0')
@@ -173,7 +173,7 @@ The home button works:
     >>> content = "Web Browser Engineering homepage"
     >>> browser_engineering = 'https://browser.engineering/'
     >>> wbemocks.socket.respond_ok(browser_engineering, content)
-    >>> this_browser.handle_click(wbemocks.Event(10, 10))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(10, 10))
     >>> this_browser.tabs #doctest: +NORMALIZE_WHITESPACE
     [Tab(history=[URL(scheme=http, host=test, port=80, path='/0')]),
      Tab(history=[URL(scheme=http, host=test, port=80, path='/1'),

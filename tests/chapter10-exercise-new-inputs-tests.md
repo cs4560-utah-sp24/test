@@ -63,7 +63,7 @@ There are many ways to achieve this effect, we will set the width and height of
 
 Submission of the form should still pass along the value.
 
-    >>> this_browser.handle_click(wbemocks.Event(21, 100+58))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(21, 100+58))
     >>> req = wbemocks.socket.last_request(url + "tricky").decode().lower()
     >>> req.startswith("post")
     True
@@ -117,7 +117,7 @@ The password element should be all `*`.
 
 Submission of the form should still pass along the value.
 
-    >>> this_browser.handle_click(wbemocks.Event(21, 100+58))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(21, 100+58))
     >>> req = wbemocks.socket.last_request(url + "login").decode().lower()
     >>> req.startswith("post")
     True

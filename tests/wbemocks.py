@@ -485,31 +485,22 @@ class SkipChromeCanvas:
         pass
 
 
-class resize_event:
-    def __init__(self, width, height):
-        self.height = height
-        self.width = width
+class Event:
+    pass
 
-class mousewheel_event:
-    def __init__(self, delta):
-        self.delta = delta
-        self.num = "??"
+class ClickEvent:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
-class key_event:
+class KeyEvent:
     def __init__(self, char):
         self.char = char
 
-class backspace_event:
-    def __init__(self):
-        pass
-
-class enter_event:
-    def __init__(self):
-        pass
-
-class tab_event:
-    def __init__(self):
-        pass
+class ResizeEvent:
+    def __init__(self, width, height):
+        self.height = height
+        self.width = width
 
 def patch_canvas():
     MockCanvas.reset()
@@ -593,7 +584,3 @@ def patch_breakpoint():
 def unpatch_breakpoint():
     builtins.breakpoint = builtin_breakpoint
 
-class Event:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y

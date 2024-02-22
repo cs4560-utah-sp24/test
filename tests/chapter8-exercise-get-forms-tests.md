@@ -47,7 +47,7 @@ This is the form page.
 
 Send the defaults using GET.
 
-    >>> this_browser.handle_click(wbemocks.Event(20, 55 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 55 + browser.CHROME_PX))
     >>> wbemocks.socket.last_request_path()
     '/chapter8-get-form/submit?name=Ned&comment=Howdily'
     >>> browser.print_tree(this_browser.tabs[0].document.node)
@@ -71,15 +71,15 @@ Now lets try a form that does not supply the method attribute.
 
 Click on the input and type an answer, then submit the result.
 
-    >>> this_browser.handle_click(wbemocks.Event(90, 25 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + browser.CHROME_PX))
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus
     <input name="food" value="">
 
     >>> for c in "ribwich":
-    ...   this_browser.handle_key(wbemocks.key_event(c))
-    >>> this_browser.handle_click(wbemocks.Event(20, 42 + browser.CHROME_PX))
+    ...   this_browser.handle_key(wbemocks.KeyEvent(c))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 42 + browser.CHROME_PX))
 
     >>> wbemocks.socket.last_request_path()
     '/chapter8-get-form2/submit?food=ribwich'

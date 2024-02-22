@@ -42,13 +42,13 @@ Pressing enter when there is no focus should not change anything.
 
     >>> this_browser.focus == None
     True
-    >>> this_browser.handle_enter(wbemocks.enter_event())
+    >>> this_browser.handle_enter(wbemocks.Event())
     >>> this_browser.focus == None
     True
 
 Clicking on the input should clear its content and set focus
 
-    >>> this_browser.handle_click(wbemocks.Event(90, 25 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + browser.CHROME_PX))
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus
@@ -58,8 +58,8 @@ Type in a response then press enter to perform the POST request.
 This will be matched against the earlier description.
 
     >>> for c in "Killroy":
-    ...   this_browser.handle_key(wbemocks.key_event(c))
-    >>> this_browser.handle_enter(wbemocks.enter_event())
+    ...   this_browser.handle_key(wbemocks.KeyEvent(c))
+    >>> this_browser.handle_enter(wbemocks.Event())
 
 Examine the post request.
 

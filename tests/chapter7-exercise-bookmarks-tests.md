@@ -72,10 +72,10 @@ Load the second site by typing it in.
     >>> url_2 = 'http://site2.com/'
     >>> wbemocks.socket.respond_200(url_2, body="Site 2")
 
-    >>> this_browser.handle_click(wbemocks.Event(50, 51))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(50, 51))
     >>> for c in url_2:
-    ...   this_browser.handle_key(wbemocks.key_event(c))
-    >>> this_browser.handle_enter(wbemocks.enter_event())
+    ...   this_browser.handle_key(wbemocks.KeyEvent(c))
+    >>> this_browser.handle_enter(wbemocks.Event())
     >>> this_browser.tabs[0].url
     'http://site2.com/'
 
@@ -90,7 +90,7 @@ Make sure it is not bookmarked.
 Go back to the first site and bookmark it.
 
     >>> this_browser.tabs[0].go_back()
-    >>> this_browser.handle_click(wbemocks.Event(777, 50))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(777, 50))
 
 Check that it got bookmarked.
 
@@ -102,10 +102,10 @@ Check that it got bookmarked.
 
 Load the second site by typing it in again.
 
-    >>> this_browser.handle_click(wbemocks.Event(50, 51))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(50, 51))
     >>> for c in url_2:
-    ...   this_browser.handle_key(wbemocks.key_event(c))
-    >>> this_browser.handle_enter(wbemocks.enter_event())
+    ...   this_browser.handle_key(wbemocks.KeyEvent(c))
+    >>> this_browser.handle_enter(wbemocks.Event())
     >>> this_browser.tabs[0].url
     'http://site2.com/'
 
@@ -119,7 +119,7 @@ Make sure it is not bookmarked
 
 Bookmark it and check.
 
-    >>> this_browser.handle_click(wbemocks.Event(777, 50))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(777, 50))
 
     >>> wbemocks.check_bookmarked()
     True
@@ -138,7 +138,7 @@ Request the bookmark site directly.
 
 Unbookmark the second site.
 
-    >>> this_browser.handle_click(wbemocks.Event(777, 50))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(777, 50))
 
     >>> wbemocks.check_not_bookmarked()
     True

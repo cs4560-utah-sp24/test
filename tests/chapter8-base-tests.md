@@ -96,7 +96,7 @@ Testing form submission
 
 Forms are submitted via a click on the submit button.
 
-    >>> this_browser.handle_click(wbemocks.Event(20, 55 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 55 + browser.CHROME_PX))
     >>> browser.print_tree(this_browser.tabs[0].document.node)
      <html>
        <body>

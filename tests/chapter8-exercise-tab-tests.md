@@ -44,7 +44,7 @@ This is the form page.
 
 Click on the name field.
 
-    >>> this_browser.handle_click(wbemocks.Event(90, 25 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + browser.CHROME_PX))
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus
@@ -52,7 +52,7 @@ Click on the name field.
 
 Tab to the comment field, which should be emptied upon selection.
 
-    >>> this_browser.handle_tab(wbemocks.tab_event())
+    >>> this_browser.handle_tab(wbemocks.Event())
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus
@@ -60,7 +60,7 @@ Tab to the comment field, which should be emptied upon selection.
 
 Tab to the sign field.
 
-    >>> this_browser.handle_tab(wbemocks.tab_event())
+    >>> this_browser.handle_tab(wbemocks.Event())
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus
@@ -68,7 +68,7 @@ Tab to the sign field.
 
 Tab should cycle back to the name field.
 
-    >>> this_browser.handle_tab(wbemocks.tab_event())
+    >>> this_browser.handle_tab(wbemocks.Event())
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus

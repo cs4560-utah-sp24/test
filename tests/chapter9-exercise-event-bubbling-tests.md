@@ -58,7 +58,7 @@ Click an show that all event listeners are called in the correct order.
     >>> wbemocks.socket.respond_200(script_url, body=script)
     >>> this_browser = browser.Browser()
     >>> this_browser.load(web_url)
-    >>> this_browser.handle_click(wbemocks.Event(20, 100 + 24))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 100 + 24))
     input saw a click
     form saw a click
     div saw a click
@@ -91,7 +91,7 @@ This time prevent the default in the input.
     >>> wbemocks.socket.respond_200(script_url, body=script)
     >>> this_browser = browser.Browser()
     >>> this_browser.load(web_url)
-    >>> this_browser.handle_click(wbemocks.Event(20, 100 + 24))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 100 + 24))
     input saw a click
     form saw a click
     div saw a click
@@ -123,7 +123,7 @@ Stopping propagation should also work.
     >>> wbemocks.socket.respond_200(script_url, body=script)
     >>> this_browser = browser.Browser()
     >>> this_browser.load(web_url)
-    >>> this_browser.handle_click(wbemocks.Event(20, 100 + 24))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 100 + 24))
     input saw a click
     form saw a click
     >>> this_browser.tabs[0].js.run("document.querySelectorAll('input')[0].getAttribute('value')")
@@ -155,7 +155,7 @@ Both should be able to work on the same click.
     >>> wbemocks.socket.respond_200(script_url, body=script)
     >>> this_browser = browser.Browser()
     >>> this_browser.load(web_url)
-    >>> this_browser.handle_click(wbemocks.Event(20, 100 + 24))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 100 + 24))
     input saw a click
     >>> this_browser.tabs[0].js.run("document.querySelectorAll('input')[0].getAttribute('value')")
     'sugar'

@@ -82,7 +82,7 @@ Test clicking on a link with an absolute path including a fragment.
     create_text: x=13 y=180.25 text=c font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=13 y=195.25 text=c font=Font size=12 weight=normal slant=roman style=None anchor=nw
 
-    >>> this_browser.handle_click(wbemocks.Event(14, 121))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(14, 121))
     create_text: x=13 y=102.25 text=Full font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=73 y=102.25 text=path font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=133 y=102.25 text=target font=Font size=12 weight=normal slant=roman style=None anchor=nw
@@ -128,7 +128,7 @@ To check that the page is not requested again change the server's response.
 
 Click on the relative fragment.
 
-    >>> this_browser.handle_click(wbemocks.Event(14, 121))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(14, 121))
     create_text: x=13 y=102.25 text=Relative font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=121 y=102.25 text=path font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=181 y=102.25 text=target font=Font size=12 weight=normal slant=roman style=None anchor=nw
@@ -165,7 +165,7 @@ If the fragment does not exist then don't change the scroll position.
     create_text: x=13 y=180.25 text=g font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=13 y=195.25 text=g font=Font size=12 weight=normal slant=roman style=None anchor=nw
 
-    >>> this_browser.handle_click(wbemocks.Event(14, 121))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(14, 121))
     create_text: x=13 y=120.25 text=Nonexistant font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=157 y=120.25 text=fragment font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=13 y=135.25 text=g font=Font size=12 weight=normal slant=roman style=None anchor=nw
@@ -202,7 +202,7 @@ Clicking a fragment link when a fragment url is already loaded should
     create_text: x=13 y=180.25 text=i font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=13 y=195.25 text=i font=Font size=12 weight=normal slant=roman style=None anchor=nw
 
-    >>> this_browser.handle_click(wbemocks.Event(14, 121))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(14, 121))
     create_text: x=13 y=102.25 text=Relative font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=121 y=102.25 text=path font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=181 y=102.25 text=target font=Font size=12 weight=normal slant=roman style=None anchor=nw

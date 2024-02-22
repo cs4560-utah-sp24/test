@@ -52,8 +52,8 @@ Send the form.
 This will be matched against the earlier description.
 
     >>> for c in "Killroy":
-    ...   this_browser.handle_key(wbemocks.key_event(c))
-    >>> this_browser.handle_click(wbemocks.Event(20, 55 + browser.CHROME_PX))
+    ...   this_browser.handle_key(wbemocks.KeyEvent(c))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 55 + browser.CHROME_PX))
 
 
 Now we are looking for a response where the checkbox is set.
@@ -68,16 +68,16 @@ Make a new browser, load the page, enter a new name, click the checkbox, and
 
     >>> this_browser = browser.Browser()
     >>> this_browser.load('http://wbemocks.test/chapter8-check-boxes/example')
-    >>> this_browser.handle_click(wbemocks.Event(90, 25 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + browser.CHROME_PX))
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus
     <input name="name" value="">
     >>> for c in "Alice":
-    ...   this_browser.handle_key(wbemocks.key_event(c))
+    ...   this_browser.handle_key(wbemocks.KeyEvent(c))
 
-    >>> this_browser.handle_click(wbemocks.Event(141, 43  + browser.CHROME_PX))
-    >>> this_browser.handle_click(wbemocks.Event(20, 56 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(141, 43  + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 56 + browser.CHROME_PX))
 
 
     113.0 56.25

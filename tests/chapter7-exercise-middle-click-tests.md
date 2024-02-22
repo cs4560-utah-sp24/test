@@ -57,7 +57,7 @@ Clicking on the link using a middle click should keep the current tab, and open
   a new one with the destination site.
 The active tab should still be the one with the source url.
 
-    >>> this_browser.handle_middle_click(wbemocks.Event(14, 121))
+    >>> this_browser.handle_middle_click(wbemocks.ClickEvent(14, 121))
     >>> len(this_browser.tabs)
     2
     >>> this_browser.tabs[0].url
@@ -72,7 +72,7 @@ The active tab should still be the one with the source url.
 Using middle click anywhere that is not a link should not change anything.
 Middle click somewhere that has nothing there.
 
-    >>> this_browser.handle_middle_click(wbemocks.Event(1, 1))
+    >>> this_browser.handle_middle_click(wbemocks.ClickEvent(1, 1))
     >>> len(this_browser.tabs)
     2
     >>> this_browser.tabs[0].url
@@ -87,7 +87,7 @@ Middle click somewhere that has nothing there.
 
 Middle click on the address bar.
 
-    >>> this_browser.handle_middle_click(wbemocks.Event(50, 41))
+    >>> this_browser.handle_middle_click(wbemocks.ClickEvent(50, 41))
     >>> len(this_browser.tabs)
     2
     >>> this_browser.tabs[0].url
@@ -101,7 +101,7 @@ Middle click on the address bar.
 
 Middle click on the one-th tab.
 
-    >>> this_browser.handle_middle_click(wbemocks.Event(120, 1))
+    >>> this_browser.handle_middle_click(wbemocks.ClickEvent(120, 1))
     >>> len(this_browser.tabs)
     2
     >>> this_browser.tabs[0].url
@@ -115,7 +115,7 @@ Middle click on the one-th tab.
 
 Middle click on the new tab button.
 
-    >>> this_browser.handle_middle_click(wbemocks.Event(20, 20))
+    >>> this_browser.handle_middle_click(wbemocks.ClickEvent(20, 20))
     >>> len(this_browser.tabs)
     2
     >>> this_browser.tabs[0].url
