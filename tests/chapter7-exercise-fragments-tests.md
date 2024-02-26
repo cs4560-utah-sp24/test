@@ -13,6 +13,17 @@ load a new page, but instead scroll the element with that identifier
 to the top of the screen. The table of contents on this page uses
 fragment links.
 
+You'll want to parse the fragment in the `URL` constructor and add it
+to the printed output, like this:
+
+```
+class URL:
+    def __repr__(self):
+        fragment_part = "" if self.fragment == None else ", fragment=" + self.fragment
+        return "URL(scheme={}, host={}, port={}, path={!r}{})".format(
+            self.scheme, self.host, self.port, self.path, fragment_part)
+```
+
 When you click a fragment link, the URL of the tab (for example, as
 shown in the address bar) needs to update. We do not care what happens
 when a fragment link is middle clicked; it is not tested.

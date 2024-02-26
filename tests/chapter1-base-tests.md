@@ -5,16 +5,25 @@ Chapter 1 (Downloading Web Pages) covers parsing URLs, HTTP requests
 and responses, and a very simplistic print function that writes
 to the screen. This file contains tests for those components.
 
+Make sure to add the following to your URL class so that it can be
+printed out:
+
+```
+class URL:
+    def __repr__(self):
+        return "URL(scheme={}, host={}, port={}, path={!r})".format(
+            self.protocol, self.host, self.port, self.path)
+```
+
+Testing `show`
+--------------
+
 Here's the testing boilerplate.
 
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> import browser
-    
-
-Testing `show`
---------------
 
 The `show` function is supposed to print some HTML to the screen, but
 skip the tags inside.
