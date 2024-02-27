@@ -126,6 +126,7 @@ class socket:
 
     @classmethod
     def patch(cls):
+        cls.reset()
         return mock.patch("socket.socket", wraps=cls)
 
     @classmethod
@@ -202,6 +203,12 @@ class socket:
     @classmethod
     def last_request_path(cls):
         return cls.recent_request_path
+
+    @classmethod
+    def reset(cls):
+        cls.URLs = {}
+        cls.Requests = {}
+        cls.recent_request_path = None
 
 class ssl:
     def __init__(self, *args):
@@ -339,33 +346,6 @@ class SilentCanvas:
         TK_CANVAS_CALLS = list()
 
 
-def check_bookmark_button(fill_color):
-    rec_calls = [call for call in TK_CANVAS_CALLS
-                 if call.startswith("create_rectangle")]
-    for rec_call in rec_calls:
-        parts = rec_call.split()
-        x1 = float(parts[1].split("=")[1])
-        y1 = float(parts[2].split("=")[1])
-        x2 = float(parts[3].split("=")[1])
-        y2 = float(parts[4].split("=")[1])
-        fill = parts[6].split("=")[1][1:-1]
-        print(x1, y1, x2, y2, fill)
-
-        if (755 < x1 < 775 and
-           30 < y1 < 40 and
-           780 < x2 < 800 and
-           50 < y2 < 60 and
-           fill == fill_color):
-            return True
-
-    return False
-
-def check_not_bookmarked():
-    return check_bookmark_button("white")
-
-def check_bookmarked():
-    return check_bookmark_button("yellow")
-
 def maybeint(x):
     return int(x) if (isinstance(x, float) and x == int(x)) else x
 
@@ -375,6 +355,7 @@ class MockCanvas:
     HIDE_COMMANDS = set()
     HIDE_ABOVE = 0
     IMAGE_SIZE = None
+    LOG = []
 
     def __init__(self, *args, **kwargs):
         pass
@@ -385,37 +366,42 @@ class MockCanvas:
         if ytop <= self.HIDE_ABOVE: return False
         return True
 
+    def _draw(self, str):
+        self.LOG.append(str)
+
     def create_rectangle(self, x1, y1, x2, y2, width=None, fill=None, outline=None):
-        if not self._allow("create_rectangle", max(y1, y2)): return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
         y2 = maybeint(y2)
         width = maybeint(width)
-        print("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
-            x1, y1, x2, y2, width, repr(fill)))
+        cmd = "create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
+            x1, y1, x2, y2, width, repr(fill))
+        self._draw(cmd)
+        if self._allow("create_rectangle", max(y1, y2)): print(cmd)
 
     def create_line(self, x1, y1, x2, y2, fill=None, width=None):
-        if not self._allow("create_line", max(y1, y2)): return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
         y2 = maybeint(y2)
         width = maybeint(width)
-        print("create_line: x1={} y1={} x2={} y2={} width={} fill={}".format(
-            x1, y1, x2, y2, width, repr(fill)))
+        cmd = "create_line: x1={} y1={} x2={} y2={} width={} fill={}".format(
+            x1, y1, x2, y2, width, repr(fill))
+        self._draw(cmd)
+        if self._allow("create_line", max(y1, y2)): print(cmd)
 
     def create_oval(self, x1, y1, x2, y2):
-        if not self._allow("create_oval", max(y1, y2)): return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
         y2 = maybeint(y2)
-        print("create_oval: x1={} y1={} x2={} y2={}".format(
-            x1, y1, x2, y2))
+        cmd = "create_oval: x1={} y1={} x2={} y2={}".format(
+            x1, y1, x2, y2)
+        self._draw(cmd)
+        if self._allow("create_oval", max(y1, y2)): print(cmd)
 
     def create_image(self, x, y, image):
-        if not self._allow("create_image", y + image.h): return
         x = maybeint(x)
         y = maybeint(y)
         PhotoImage.DO_NOT_GC[image] = True
@@ -423,23 +409,27 @@ class MockCanvas:
             assert self.IMAGE_SIZE == (image.w, image.h), \
                 "Expecting a {}x{} image but got a {}x{} image".format(
                     *self.IMAGE_SIZE, image.w, image.h)
-        print("create_oval: x={} y={} image={}".format(x, y, image))
+        self._draw(cmd)
+        cmd = "create_oval: x={} y={} image={}".format(x, y, image)
+        if self._allow("create_image", y + image.h): print(cmd)
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):
-        if not self._allow("create_text", y + font.metrics("linespace")): return
         if text.isspace(): return
         if font or anchor:
-            print("create_text: x={} y={} text={} font={} anchor={}".format(
-                x, y, text, font, anchor))
+            cmd = "create_text: x={} y={} text={} font={} anchor={}".format(
+                x, y, text, font, anchor)
         else:
-            print("create_text: x={} y={} text={}".format(
-                x, y, text))
+            cmd = "create_text: x={} y={} text={}".format(x, y, text)
+        self._draw(cmd)
+        y2 = y + font.metrics("linespace")
+        if self._allow("create_text", y2): print(cmd)
 
     def pack(self, expand=None, fill=None):
         pass
 
     def delete(self, v):
-        pass
+        assert v == "all"
+        self.LOG[:] = [] # clear
 
     @classmethod
     def hide_command(cls, name):
@@ -462,7 +452,15 @@ class MockCanvas:
         cls.HIDE_COMMANDS = set()
         cls.HIDE_ABOVE = 0
         cls.IMAGE_SIZE = None
-        
+        cls.LOG = []
+
+    @classmethod
+    def all_rects(cls, rect):
+        x1, x2 = rect.left, rect.right
+        y1, y2 = rect.top, rect.bottom
+        for line in cls.LOG:
+            if line.startswith("create_rectangle: x1={} y1={} x2={} y2={}".format(x1, y1, x2, y2)):
+                print(line)
 
 original_tkinter_canvas = tkinter.Canvas
 
@@ -488,6 +486,7 @@ def patch_canvas():
     tkinter.Canvas = MockCanvas
 
 def patch_silent_canvas():
+    MockCanvas.reset()
     tkinter.Canvas = SilentCanvas
 
 def unpatch_canvas():
