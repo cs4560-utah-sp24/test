@@ -114,3 +114,43 @@ The responses cached earlier should still be valid.
     >>> body = browser.URL("http://wbemocks.test/cache_me2").request()
     >>> body
     'Keep this for a while, also'
+    
+    
+ Test that caches aren't used if scheme, host, or port are changed
+ Add scheme, host, or port to your cache key
+    >>> URL_base = "http://wbemocks.test/cache_me1"
+    >>> wbemocks.socket.respond(url=URL_base,
+    ...   response=("HTTP/1.0 200 Ok\r\n" +
+    ...             "Cache-Control: max-age=9001\r\n" +
+    ...             "\r\n" +
+    ...             "Keep this for a while").encode())
+    >>> browser.URL(URL_base).request()
+    'Keep this for a while'
+
+    >>> URL_diff_scheme = "https://wbemocks.test/cache_me1"
+    >>> wbemocks.socket.respond(url=URL_diff_scheme, 
+    ...   response=("HTTP/1.0 200 Ok\r\n" +
+    ...             "Cache-Control: max-age=9001\r\n" +
+    ...             "\r\n" +
+    ...             "Keep this HTTPS scheme for a while").encode())
+    >>> browser.URL(URL_diff_scheme).request()
+    'Keep this HTTPS scheme for a while'
+
+    >>> URL_diff_host = "http://mock.test/cache_me1"
+    >>> wbemocks.socket.respond(url=URL_diff_host, 
+    ...   response=("HTTP/1.0 200 Ok\r\n" +
+    ...             "Cache-Control: max-age=9001\r\n" +
+    ...             "\r\n" +
+    ...             "Keep this HOST for a while").encode())
+    >>> browser.URL(URL_diff_host).request()
+    'Keep this HOST for a while'
+    
+    
+    >>> URL_diff_port = "http://wbemocks.test:8080/cache_me1"
+    >>> wbemocks.socket.respond(url=URL_diff_port, 
+    ...   response=("HTTP/1.0 200 Ok\r\n" +
+    ...             "Cache-Control: max-age=9001\r\n" +
+    ...             "\r\n" +
+    ...             "Keep this PORT for a while").encode())
+    >>> browser.URL(URL_diff_port).request()
+    'Keep this PORT for a while'
