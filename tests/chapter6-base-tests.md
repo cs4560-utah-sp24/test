@@ -25,7 +25,7 @@ Make sure you have the following in your URL class:
 class URL:
     def __repr__(self):
         return "URL(scheme={}, host={}, port={}, path={!r})".format(
-            self.protocol, self.host, self.port, self.path)
+            self.scheme, self.host, self.port, self.path)
 ```
 
 Testing resolve
