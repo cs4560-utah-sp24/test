@@ -4,7 +4,6 @@ Tests for WBE Chapter 1 Exercise `File URLs`
 The __file__ scheme allows a web browser to open files on the local computer 
   directly.
 In this case there will be no host or port, just the path to the file.
-This also means that there will be no response headers, just a response body.
 
 For file URL the `host` and `port` should be `None`.
 
@@ -21,7 +20,7 @@ Testing boilerplate:
 
 
 	
-Test URLs with a : in them
+Test URLs with a `:` in them
  
     >>> browser.URL("file://C:/Users/test/test.html")
     URL(scheme=file, host=None, port=None, path='C:/Users/test/test.html')
