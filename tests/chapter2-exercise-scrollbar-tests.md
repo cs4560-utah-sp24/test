@@ -1,4 +1,4 @@
-Tests for WBE Chapter 5 Exercise `Scrollbar`
+Tests for WBE Chapter 2 Exercise `Scrollbar`
 =======================
 
 Testing boilerplate:
