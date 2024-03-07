@@ -5,7 +5,7 @@ Add support for the backspace key when typing in the address bar.
 Honestly, do this exercise just for your sanity.
 
 Name the method in the `Browser` class that handles the backspace
-event `handle_backspace`. Don't forget to bind `<Backspace>` to it.
+event `handle_backspace`. Don't forget to bind `<BackSpace>` to it.
 
 Test code
 ---------
