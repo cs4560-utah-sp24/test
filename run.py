@@ -343,6 +343,7 @@ def upload_py(testkey):
 
     all_modules = set(sys.modules.keys())
     import browser
+    if os.path.exists("server.py"): import server
     new_modules = set(sys.modules.keys()) - all_modules
     browser_path = os.path.realpath(browser.__file__)
     files = []

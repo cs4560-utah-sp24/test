@@ -18,12 +18,14 @@ Testing request
 This chapter adds the ability to submit a POST request in addition to a GET
 one.
 
-    >>> url = 'http://wbemocks.test/chapter8-base/submit'
+    >>> url = 'http://test/chapter8-base/submit'
     >>> request_body = "name=1&comment=2%3D3"
+    >>> len(request_body)
+    20
     >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\n" +
     ... b"Header1: Value1\r\n\r\n" +
     ... b"<div>Form submitted</div>", method="POST", body=request_body)
-    >>> headers, body = browser.request(url, payload=request_body)
+    >>> body = browser.URL(url).request(payload=request_body)
     >>> req = wbemocks.socket.last_request(url).decode().lower()
     >>> req.startswith("post")
     True
@@ -36,16 +38,14 @@ one.
 Testing InputLayout
 ===================
 
-    >>> url2 = 'http://wbemocks.test/chapter8-base/example'
-    >>> wbemocks.socket.respond(url2, b"HTTP/1.0 200 OK\r\n" +
-    ... b"Header1: Value1\r\n\r\n" +
-    ... b"<form action=\"/chapter8-base/submit\" method=\"POST\">" +
-    ... b"  <p>Name: <input name=name value=1></p>" +
-    ... b"  <p>Comment: <input name=comment value=\"2=3\"></p>" +
-    ... b"  <p><button>Submit!</button></p>" +
-    ... b"</form>")
+    >>> url2 = browser.URL(wbemocks.socket.serve("""
+    ... <form action="/chapter8-base/submit" method="POST">
+    ...   <p>Name: <input name=name value=1></p>
+    ...   <p>Comment: <input name=comment value="2=3"></p>
+    ...   <p><button>Submit!</button></p>
+    ... </form>"""))
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url2)
+    >>> this_browser.new_tab(url2)
     >>> browser.print_tree(this_browser.tabs[0].document.node)
      <html>
        <body>
@@ -64,17 +64,17 @@ Testing InputLayout
        BlockLayout(x=13, y=18, width=774, height=45.0)
          BlockLayout(x=13, y=18, width=774, height=45.0)
            BlockLayout(x=13, y=18, width=774, height=45.0)
-             InlineLayout(x=13, y=18, width=774, height=15.0)
+             BlockLayout(x=13, y=18, width=774, height=15.0)
                LineLayout(x=13, y=18, width=774, height=15.0)
-                 TextLayout(x=13, y=20.25, width=60, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 InputLayout(x=85, y=20.25, width=200, height=12)
-             InlineLayout(x=13, y=33.0, width=774, height=15.0)
+                 TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
+                 InputLayout(x=85, y=20.25, width=200, height=12, type=input)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
-                 TextLayout(x=13, y=35.25, width=96, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 InputLayout(x=121, y=35.25, width=200, height=12)
-             InlineLayout(x=13, y=48.0, width=774, height=15.0)
+                 TextLayout(x=13, y=35.25, width=96, height=12, word=Comment:)
+                 InputLayout(x=121, y=35.25, width=200, height=12, type=input)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12)
+                 InputLayout(x=13, y=50.25, width=200, height=12, type=button, text=Submit!)
 
 The display list of a button should include its contents, and the display list
 of a text input should be its `value` attribute:
@@ -82,21 +82,19 @@ of a text input should be its `value` attribute:
     >>> form = this_browser.tabs[0].document.children[0].children[0].children[0]
     >>> text_input = form.children[0].children[0].children[1]
     >>> button = form.children[2].children[0].children[0]
-    >>> display_list = []
-    >>> text_input.paint(display_list)
-    >>> display_list
-    [DrawRect(top=20.25 left=85 bottom=32.25 right=285 color=lightblue), DrawText(top=20.25 left=85 bottom=32.25 text=1 font=Font size=12 weight=normal slant=roman style=None)]
-    >>> display_list = []
-    >>> button.paint(display_list)
-    >>> display_list
-    [DrawRect(top=50.25 left=13 bottom=62.25 right=213 color=orange), DrawText(top=50.25 left=13 bottom=62.25 text=Submit! font=Font size=12 weight=normal slant=roman style=None)]
+    >>> wbemocks.print_list(text_input.paint())
+    DrawRect(top=20.25 left=85 bottom=32.25 right=285 color=lightblue)
+    DrawText(top=20.25 left=85 bottom=32.25 text=1 font=Font size=12 weight=normal slant=roman style=None)
+    >>> wbemocks.print_list(button.paint())
+    DrawRect(top=50.25 left=13 bottom=62.25 right=213 color=orange)
+    DrawText(top=50.25 left=13 bottom=62.25 text=Submit! font=Font size=12 weight=normal slant=roman style=None)
 
 Testing form submission
 =======================
 
 Forms are submitted via a click on the submit button.
 
-    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 55 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 55 + this_browser.chrome.bottom))
     >>> browser.print_tree(this_browser.tabs[0].document.node)
      <html>
        <body>

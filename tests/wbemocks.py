@@ -84,7 +84,7 @@ class socket:
                 if key.lower() == "content-length":
                     content_length = val.strip()
             assert content_length is not None, "Content-Length not present in headers"
-            assert len(self.body) == int(content_length), len(self.body)
+            assert len(self.body) == int(content_length), "Payload {!r} is {} bytes but Content-Length is given as {}".format(self.body, len(self.body), content_length)
 
     def makefile(self, mode, encoding, newline):
         """
