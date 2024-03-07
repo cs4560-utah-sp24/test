@@ -23,7 +23,7 @@ Boilerplate.
 This is the response to the expected GET request.
 
     >>> url = 'http://test/chapter8-get-form/submit?name=Ned&comment=Howdily'
-    >>> wbemocks.socket.respond_200(url, body="Doodily")
+    >>> wbemocks.socket.respond_200(url, "Doodily")
 
 This is the form page.
 
@@ -49,7 +49,7 @@ Send the defaults using GET.
 Now lets try a form that does not supply the method attribute.
 
     >>> url = 'http://test/chapter8-get-form2/submit?food=ribwich'
-    >>> wbemocks.socket.respond_200(url, body="Mmm")
+    >>> wbemocks.socket.respond_200(url, "Mmm")
 
     >>> url = wbemocks.socket.serve("""
     ... <form action="/chapter8-get-form2/submit">

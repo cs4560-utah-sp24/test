@@ -19,15 +19,13 @@ class InputLayout:
     def __repr__(self):
         if self.node.tag == "input" and self.node.attributes.get("type", "text") == "checkbox":
             if "checked" in self.node.attributes:
-                extra = "type=checkbox, checked"
+                extra = ", checked"
             else:
-                extra = "type=checkbox"
-        elif self.node.tag == "input":
-            extra = "type=input"
+                extra = ", unchecked"
         else:
-            extra = "type=button, text={}".format(self.node.children[0].text)
-        return "InputLayout(x={}, y={}, width={}, height={}, {})".format(
-            self.x, self.y, self.width, self.height, extra)
+            extra = ""
+        return "InputLayout(x={}, y={}, width={}, height={}, tag={}{})".format(
+            self.x, self.y, self.width, self.height, self.node.tag, extra)
 ```
 
 Test code
@@ -58,7 +56,7 @@ This is the form page.
     ... </form>""")
     >>> this_browser = browser.Browser()
     >>> this_browser.new_tab(browser.URL(url2))
-    >>> browser.print_tree(this_browser.active_tab.document)
+    >>> browser.print_tree(this_browser.active_tab.document) #doctest: +ELLIPSIS
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=45.0)
          BlockLayout(x=13, y=18, width=774, height=45.0)
@@ -66,14 +64,14 @@ This is the form page.
              BlockLayout(x=13, y=18, width=774, height=15.0)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
-                 InputLayout(x=85, y=20.25, width=200, height=12, type=input)
+                 InputLayout(x=85, y=20.25, width=200, height=12, tag=input)
              BlockLayout(x=13, y=33.0, width=774, height=15.0)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=108, height=12, word=Checkbox:)
-                 InputLayout(x=133, y=35.25, width=16, height=16, type=checkbox)
+                 InputLayout(x=133, y=35.25, width=16, height=16, tag=input, unchecked)
              BlockLayout(x=13, y=48.0, width=774, height=15.0)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12, type=button, text=Submit!)
+                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
 
 Send the form with the box unchecked. This will be matched against the earlier description.
 
@@ -101,7 +99,7 @@ checkbox.
     >>> for c in "Alice":
     ...   this_browser.handle_key(wbemocks.KeyEvent(c))
     >>> this_browser.handle_click(wbemocks.ClickEvent(141, 43  + this_browser.chrome.bottom))
-    >>> browser.print_tree(this_browser.active_tab.document)
+    >>> browser.print_tree(this_browser.active_tab.document) #doctest: +ELLIPSIS
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=45.0)
          BlockLayout(x=13, y=18, width=774, height=45.0)
@@ -109,14 +107,14 @@ checkbox.
              BlockLayout(x=13, y=18, width=774, height=15.0)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
-                 InputLayout(x=85, y=20.25, width=200, height=12, type=input)
+                 InputLayout(x=85, y=20.25, width=200, height=12, tag=input)
              BlockLayout(x=13, y=33.0, width=774, height=15.0)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=108, height=12, word=Checkbox:)
-                 InputLayout(x=133, y=35.25, width=16, height=16, type=checkbox, checked)
+                 InputLayout(x=133, y=35.25, width=16, height=16, tag=input, checked)
              BlockLayout(x=13, y=48.0, width=774, height=15.0)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12, type=button, text=Submit!)
+                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
                  
 Now the form should be sent without the checkbox checked:
 

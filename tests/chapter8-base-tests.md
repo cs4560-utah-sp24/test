@@ -11,12 +11,8 @@ You'll need the following `__repr__` method on `InputLayout`:
 ```
 class InputLayout:
     def __repr__(self):
-        if self.node.tag == "input":
-            extra = "type=input"
-        else:
-            extra = "type=button, text={}".format(self.node.children[0].text)
-        return "InputLayout(x={}, y={}, width={}, height={}, {})".format(
-            self.x, self.y, self.width, self.height, extra)
+        return "InputLayout(x={}, y={}, width={}, height={}, tag={})".format(
+            self.x, self.y, self.width, self.height, self.node.tag)
 ```
 
 Testing request
@@ -74,7 +70,7 @@ Testing InputLayout
            <p>
              <button>
                'Submit!'
-    >>> browser.print_tree(this_browser.tabs[0].document)
+    >>> browser.print_tree(this_browser.tabs[0].document) #doctest: +ELLIPSIS
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=45.0)
          BlockLayout(x=13, y=18, width=774, height=45.0)
@@ -82,14 +78,14 @@ Testing InputLayout
              BlockLayout(x=13, y=18, width=774, height=15.0)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
-                 InputLayout(x=85, y=20.25, width=200, height=12, type=input)
+                 InputLayout(x=85, y=20.25, width=200, height=12, tag=input)
              BlockLayout(x=13, y=33.0, width=774, height=15.0)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=96, height=12, word=Comment:)
-                 InputLayout(x=121, y=35.25, width=200, height=12, type=input)
+                 InputLayout(x=121, y=35.25, width=200, height=12, tag=input)
              BlockLayout(x=13, y=48.0, width=774, height=15.0)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12, type=button, text=Submit!)
+                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
 
 The display list of a button should include its contents, and the display list
 of a text input should be its `value` attribute:
@@ -100,9 +96,9 @@ of a text input should be its `value` attribute:
     >>> wbemocks.print_list(text_input.paint())
     DrawRect(top=20.25 left=85 bottom=32.25 right=285 color=lightblue)
     DrawText(top=20.25 left=85 bottom=32.25 text=1 font=Font size=12 weight=normal slant=roman style=None)
-    >>> wbemocks.print_list(button.paint())
-    DrawRect(top=50.25 left=13 bottom=62.25 right=213 color=orange)
-    DrawText(top=50.25 left=13 bottom=62.25 text=Submit! font=Font size=12 weight=normal slant=roman style=None)
+
+I'm not testing the button because that changes with the "Rich
+Buttons" exercise.
 
 Testing form submission
 =======================

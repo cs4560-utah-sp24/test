@@ -79,7 +79,7 @@ The full list of exercises planned to assign in CS 4560 are:
 
 **Chapter 7**: Backspace, middle-click, fragments, bookmarks
 
-**Chapter 8**: Enter key, GET forms, check boxes, *resubmit requests*
+**Chapter 8**: Enter key, GET forms, check boxes, rich buttons
 
 **Chapter 9**: `Node.children`, `createElement`, IDs, event bubbling
 
