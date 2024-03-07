@@ -116,7 +116,9 @@ class socket:
             f"Expected a {self.URLs[url][0]} request but got a {self.method} request to {url}"
         output = self.URLs[url][1]
         if self.URLs[url][2]:
-            assert self.body == self.URLs[url][2], (self.body, self.URLs[url][2])
+            assert self.body == self.URLs[url][2], \
+                "Expected request body of {!r} but got {!r}".format(
+                    self.URLs[url][2], self.body)
         if binary:
             return io.BytesIO(output)
         return io.StringIO(output.decode(encoding).replace(newline, "\n"), newline)
@@ -137,11 +139,11 @@ class socket:
         cls.URLs[url] = [method, response, body]
 
     @classmethod
-    def respond_200(cls, url, body):
+    def respond_200(cls, url, response_body, **kwargs):
         response = ("HTTP/1.0 200 OK\r\n" +
                     "\r\n" +
-                    body).encode()
-        cls.respond(url, response, "GET")
+                    response_body).encode()
+        cls.respond(url, response, **kwargs)
 
     @classmethod
     def respond_ok(cls, url, body):

@@ -1,23 +1,14 @@
 Tests for WBE Chapter 8 Exercise `Tab`
 ============================================
 
-Description
------------
+In most browsers, the `<Tab>` key (on your keyboard) moves focus from
+one input field to the next. Implement this behavior in your browser.
+The “tab order” of input elements should be the same as the order of
+`<input>` elements on the page. You can also add support for the
+`tabindex` property, which lets a web page change this tab order.
 
-In most browsers, the `<Tab>` key (on your keyboard) moves focus from one input
-  field to the next.
-Implement this behavior in your browser.
-The “tab order” of input elements should be the same as the order of `<input>`
-  elements on the page.
-~~You can also add support for the tabindex property, which lets a web page
-  change this tab order.~~
-
-
-Extra Requirements
-------------------
-* Name the method in the `Browser` class that handles the tab event
-  `handle_tab`
-
+You don't need to support `tabindex`. Name the method in the `Browser`
+class that handles the tab event `handle_tab`.
 
 Test code
 ---------
@@ -31,20 +22,19 @@ Boilerplate.
 
 This is the form page.
 
-    >>> url = 'http://wbemocks.test/chapter8-tab/example'
-    >>> body = ("<form action=\"/chapter8-tab/submit\">" +
-    ...         "  <p>Name: <input name=name value=1></p>" +
-    ...         "  <p>Comment: <input name=comment value=\"2=3\"></p>" +
-    ...         "  <p>Sign: <input name=sign value=ares></p>" +
-    ...         "  <p><button>Submit!</button></p>" +
-    ...         "</form>")
-    >>> wbemocks.socket.respond_200(url, body)
+    >>> url = wbemocks.socket.serve("""
+    ... <form action="/chapter8-tab/submit">
+    ...   <p>Name: <input name=name value=1></p>
+    ...   <p>Comment: <input name=comment value="2=3"></p>
+    ...   <p>Sign: <input name=sign value=ares></p>
+    ...   <p><button>Submit!</button></p>
+    ... </form>""")
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
 
 Click on the name field.
 
-    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + this_browser.chrome.bottom))
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus

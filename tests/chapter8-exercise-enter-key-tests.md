@@ -1,13 +1,9 @@
 Tests for WBE Chapter 8 Exercise `Enter key`
 ============================================
 
-Description
------------
-
-In most browsers, if you hit the “Enter” or “Return” key while inside a text
-  entry, that submits the form that the text entry was in.
-Add this feature to your browser.
-
+In most browsers, if you hit the “Enter” or “Return” key while inside
+a text entry, that submits the form that the text entry was in. Add
+this feature to your browser.
 
 Test code
 ---------
@@ -21,22 +17,21 @@ Boilerplate.
 
 This is the response to the expected POST request.
 
-    >>> url = 'http://wbemocks.test/chapter8-enter/submit'
+    >>> url = 'http://test/chapter8-enter/submit'
     >>> request_body = "name=Killroy&comment=2%3D3"
     >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\n\r\n" +
     ... b"<div>Form submitted</div>", method="POST", body=request_body)
 
 This is the form page.
 
-    >>> url = 'http://wbemocks.test/chapter8-enter/example'
-    >>> body = ("<form action=\"/chapter8-enter/submit\" method=\"POST\">" +
-    ...         "  <p>Name: <input name=name value=1></p>" +
-    ...         "  <p>Comment: <input name=comment value=\"2=3\"></p>" +
-    ...         "  <p><button>Submit!</button></p>" +
-    ...         "</form>")
-    >>> wbemocks.socket.respond_200(url, body)
+    >>> url2 = wbemocks.socket.serve("""
+    ... <form action="/chapter8-enter/submit" method="POST">
+    ...   <p>Name: <input name=name value=1></p>
+    ...   <p>Comment: <input name=comment value="2=3"></p>
+    ...   <p><button>Submit!</button></p>
+    ... </form>""")
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url2))
 
 Pressing enter when there is no focus should not change anything.
 
@@ -48,7 +43,7 @@ Pressing enter when there is no focus should not change anything.
 
 Clicking on the input should clear its content and set focus
 
-    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + browser.CHROME_PX))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + this_browser.chrome.bottom))
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus
@@ -63,7 +58,6 @@ This will be matched against the earlier description.
 
 Examine the post request.
 
-    >>> url = 'http://wbemocks.test/chapter8-enter/submit'
     >>> req = wbemocks.socket.last_request(url).decode().lower()
     >>> req.startswith("post")
     True

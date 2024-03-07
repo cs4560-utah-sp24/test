@@ -1,23 +1,34 @@
 Tests for WBE Chapter 8 Exercise `Check boxes`
 ============================================
 
-Description
------------
+In HTML, `input` elements have a `type` attribute. When set to `checkbox`,
+the input element looks like a checkbox; it’s checked if the `checked`
+attribute is set, and unchecked otherwise. When the form is submitted,
+a checkbox’s `name=value` pair is included only if the checkbox is
+checked. (If the checkbox has no `value` attribute, the default is the
+string `on`.)
 
-In HTML, input elements have a type attribute.
-When set to checkbox, the input element looks like a checkbox; it’s checked if
-  the checked attribute is set, and unchecked otherwise.
-When the form is submitted, a checkbox’s name=value pair is included only if
-  the checkbox is checked. (If the checkbox has no value attribute, the default
-  is the string on.)
+Artistically the checkbox can be drawn how you want. Functionally the
+checkbox should be a 16 by 16 pixel region which changes state when
+clicked.
 
+You'll need to extend your `InputLayout`'s `__repr__` method like so:
 
-Extra Requirements
-------------------
-* Artistically the checkbox can be drawn how you want.
-* Functionally the checkbox should be a 16 by 16 pixel region which changes
-  state when clicked.
-
+```
+class InputLayout:
+    def __repr__(self):
+        if self.node.tag == "input" and self.node.attributes.get("type", "text") == "checkbox":
+            if "checked" in self.node.attributes:
+                extra = "type=checkbox, checked"
+            else:
+                extra = "type=checkbox"
+        elif self.node.tag == "input":
+            extra = "type=input"
+        else:
+            extra = "type=button, text={}".format(self.node.children[0].text)
+        return "InputLayout(x={}, y={}, width={}, height={}, {})".format(
+            self.x, self.y, self.width, self.height, extra)
+```
 
 Test code
 ---------
@@ -31,53 +42,82 @@ Boilerplate.
 
 This is the response to the expected POST request.
 
-    >>> url = 'http://wbemocks.test/chapter8-check-boxes/submit'
+    >>> url = 'http://test/chapter8-check-boxes/submit'
     >>> request_body = "name=Bob"
-    >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\n\r\n" +
-    ... b"<div>Form submitted</div>", method="POST", body=request_body)
+    >>> wbemocks.socket.respond_200(url, \
+    ...   "<div>Form submitted</div>", \
+    ...   method="POST", body=request_body)
 
 This is the form page.
 
-    >>> url = 'http://wbemocks.test/chapter8-check-boxes/example'
-    >>> body = ("<form action=\"/chapter8-check-boxes/submit\" method=\"POST\">" +
-    ...         "  <p>Name: <input name=name value=Bob></p>" +
-    ...         "  <p>Checkbox: <input name=checkey type=checkbox></p>" +
-    ...         "  <p><button>Submit!</button></p>" +
-    ...         "</form>")
-    >>> wbemocks.socket.respond_200(url, body)
+    >>> url2 = wbemocks.socket.serve("""
+    ... <form action="/chapter8-check-boxes/submit" method="POST">
+    ...   <p>Name: <input name=name value=Bob></p>
+    ...   <p>Checkbox: <input name=checkey type=checkbox></p>
+    ...   <p><button>Submit!</button></p>
+    ... </form>""")
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url2))
+    >>> browser.print_tree(this_browser.active_tab.document)
+     DocumentLayout()
+       BlockLayout(x=13, y=18, width=774, height=45.0)
+         BlockLayout(x=13, y=18, width=774, height=45.0)
+           BlockLayout(x=13, y=18, width=774, height=45.0)
+             BlockLayout(x=13, y=18, width=774, height=15.0)
+               LineLayout(x=13, y=18, width=774, height=15.0)
+                 TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
+                 InputLayout(x=85, y=20.25, width=200, height=12, type=input)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+               LineLayout(x=13, y=33.0, width=774, height=15.0)
+                 TextLayout(x=13, y=35.25, width=108, height=12, word=Checkbox:)
+                 InputLayout(x=133, y=35.25, width=16, height=16, type=checkbox)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0)
+               LineLayout(x=13, y=48.0, width=774, height=15.0)
+                 InputLayout(x=13, y=50.25, width=200, height=12, type=button, text=Submit!)
 
-Send the form.
-This will be matched against the earlier description.
+Send the form with the box unchecked. This will be matched against the earlier description.
 
     >>> for c in "Killroy":
     ...   this_browser.handle_key(wbemocks.KeyEvent(c))
-    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 55 + browser.CHROME_PX))
-
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 56 + this_browser.chrome.bottom))
 
 Now we are looking for a response where the checkbox is set.
 
-    >>> url = 'http://wbemocks.test/chapter8-check-boxes/submit'
     >>> request_body = "name=Alice&checkey=on"
-    >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\n\r\n" +
-    ... b"<div>Form submitted</div>", method="POST", body=request_body)
+    >>> wbemocks.socket.respond_200(url, \
+    ...   "<div>Form submitted</div>", \
+    ...   method="POST", body=request_body)
 
-Make a new browser, load the page, enter a new name, click the checkbox, and
-    send the form.
+Make a new browser, load the page, enter a new name, click the
+checkbox.
 
     >>> this_browser = browser.Browser()
-    >>> this_browser.load('http://wbemocks.test/chapter8-check-boxes/example')
-    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + browser.CHROME_PX))
+    >>> this_browser.new_tab(browser.URL(url2))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(90, 25 + this_browser.chrome.bottom))
     >>> this_browser.focus
     'content'
     >>> this_browser.tabs[0].focus
     <input name="name" value="">
     >>> for c in "Alice":
     ...   this_browser.handle_key(wbemocks.KeyEvent(c))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(141, 43  + this_browser.chrome.bottom))
+    >>> browser.print_tree(this_browser.active_tab.document)
+     DocumentLayout()
+       BlockLayout(x=13, y=18, width=774, height=45.0)
+         BlockLayout(x=13, y=18, width=774, height=45.0)
+           BlockLayout(x=13, y=18, width=774, height=45.0)
+             BlockLayout(x=13, y=18, width=774, height=15.0)
+               LineLayout(x=13, y=18, width=774, height=15.0)
+                 TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
+                 InputLayout(x=85, y=20.25, width=200, height=12, type=input)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+               LineLayout(x=13, y=33.0, width=774, height=15.0)
+                 TextLayout(x=13, y=35.25, width=108, height=12, word=Checkbox:)
+                 InputLayout(x=133, y=35.25, width=16, height=16, type=checkbox, checked)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0)
+               LineLayout(x=13, y=48.0, width=774, height=15.0)
+                 InputLayout(x=13, y=50.25, width=200, height=12, type=button, text=Submit!)
+                 
+Now the form should be sent without the checkbox checked:
 
-    >>> this_browser.handle_click(wbemocks.ClickEvent(141, 43  + browser.CHROME_PX))
-    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 56 + browser.CHROME_PX))
-
-
-    113.0 56.25
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 56 + this_browser.chrome.bottom))

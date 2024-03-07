@@ -6,14 +6,29 @@ to implement simple input and button elements, plus submit forms to the server.
 It also includes the first implementation of an HTTP server, in order to show
 how the server processes form submissions.
 
+You'll need the following `__repr__` method on `InputLayout`:
+
+```
+class InputLayout:
+    def __repr__(self):
+        if self.node.tag == "input":
+            extra = "type=input"
+        else:
+            extra = "type=button, text={}".format(self.node.children[0].text)
+        return "InputLayout(x={}, y={}, width={}, height={}, {})".format(
+            self.x, self.y, self.width, self.height, extra)
+```
+
+Testing request
+===============
+
+Boilerplate:
+
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
-
-Testing request
-===============
 
 This chapter adds the ability to submit a POST request in addition to a GET
 one.
