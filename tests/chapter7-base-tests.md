@@ -10,6 +10,16 @@ You'll need to add the following `__repr__` method for Tabs:
 class Tab:
     def __repr__(self):
         return "Tab(history={})".format(self.history)
+
+class LineLayout:
+    def __repr__(self):
+        return "LineLayout(x={}, y={}, width={}, height={})".format(
+            self.x, self.y, self.width, self.height)
+
+class TextLayout:
+    def __repr__(self):
+        return ("TextLayout(x={}, y={}, width={}, height={}, word={})").format(
+            self.x, self.y, self.width, self.height, self.word)
 ```
 
 Tests
