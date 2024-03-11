@@ -4,6 +4,14 @@ Tests for WBE Chapter 7
 Chapter 7 (Handling Buttons and Links) introduces hit testing, navigation
 through link clicks, and browser chrome for the URL bar and tabs.
 
+You'll need to add the following `__repr__` method for Tabs:
+
+```
+class Tab:
+    def __repr__(self):
+        return "Tab(history={})".format(self.history)
+```
+
 Tests
 =====
 
