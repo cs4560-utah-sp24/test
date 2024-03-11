@@ -60,6 +60,7 @@ Boilerplate.
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
     >>> wbemocks.MockCanvas.hide_all()
+    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Let's first make sure the bookmarks button is in the right place:
@@ -155,8 +156,8 @@ Request the bookmark site directly.
     >>> wbemocks.MockCanvas.reset()
     >>> wbemocks.MockCanvas.hide_above(this_browser.chrome.bottom)
     >>> this_browser.new_tab(bk_url)
-    create_text: x=13 y=80.25 text=http://test/0 font=Font size=12 weight=normal slant=roman style=None family=Times anchor=nw
-    create_text: x=13 y=95.25 text=http://test/1 font=Font size=12 weight=normal slant=roman style=None family=Times anchor=nw
+    create_text: x=13 y=80.25 text=http://test/0 font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=13 y=95.25 text=http://test/1 font=Font size=12 weight=normal slant=roman style=None anchor=nw
     >>> browser.print_tree(this_browser.active_tab.nodes)
      <html>
        <body>
