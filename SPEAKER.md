@@ -7,7 +7,7 @@ CS 4560 Web Browser Internals. Andreas will be joining over Zoom to
 talk about web browser engineering, including a short demonstration
 and time for Q&A.
 
-**Location**: BEH S 114
+**Location**: BEH S 114 \
 **Time**: April 9 at 9:00am MDT
 
 Andreas Kling is the founder and current lead developer on the
