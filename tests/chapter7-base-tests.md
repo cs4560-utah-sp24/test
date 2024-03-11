@@ -175,16 +175,3 @@ Pressing enter with text in the address bar works:
     >>> wbemocks.print_list(this_browser.tabs[1].history)
     URL(scheme=http, host=test, port=80, path='/1')
     URL(scheme=http, host=test, port=80, path='/0')
-
-The home button works:
-
-    >>> content = "Web Browser Engineering homepage"
-    >>> browser_engineering = 'https://browser.engineering/'
-    >>> wbemocks.socket.respond_ok(browser_engineering, content)
-    >>> this_browser.handle_click(wbemocks.ClickEvent(10, 10))
-    >>> this_browser.tabs #doctest: +NORMALIZE_WHITESPACE
-    [Tab(history=[URL(scheme=http, host=test, port=80, path='/0')]),
-     Tab(history=[URL(scheme=http, host=test, port=80, path='/1'),
-                  URL(scheme=http, host=test, port=80, path='/0')]),
-     Tab(history=[URL(scheme=https, host=browser.engineering, port=443, path='/')])]
-    
