@@ -24,10 +24,11 @@ CHAPTER_DEADLINES = {
     "chapter4": datetime.datetime(2024, 2, 19, tzinfo=MST),
     "chapter5": datetime.datetime(2024, 2, 26, tzinfo=MST),
     "chapter6": datetime.datetime(2024, 3,  4, tzinfo=MST),
-    "chapter7": datetime.datetime(2024, 3, 11, tzinfo=MDT),
-    "chapter8": datetime.datetime(2024, 3, 18, tzinfo=MDT),
-    "chapter9": datetime.datetime(2024, 3, 25, tzinfo=MDT),
-    "chapter10": datetime.datetime(2024,4,  1, tzinfo=MDT),
+    # Spring break
+    "chapter7": datetime.datetime(2024, 3, 18, tzinfo=MDT),
+    "chapter8": datetime.datetime(2024, 3, 25, tzinfo=MDT),
+    "chapter9": datetime.datetime(2024, 4,  1, tzinfo=MDT),
+    "chapter10": datetime.datetime(2024,4,  8, tzinfo=MDT),
 }
 
 def getCurrentChapter():
