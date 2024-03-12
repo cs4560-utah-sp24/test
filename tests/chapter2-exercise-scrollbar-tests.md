@@ -1,7 +1,10 @@
 Tests for WBE Chapter 2 Exercise `Scrollbar`
 =======================
 
-In these tests, we will focus on displaying the core content retrieved from the website. While a real browser uses a scrollbar to navigate through longer web pages, we will be fine with not implementing complete functionality. Imagine the scrollbar existing, positioned above all the text on the page. Furthermore, don't worry about preventing the scrolling functionality from carrying too far yet. We will tackle both scrolling issues later.
+We'll only implement a subset of a real browser's scrollbar functionality. Specifically:
+
+- You don't have to make the text narrower on the page. Instead, just make sure the scrollbar is positioned over any text.
+- You don't have to prevent scrolling past the bottom of the page. Just make sure the scrollbar is correctly positioned when the user is not past the bottom of the page.
 
 Tests
 -----
