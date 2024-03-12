@@ -61,3 +61,31 @@ Each additional newline moves the text down by twice `VSTEP`
     >>> this_browser.load(browser.URL(url))
     create_text: x=1 y=1 text=u...
     create_text: x=1 y=7 text=d...
+
+Testing that cursor_x Reset on Line Break
+
+
+    >>> url = 'http://wbemocks.test/cursor-reset-test'
+    >>> wbemocks.socket.respond_200(url=url, body="eren\r\nmika")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(browser.URL(url))
+    create_text: x=1 y=1 text=e
+    create_text: x=2 y=1 text=r
+    create_text: x=3 y=1 text=e
+    create_text: x=4 y=1 text=n
+    create_text: x=1 y=3 text=m
+    create_text: x=2 y=3 text=i
+    create_text: x=3 y=3 text=k
+    create_text: x=4 y=3 text=a
+
+
+Clarifying that \n is line break   
+
+    >>> url = 'http://wbemocks.test/line-break-test'
+    >>> wbemocks.socket.respond_200(url=url, body="line1\nline2")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(browser.URL(url))
+    create_text: x=1 y=1 text=l
+    ...
+    create_text: x=1 y=3 text=l
+    ...

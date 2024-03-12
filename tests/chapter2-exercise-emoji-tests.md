@@ -49,6 +49,20 @@ Testing boilerplate; hiding create_rectangle because of scrollbar tests:
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
+    >>> creation_order = []
+    >>> from tkinter import Tk, PhotoImage
+    >>> original_tk_init = Tk.__init__
+    >>> def mocked_tk_init(self, *args, **kwargs):
+    ...     global creation_order
+    ...     creation_order.append('Tk')
+    ...     original_tk_init(self, *args, **kwargs)
+    >>> Tk.__init__ = mocked_tk_init
+    >>> original_photoimage_init = PhotoImage.__init__
+    >>> def mocked_photoimage_init(self, *args, **kwargs):
+    ...     global creation_order
+    ...     creation_order.append('PhotoImage')
+    ...     original_photoimage_init(self, *args, **kwargs)
+    >>> PhotoImage.__init__ = mocked_photoimage_init
     >>> import browser
     >>> wbemocks.tkinter.Canvas.hide_command("create_rectangle")
     
@@ -75,6 +89,9 @@ Let's see what it looks like:
     create_text: x=2 y=3 text=a
     create_text: x=1 y=4 text=n
     create_text: x=2 y=4 text=d
+
+    >>> creation_order
+    ['Tk', 'PhotoImage']
 
 Now let's scroll down and see the next smiley:
 
