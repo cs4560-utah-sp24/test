@@ -101,3 +101,27 @@ The browser should not perform a redirect for non 3XX status codes, even if
     'Stay here'
 
 
+    >>> original_url = 'http://wbemocks.test/original_path'
+    >>> redirect_url = 'http://wbemocks.redirect_test/new_path'
+    >>> wbemocks.socket.redirect_url(from_url=original_url, to_url=redirect_url)
+    >>> wbemocks.socket.respond(url=redirect_url, 
+    ...   response=("HTTP/1.0 200 Ok\r\n" +
+    ...             "\r\n" +
+    ...             "Final destination").encode())
+
+    >>> original_url_obj = browser.URL(original_url)
+    >>> original_path_before_request = original_url_obj.path
+    >>> _ = original_url_obj.request()  # Trigger redirect and fetch new content
+    >>> original_path_after_request = original_url_obj.path
+    >>> original_path_before_request == original_path_after_request
+    True
+
+    >>> url = 'http://wbemocks.test/infinite_redirect'
+    >>> wbemocks.socket.redirect_url(from_url=url, to_url=url)
+    >>> try:
+    ...     browser.URL(url).request()
+    ...     test_passed = False
+    ... except Exception as e:
+    ...     test_passed = True
+    >>> test_passed
+    True
