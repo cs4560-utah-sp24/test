@@ -1,23 +1,19 @@
 Tests for WBE Chapter 9 Exercise `Event Bubbling`
 ============================================
 
-Description
------------
+Right now, you can attach a click handler to `a` elements, but not to
+anything else. Fix this. One challenge you’ll face is that when you
+click on an element, you also click on all its ancestors. On the web,
+this sort of quirk is handled by event bubbling: when an event is
+generated on an element, listeners are run not just on that element
+but also on its ancestors. Implement event bubbling, and make sure
+listeners can call stopPropagation on the event object to stop
+bubbling the event up the tree. Double-check that clicking on links
+still works, and make sure `preventDefault` still successfully prevents
+clicks on a link from actually following the link.
 
-Right now, you can attach a click handler to a elements, but not to anything
-    else.
-Fix this.
-One challenge you’ll face is that when you click on an element, you also click
-    on all its ancestors.
-On the web, this sort of quirk is handled by event bubbling: when an event is
-    generated on an element, listeners are run not just on that element but
-    also on its ancestors.
-Implement event bubbling, and make sure listeners can call stopPropagation on
-    the event object to stop bubbling the event up the tree.
-Double-check that clicking on links still works, and make sure preventDefault
-    still successfully prevents clicks on a link from actually following the
-    link.
-
+Do not change the return value of `dispatchEvent` (this is a
+publically accessible function that web pages can call).
 
 Test code
 ---------
@@ -32,15 +28,6 @@ Boilerplate.
 
 Set up the webpage and script links.
 
-    >>> web_url = 'http://wbemocks.test/chapter9-bubble-1/html'
-    >>> script_url = 'http://wbemocks.test/chapter9-bubble-1/js'
-    >>> html = ("<script src=" + script_url + "></script>"
-    ...       + "<div><form><input name=bubbles value=sugar></form></div>")
-    >>> wbemocks.socket.respond_200(web_url, body=html)
-
-Attach an event listener to each nested element.
-Click an show that all event listeners are called in the correct order.
-
     >>> script = """
     ... document.querySelectorAll('div')[0].addEventListener('click',
     ...   function(e) {
@@ -55,24 +42,27 @@ Click an show that all event listeners are called in the correct order.
     ...     console.log('input saw a click');
     ...   });
     ... """
-    >>> wbemocks.socket.respond_200(script_url, body=script)
+    >>> js_url = wbemocks.socket.serve(script)
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> body += "<div><form><input name=bubbles value=sugar></form></div>"
+    >>> html_url = wbemocks.socket.serve(body)
+
+Attach an event listener to each nested element.
+Click an show that all event listeners are called in the correct order.
+
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(web_url)
-    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 100 + 24))
+    >>> this_browser.new_tab(browser.URL(html_url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 24 + this_browser.chrome.bottom))
     input saw a click
     form saw a click
     div saw a click
-    >>> this_browser.tabs[0].js.run("document.querySelectorAll('input')[0].getAttribute('value')")
+    >>> js = this_browser.active_tab.js
+    >>> js.run("document.querySelectorAll('input')[0].getAttribute('value')")
     ''
 
 Setup a new webpage with the same content but a different script.
 This time prevent the default in the input.
 
-    >>> web_url = 'http://wbemocks.test/chapter9-bubble-2/html'
-    >>> script_url = 'http://wbemocks.test/chapter9-bubble-2/js'
-    >>> html = ("<script src=" + script_url + "></script>"
-    ...       + "<div><form><input name=bubbles value=sugar></form></div>")
-    >>> wbemocks.socket.respond_200(web_url, body=html)
     >>> script = """
     ... document.querySelectorAll('div')[0].addEventListener('click',
     ...   function(e) {
@@ -88,23 +78,23 @@ This time prevent the default in the input.
     ...     e.preventDefault();
     ...   });
     ... """
-    >>> wbemocks.socket.respond_200(script_url, body=script)
+    >>> js_url = wbemocks.socket.serve(script)
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> body += "<div><form><input name=bubbles value=sugar></form></div>"
+    >>> html_url = wbemocks.socket.serve(body)
+
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(web_url)
-    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 100 + 24))
+    >>> this_browser.new_tab(browser.URL(html_url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 24 + this_browser.chrome.bottom))
     input saw a click
     form saw a click
     div saw a click
-    >>> this_browser.tabs[0].js.run("document.querySelectorAll('input')[0].getAttribute('value')")
+    >>> js = this_browser.active_tab.js
+    >>> js.run("document.querySelectorAll('input')[0].getAttribute('value')")
     'sugar'
 
 Stopping propagation should also work.
 
-    >>> web_url = 'http://wbemocks.test/chapter9-bubble-3/html'
-    >>> script_url = 'http://wbemocks.test/chapter9-bubble-3/js'
-    >>> html = ("<script src=" + script_url + "></script>"
-    ...       + "<div><form><input name=bubbles value=sugar></form></div>")
-    >>> wbemocks.socket.respond_200(web_url, body=html)
     >>> script = """
     ... document.querySelectorAll('div')[0].addEventListener('click',
     ...   function(e) {
@@ -120,22 +110,22 @@ Stopping propagation should also work.
     ...     console.log('input saw a click');
     ...   });
     ... """
-    >>> wbemocks.socket.respond_200(script_url, body=script)
+    >>> js_url = wbemocks.socket.serve(script)
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> body += "<div><form><input name=bubbles value=sugar></form></div>"
+    >>> html_url = wbemocks.socket.serve(body)
+
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(web_url)
-    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 100 + 24))
+    >>> this_browser.new_tab(browser.URL(html_url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 24 + this_browser.chrome.bottom))
     input saw a click
     form saw a click
-    >>> this_browser.tabs[0].js.run("document.querySelectorAll('input')[0].getAttribute('value')")
+    >>> js = this_browser.active_tab.js
+    >>> js.run("document.querySelectorAll('input')[0].getAttribute('value')")
     ''
 
 Both should be able to work on the same click.
 
-    >>> web_url = 'http://wbemocks.test/chapter9-bubble-4/html'
-    >>> script_url = 'http://wbemocks.test/chapter9-bubble-4/js'
-    >>> html = ("<script src=" + script_url + "></script>"
-    ...       + "<div><form><input name=bubbles value=sugar></form></div>")
-    >>> wbemocks.socket.respond_200(web_url, body=html)
     >>> script = """
     ... document.querySelectorAll('div')[0].addEventListener('click',
     ...   function(e) {
@@ -152,10 +142,15 @@ Both should be able to work on the same click.
     ...     e.stopPropagation();
     ...   });
     ... """
-    >>> wbemocks.socket.respond_200(script_url, body=script)
+    >>> js_url = wbemocks.socket.serve(script)
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> body += "<div><form><input name=bubbles value=sugar></form></div>"
+    >>> html_url = wbemocks.socket.serve(body)
+
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(web_url)
-    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 100 + 24))
+    >>> this_browser.new_tab(browser.URL(html_url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 24 + this_browser.chrome.bottom))
     input saw a click
-    >>> this_browser.tabs[0].js.run("document.querySelectorAll('input')[0].getAttribute('value')")
+    >>> js = this_browser.active_tab.js
+    >>> js.run("document.querySelectorAll('input')[0].getAttribute('value')")
     'sugar'
