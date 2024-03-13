@@ -351,6 +351,7 @@ def upload_py(testkey):
     base_path = os.path.dirname(browser_path)
     for module_name in new_modules:
         module = sys.modules[module_name]
+        if not hasattr(module, "__file__"): continue
         module_path = os.path.realpath(module.__file__)
         try:
             if os.path.commonpath([module_path, base_path]) == base_path:

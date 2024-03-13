@@ -18,36 +18,28 @@ Testing basic <script> support
 
 The browser should download JavaScript code mentioned in a `<script>` tag:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-1/html'
-    >>> url2 = 'http://wbemocks.test/chapter9-base-1/js'
-    >>> html_page = "<script src=" + url2 + "></script>"
-    >>> wbemocks.socket.respond_200(url, body=html_page)
-    >>> wbemocks.socket.respond_200(url2, body="")
-    >>> browser.Browser().load(url)
-    >>> req = wbemocks.socket.last_request(url2).decode("utf-8").lower()
+    >>> js_url = wbemocks.socket.serve("")
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> html_url = wbemocks.socket.serve(body)
+    >>> browser.Browser().new_tab(browser.URL(html_url))
+    >>> req = wbemocks.socket.last_request(js_url).decode("utf-8").lower()
     >>> req.startswith("get")
     True
-    >>> req.split()[1]
-    '/chapter9-base-1/js'
 
 If the script succeeds, the browser prints nothing:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-2/html'
-    >>> url2 = 'http://wbemocks.test/chapter9-base-2/js'
-    >>> html_page = "<script src=" + url2 + "></script>"
-    >>> wbemocks.socket.respond_200(url, body=html_page)
-    >>> wbemocks.socket.respond_200(url2, body="var x = 2; x + x")
-    >>> browser.Browser().load(url)
+    >>> js_url = wbemocks.socket.serve("var x = 2; x + x")
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> html_url = wbemocks.socket.serve(body)
+    >>> browser.Browser().new_tab(browser.URL(html_url))
 
 If instead the script crashes, the browser prints an error message:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-3/html'
-    >>> url2 = 'http://wbemocks.test/chapter9-base-3/js'
-    >>> html_page = "<script src=" + url2 + "></script>"
-    >>> wbemocks.socket.respond_200(url, body=html_page)
-    >>> wbemocks.socket.respond_200(url2, body="throw Error('Oops');")
-    >>> browser.Browser().load(url) #doctest: +ELLIPSIS
-    Script http://wbemocks.test/chapter9-base-3/js crashed Error: Oops
+    >>> js_url = wbemocks.socket.serve("throw Error('Oops');")
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> html_url = wbemocks.socket.serve(body)
+    >>> browser.Browser().new_tab(browser.URL(html_url)) #doctest: +ELLIPSIS
+    Script ... crashed Error: Oops
     ...
 
 Note that in the last test I set the `ELLIPSIS` flag to elide the duktape stack
@@ -58,45 +50,37 @@ Testing JSContext
 
 For the rest of these tests we're going to use `console.log` for most testing:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-4/html'
-    >>> url2 = 'http://wbemocks.test/chapter9-base-4/js'
-    >>> html_page = "<script src=" + url2 + "></script>"
-    >>> wbemocks.socket.respond_200(url, body=html_page)
-    >>> wbemocks.socket.respond_200(url2, body="console.log('Hello, world!')")
-    >>> browser.Browser().load(url)
+    >>> js_url = wbemocks.socket.serve("console.log('Hello, world!');")
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> html_url = wbemocks.socket.serve(body)
+    >>> browser.Browser().new_tab(browser.URL(html_url))
     Hello, world!
 
 Note that you can print other data structures as well:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-5/html'
-    >>> url2 = 'http://wbemocks.test/chapter9-base-5/js'
-    >>> html_page = "<script src=" + url2 + "></script>"
-    >>> wbemocks.socket.respond_200(url, body=html_page)
-    >>> wbemocks.socket.respond_200(url2, body="console.log([2, 3, 4])")
-    >>> browser.Browser().load(url)
+    >>> js_url = wbemocks.socket.serve("console.log([2, 3, 4]);")
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> html_url = wbemocks.socket.serve(body)
+    >>> browser.Browser().new_tab(browser.URL(html_url))
     [2, 3, 4]
 
 Let's test that variables work:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-6/html'
-    >>> url2 = 'http://wbemocks.test/chapter9-base-6/js'
-    >>> html_page = "<script src=" + url2 + "></script>"
-    >>> wbemocks.socket.respond_200(url, body=html_page)
-    >>> wbemocks.socket.respond_200(url2, body="var x = 'Hello!'; console.log(x)")
-    >>> browser.Browser().load(url)
+    >>> js_url = wbemocks.socket.serve("var x = 'Hello!'; console.log(x);")
+    >>> body = "<script src=" + str(js_url) + "></script>"
+    >>> html_url = wbemocks.socket.serve(body)
+    >>> browser.Browser().new_tab(browser.URL(html_url))
     Hello!
 
 Next let's try to do two scripts:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-7/html'
-    >>> url2 = 'http://wbemocks.test/chapter9-base-7/js1'
-    >>> url3 = 'http://wbemocks.test/chapter9-base-7/js2'
-    >>> html_page = "<script src=" + url2 + "></script>" + "<script src=" + url3 + "></script>"
-    >>> wbemocks.socket.respond_200(url, body=html_page)
-    >>> wbemocks.socket.respond_200(url2, body="var x = 'Testing, testing';")
-    >>> wbemocks.socket.respond_200(url3, body="console.log(x);")
-    >>> browser.Browser().load(url)
-    Testing, testing
+    >>> js1_url = wbemocks.socket.serve("var x = 'Hi';")
+    >>> js2_url = wbemocks.socket.serve("console.log(x);")
+    >>> body = "<script src=" + str(js1_url) + "></script>"
+    >>> body += "<script src=" + str(js2_url) + "></script>"
+    >>> html_url = wbemocks.socket.serve(body)
+    >>> browser.Browser().new_tab(browser.URL(html_url))
+    Hi
 
 Testing querySelectorAll
 ========================
@@ -104,16 +88,15 @@ Testing querySelectorAll
 The `querySelectorAll` method is easiest to test by looking at the number of
 matching nodes:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-8/html'
     >>> page = """<!doctype html>
     ... <div>
     ...   <p id=lorem>Lorem</p>
     ...   <p class=ipsum>Ipsum</p>
     ... </div>"""
-    >>> wbemocks.socket.respond_200(url, body=page)
+    >>> url = wbemocks.socket.serve(page)
     >>> b = browser.Browser()
-    >>> b.load(url)
-    >>> js = b.tabs[0].js
+    >>> b.new_tab(browser.URL(url))
+    >>> js = b.active_tab.js
     >>> js.run("document.querySelectorAll('div').length")
     1
     >>> js.run("document.querySelectorAll('p').length")
@@ -146,7 +129,7 @@ Once we have a `Node` object we can call `getAttribute`:
 
 Note that this is "live": as the page changes `querySelectorAll` gives new results:
 
-    >>> b.tabs[0].nodes.children[0].children[0].children[0].attributes['id'] = 'blah'
+    >>> b.active_tab.nodes.children[0].children[0].children[0].attributes['id'] = 'blah'
     >>> js.run("document.querySelectorAll('p')[0].getAttribute('id')")
     'blah'
 
@@ -164,21 +147,21 @@ returns its right hand side. I use `void()` to avoid testing that.
 
 Once we've changed the page, the browser should rerender:
 
-    >>> browser.print_tree(b.tabs[0].document)
+    >>> browser.print_tree(b.active_tab.document)
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=30.0)
          BlockLayout(x=13, y=18, width=774, height=30.0)
            BlockLayout(x=13, y=18, width=774, height=30.0)
-             InlineLayout(x=13, y=18, width=774, height=15.0)
+             BlockLayout(x=13, y=18, width=774, height=15.0)
                LineLayout(x=13, y=18, width=774, height=15.0)
-                 TextLayout(x=13, y=20.25, width=48, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 TextLayout(x=73, y=20.25, width=24, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 TextLayout(x=109, y=20.25, width=12, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 TextLayout(x=133, y=20.25, width=36, height=12, font=Font size=12 weight=bold slant=roman style=None)
-                 TextLayout(x=181, y=20.25, width=96, height=12, font=Font size=12 weight=normal slant=roman style=None)
-             InlineLayout(x=13, y=33.0, width=774, height=15.0)
+                 TextLayout(x=13, y=20.25, width=48, height=12, word=This)
+                 TextLayout(x=73, y=20.25, width=24, height=12, word=is)
+                 TextLayout(x=109, y=20.25, width=12, height=12, word=a)
+                 TextLayout(x=133, y=20.25, width=36, height=12, word=new)
+                 TextLayout(x=181, y=20.25, width=96, height=12, word=element!)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
-                 TextLayout(x=13, y=35.25, width=60, height=12, font=Font size=12 weight=normal slant=roman style=None)
+                 TextLayout(x=13, y=35.25, width=60, height=12, word=Ipsum)
 
 Note that there's now many `TextLayout`s inside the first `LineLayout`, one per
 new word.
@@ -197,17 +180,17 @@ We should also be able to delete nodes this way:
 
 The page is rerendered again:
 
-    >>> browser.print_tree(b.tabs[0].document)
+    >>> browser.print_tree(b.active_tab.document)
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=30.0)
          BlockLayout(x=13, y=18, width=774, height=30.0)
            BlockLayout(x=13, y=18, width=774, height=30.0)
-             InlineLayout(x=13, y=18, width=774, height=15.0)
+             BlockLayout(x=13, y=18, width=774, height=15.0)
                LineLayout(x=13, y=18, width=774, height=15.0)
-                 TextLayout(x=13, y=20.25, width=60, height=12, font=Font size=12 weight=normal slant=roman style=None)
-             InlineLayout(x=13, y=33.0, width=774, height=15.0)
+                 TextLayout(x=13, y=20.25, width=60, height=12, word=Lorem)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
-                 TextLayout(x=13, y=35.25, width=60, height=12, font=Font size=12 weight=normal slant=roman style=None)
+                 TextLayout(x=13, y=35.25, width=60, height=12, word=Ipsum)
 
 Despite this, the old nodes should stick around:
 
@@ -221,7 +204,7 @@ Events are the trickiest thing to test here. First, let's do a basic test of
 adding an event listener and then triggering it. I'll use the `div` element to
 test things:
 
-    >>> div = b.tabs[0].nodes.children[0].children[0]
+    >>> div = b.active_tab.nodes.children[0].children[0]
     >>> js.run("var div = document.querySelectorAll('div')[0]")
     >>> js.run("div.addEventListener('test', function(e) { console.log('Listener ran!')})")
     >>> js.dispatch_event("test", div)
@@ -233,16 +216,15 @@ The `False` is from our `preventDefault` handling (we didn't call it).
 Let's test each of our automatic event types. We'll need a new web page with a
 link, a button, and an input area:
 
-    >>> url = 'http://wbemocks.test/chapter9-base-9/html'
     >>> page = """<!doctype html>
     ... <a href=page2>Click me!</a>
     ... <form action=/post>
     ...   <input name=input value=hi>
     ...   <button>Submit</button>
     ... </form>"""
-    >>> wbemocks.socket.respond_200(url, body=page)
-    >>> b.load(url)
-    >>> js = b.tabs[1].js
+    >>> url = wbemocks.socket.serve(page)
+    >>> b.new_tab(browser.URL(url))
+    >>> js = b.active_tab.js
 
 Now we're going test five event handlers: clicking on the link, clicking on the
 input, typing into the input, clicking on the button, and submitting the form.
@@ -283,33 +265,35 @@ Finally, let's allow clicking on the button but then cancel the form submission:
 With these all set up, we need to do some clicking and typing to trigger these
 events. The display list gives us coordinates for clicking.
 
-    >>> browser.print_tree(b.tabs[1].document)
+    >>> b.active_tab.url
+    URL(scheme=http, host=test, port=80, path='/16')
+    >>> browser.print_tree(b.active_tab.document)
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=30.0)
          BlockLayout(x=13, y=18, width=774, height=30.0)
-           InlineLayout(x=13, y=18, width=774, height=15.0)
+           BlockLayout(x=13, y=18, width=774, height=15.0)
              LineLayout(x=13, y=18, width=774, height=15.0)
-               TextLayout(x=13, y=20.25, width=60, height=12, font=Font size=12 weight=normal slant=roman style=None)
-               TextLayout(x=85, y=20.25, width=36, height=12, font=Font size=12 weight=normal slant=roman style=None)
-           InlineLayout(x=13, y=33.0, width=774, height=15.0)
+               TextLayout(x=13, y=20.25, width=60, height=12, word=Click)
+               TextLayout(x=85, y=20.25, width=36, height=12, word=me!)
+           BlockLayout(x=13, y=33.0, width=774, height=15.0)
              LineLayout(x=13, y=33.0, width=774, height=15.0)
-               InputLayout(x=13, y=35.25, width=200, height=12)
-               InputLayout(x=225, y=35.25, width=200, height=12)
-    >>> b.tabs[1].click(14, 20)
+               InputLayout(x=13, y=35.25, width=200, height=12, tag=input)
+               InputLayout(x=225, y=35.25, width=200, height=12, tag=button)...
+    >>> b.active_tab.click(14, 20)
     a clicked
-    >>> b.tabs[1].click(14, 40)
+    >>> b.active_tab.click(14, 40)
     input clicked
-    >>> b.tabs[1].keypress('t')
+    >>> b.active_tab.keypress('t')
     input typed
-    >>> b.tabs[1].click(230, 40)
+    >>> b.active_tab.click(230, 40)
     button clicked
     form submitted
 
 However, we should not have navigated away from the original URL, because we
 prevented submission:
 
-    >>> b.tabs[1].history[-1]
-    'http://wbemocks.test/chapter9-base-9/html'
+    >>> b.active_tab.history[-1]
+    URL(scheme=http, host=test, port=80, path='/16')
 
 Similarly, when we clicked on the `input` element its `value` should be cleared,
 but when we then typed `t` into it that was cancelled so the value should still
