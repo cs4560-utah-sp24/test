@@ -1,13 +1,9 @@
 Tests for WBE Chapter 9 Exercise `Node.children`
 ============================================
 
-Description
------------
-
-Add support for the children property on JavaScript Nodes.
-Node.children returns the immediate Element children of a node, as an array.
-Text children are not included.
-
+Add support for the `children` property on JavaScript `Node`s.
+`Node.children` returns the immediate `Element` children of a node, as
+an array. `Text` children are not included.
 
 Test code
 ---------
@@ -21,15 +17,13 @@ Boilerplate.
 
 Setup page and grab the javascript runtime.
 
-    >>> url = 'http://wbemocks.test/chapter9-children/html'
     >>> page = """<!doctype html>
     ...   <p id=lorem>Lorem</p>
     ...   <p class=ipsum>Ipsum</p>"""
-    >>> wbemocks.socket.respond_200(url, body=page)
+    >>> url = wbemocks.socket.serve(page)
     >>> b = browser.Browser()
-    >>> b.load(url)
-    >>> js = b.tabs[0].js
-
+    >>> b.new_tab(browser.URL(url))
+    >>> js = b.active_tab.js
 
 Look at the contents of the body.
 
