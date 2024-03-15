@@ -133,6 +133,7 @@ CURRENT_TESTS["all"] = all_tests
 CURRENT_TESTS.update(specific_file_tests)
 
 REPORT_FIRST_ERROR = False
+REPORT_DIFF = False
 
 # Below this are a variety of "fixes" to doctest that make it more user-friendly
 
@@ -288,7 +289,8 @@ def run_doctests(files):
     patch_doctest()
     mapped_results = dict()
     sys.modules["wbemocks"] = wbemocks
-    flags = doctest.ELLIPSIS | doctest.REPORT_NDIFF
+    flags = doctest.ELLIPSIS
+    if REPORT_DIFF: flags |= doctest.REPORT_NDIFF
     for fname in files:
         fname_abs = os.path.join(os.path.dirname(__file__), "tests", fname)
         doctest.testfile(fname_abs, module_relative=False, optionflags=flags)
@@ -307,14 +309,32 @@ def parse_arguments(argv):
                         type=int,
                         help="Run the nth test from the chapter. "
                         "(Requires passing a full chapter name.)")
-    parser.add_argument("--gh", action="store_true",
-                        help="Write results to " + GH_JSON_PATH +
-                        "(For generating grade summaries)")
-    parser.add_argument("--ghsetup", action="store_true",
-                        help="Output environment variables for Github")
-    parser.add_argument("--no-upload", action="store_true",
-                        help="Do not upload a copy of the code to the instructor")
-    parser.add_argument('-b', '--browser_path', help='Directory containing browser.py')
+
+    # Control over output
+    parser.add_argument(
+        "--all", action="store_true",
+        help="Run all the tests, instead of stopping at the first failure.")
+    parser.add_argument(
+        "--diff", action="store_true",
+        help="Show a line-by-line diff between expected and actual output")
+
+    # Control over test configuration
+    parser.add_argument(
+        '-b', '--browser_path',
+        help='Directory containing browser.py'),
+
+    # Control over uploader
+    parser.add_argument(
+        "--no-upload", action="store_true",
+        help="Do not upload a copy of the code to the instructor")
+
+    # Control over GH mode
+    parser.add_argument(
+        "--gh", action="store_true",
+        help=f"Write results to {GH_JSON_PATH} (for generating grade summaries)")
+    parser.add_argument(
+        "--ghsetup", action="store_true",
+        help="Output environment variables for Github CI script")
     args = parser.parse_args(argv[1:])
 
     return args
@@ -434,7 +454,7 @@ def main(argv):
     bpath = args.browser_path
     sys.path.append(bpath)
     upload_proc = None
-    if not (args.no_upload or args.ghsetup or args.gh):
+    if not (args.no_upload or args.ghsetup):
         upload_proc = multiprocessing.Process(target=upload_py, args=(testkey,))
         upload_proc.start()
 
@@ -442,8 +462,9 @@ def main(argv):
         ghsetup(tests)
         return 0
 
-    global REPORT_FIRST_ERROR
-    REPORT_FIRST_ERROR = not args.gh
+    global REPORT_FIRST_ERROR, REPORT_DIFF
+    REPORT_FIRST_ERROR = not args.gh and not args.all
+    REPORT_DIFF = args.diff
     mapped_results = run_doctests(tests)
     total_state = "all passed"
     print("\nSummarised results\n")
