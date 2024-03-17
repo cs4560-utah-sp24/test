@@ -49,6 +49,14 @@ That page should contain bare links for each URL, like this:
 <a href="https://utah.edu">https://utah.edu</a><br>
 ```
 
+You'll need a `__repr__` function for rectangles:
+
+```
+class Rect:
+    def __repr__(self):
+        return "Rect({}, {}, {}, {})".format(
+            self.left, self.top, self.right, self.bottom)
+```
 
 Test code
 ---------
