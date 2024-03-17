@@ -52,9 +52,9 @@ Shorten window
 Let's make a fragment URL and make sure it prints correctly
 
     >>> body = ('<h1 id="start">Start</h1>' +
-    ...         'a<br>'*15 +
+    ...         '<p>' + 'a<br>'*15 + '</p>' +
     ...         '<h1 id="target">Target</h1>' +
-    ...         'b<br>'*40 +
+    ...         '<p>' + 'b<br>'*40 + '</p>' +
     ...         'Bottom text')
     >>> url = browser.URL(wbemocks.socket.serve(body) + "#target")
     >>> url
