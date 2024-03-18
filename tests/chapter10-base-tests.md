@@ -18,7 +18,7 @@ in the cookie jar:
     >>> this_browser = browser.Browser()
     >>> url = 'http://wbemocks.wbemocks.chapter10/login'
     >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\nSet-Cookie: foo=bar\r\n\r\nempty")
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> browser.COOKIE_JAR["wbemocks.wbemocks.chapter10"]
     ('foo=bar', {})
 
@@ -27,7 +27,7 @@ requests:
 
     >>> url2 = 'http://wbemocks.wbemocks.chapter10/'
     >>> wbemocks.socket.respond(url2, b"HTTP/1.0 200 OK\r\n\r\n\r\nempty")
-    >>> this_browser.load(url2)
+    >>> this_browser.new_tab(browser.URL(url2))
     >>> b'cookie: foo=bar' in wbemocks.socket.last_request(url2).lower()
     True
 
@@ -35,7 +35,7 @@ Unrelated sites should not be sent the cookie:
 
     >>> url3 = 'http://other.site.chapter10/'
     >>> wbemocks.socket.respond(url3, b"HTTP/1.0 200 OK\r\n\r\n\r\nempty")
-    >>> this_browser.load(url3)
+    >>> this_browser.new_tab(browser.URL(url3))
     >>> b'cookie' in wbemocks.socket.last_request(url3).lower()
     False
 
@@ -47,7 +47,7 @@ Cookie values can be updated:
     >>> browser.COOKIE_JAR["wbemocks.wbemocks.chapter10"]
     ('foo=bar', {})
     >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\nSet-Cookie: foo=baz\r\n\r\nempty")
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> browser.COOKIE_JAR["wbemocks.wbemocks.chapter10"]
     ('foo=baz', {})
 
@@ -71,7 +71,7 @@ Now let's test a simple same-site request:
     >>> url2 = "http://about.blank.chapter10/hello"
     >>> wbemocks.socket.respond(url2, b"HTTP/1.0 200 OK\r\n\r\nHello!")
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> tab = this_browser.tabs[0]
     >>> tab.js.run(xhrjs(url2))
     Hello!
@@ -122,7 +122,7 @@ a `SameSite` cookie to start.
 
     >>> url = "http://wbemocks.wbemocks.chapter10/"
     >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\nSet-Cookie: bar=baz; SameSite=Lax\r\n\r\nempty")
-    >>> tab.load(url)
+    >>> tab.load(browser.URL(url))
     >>> browser.COOKIE_JAR["wbemocks.wbemocks.chapter10"]
     ('bar=baz', {'samesite': 'lax'})
 
@@ -132,7 +132,7 @@ request:
 
     >>> url2 = "http://wbemocks.wbemocks.chapter10/2"
     >>> wbemocks.socket.respond(url2, b"HTTP/1.0 200 OK\r\n\r\n2")
-    >>> tab.load(url2)
+    >>> tab.load(browser.URL(url2))
     >>> b'cookie: bar=baz' in wbemocks.socket.last_request(url2).lower()
     True
 
@@ -142,7 +142,7 @@ there:
 
     >>> url3 = "http://wbemocks.wbemocks.chapter10/add"
     >>> wbemocks.socket.respond(url3, b"HTTP/1.0 200 OK\r\n\r\nAdded!", method="POST")
-    >>> tab.load(url3, body="who=me")
+    >>> tab.load(browser.URL(url3), payload="who=me")
     >>> req = wbemocks.socket.last_request(url3).lower()
     >>> req.startswith(b'post')
     True
@@ -158,16 +158,16 @@ cookie should *still* be sent:
 
     >>> url4 = "http://other.site.chapter10/"
     >>> wbemocks.socket.respond(url4, b"HTTP/1.0 200 OK\r\n\r\nHi!")
-    >>> tab.load(url4)
-    >>> tab.load(url)
+    >>> tab.load(browser.URL(url4))
+    >>> tab.load(browser.URL(url))
     >>> b'cookie: bar=baz' in wbemocks.socket.last_request(url).lower()
     True
 
 Finally, let's try a cross-site `POST` request and check that in this
 case the cookie is *not* sent:
 
-    >>> tab.load(url4)
-    >>> tab.load(url3, body="who=me")
+    >>> tab.load(browser.URL(url4))
+    >>> tab.load(browser.URL(url3), payload="who=me")
     >>> req = wbemocks.socket.last_request(url3).lower()
     >>> req.startswith(b'post')
     True
@@ -209,7 +209,7 @@ Now with all of these URLs set up, let's load the page without CSP and
 check that all of these requests were made:
 
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> [wbemocks.socket.made_request(url + "css"),
     ...  wbemocks.socket.made_request(url + "js")]
     [True, True]
@@ -228,7 +228,7 @@ Now let's reload the page, but with CSP enabled for `wbemocks.wbemocks.chapter10
     ... b"Content-Security-Policy: default-src http://wbemocks.wbemocks.chapter10 http://library.wbemocks.chapter10\r\n\r\n" + \
     ... body.encode("utf8"))
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     Blocked script http://other.wbemocks.chapter10/js due to CSP
     Blocked style http://other.wbemocks.chapter10/css due to CSP
 
@@ -255,7 +255,7 @@ JavaScript!
     >>> url = "http://weird.wbemocks.chapter10/"
     >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\n" + \
     ... b"Content-Security-Policy: default-src\r\n\r\nempty")
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> tab = this_browser.tabs[-1]
     >>> tab.js.run("""
     ... x = new XMLHttpRequest()
