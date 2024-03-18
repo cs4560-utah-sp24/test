@@ -17,7 +17,11 @@ in the cookie jar:
 
     >>> this_browser = browser.Browser()
     >>> url = 'http://wbemocks.wbemocks.chapter10/login'
-    >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\nSet-Cookie: foo=bar\r\n\r\nempty")
+    >>> wbemocks.socket.respond(url,
+    ...   b"HTTP/1.0 200 OK\r\n" +
+    ...   b"Set-Cookie: foo=bar\r\n" + 
+    ...   b"\r\n" +
+    ...   b"empty")
     >>> this_browser.new_tab(browser.URL(url))
     >>> browser.COOKIE_JAR["wbemocks.wbemocks.chapter10"]
     ('foo=bar', {})
