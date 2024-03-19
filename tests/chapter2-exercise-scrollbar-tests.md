@@ -1,6 +1,17 @@
 Tests for WBE Chapter 5 Exercise `Scrollbar`
 =======================
 
+The scrolling feature in this scenario does not need to include
+functionality to prevent scrolling beyond the content's end. 
+Scrolling past the bottom of the page content is an acceptable
+behavior and aligns with the basic functionality of the 
+scrolling mechanism being tested.
+
+In the design of the scrollbar, it should be rendered on top of
+all other elements on the page, including text. This is to 
+ensure that the scrollbar remains visible and accessible at 
+all times, regardless of the page's content or layout.
+
 Testing boilerplate:
 
     >>> import wbemocks

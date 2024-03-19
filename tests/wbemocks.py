@@ -239,7 +239,12 @@ class ssl:
         _ = mock.patch("ssl.SSLContext", wraps=cls).start()
         return mock.patch("ssl.create_default_context", wraps=cls)
 
+TK_INITIALIZED = False
 class SilentTk:
+    def __init__(self, *args, **kwargs):
+        global TK_INITIALIZED
+        TK_INITIALIZED = True
+        
     def bind(self, event, callback):
         pass
 
@@ -249,6 +254,7 @@ class PhotoImage:
     DO_NOT_GC = weakref.WeakKeyDictionary()
 
     def __init__(self, file, *, secret_width=None, secret_height=None):
+        assert TK_INITIALIZED, "You cannot create a PhotoImage until after a Tk is constructed"
         self.filename = file
         width, height = secret_width, secret_height
 

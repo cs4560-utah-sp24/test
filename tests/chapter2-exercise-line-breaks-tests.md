@@ -1,6 +1,13 @@
 Tests for WBE Chapter 2 Exercise `Line Breaks`
 ==============================================
 
+A line break is represented by the sequence `\n`.The difference 
+between `\n` and `\r\n` stems from old typewriter mechanisms. `\n`
+(line feed) moves down to a new line, while `\r` (carriage return) 
+moves the carriage to the beginning of the line. `\r\n`, 
+combining both, is used in some systems (like Windows) to start a 
+new line.
+
 Testing boilerplate:
 
     >>> import wbemocks
@@ -62,8 +69,7 @@ Each additional newline moves the text down by twice `VSTEP`
     create_text: x=1 y=1 text=u...
     create_text: x=1 y=7 text=d...
 
-Testing that cursor_x Reset on Line Break
-
+Make sure that cursor_x is reset on a line break:
 
     >>> url = 'http://wbemocks.test/cursor-reset-test'
     >>> wbemocks.socket.respond_200(url=url, body="eren\r\nmika")
@@ -78,14 +84,3 @@ Testing that cursor_x Reset on Line Break
     create_text: x=3 y=3 text=k
     create_text: x=4 y=3 text=a
 
-
-Clarifying that \n is line break   
-
-    >>> url = 'http://wbemocks.test/line-break-test'
-    >>> wbemocks.socket.respond_200(url=url, body="line1\nline2")
-    >>> this_browser = browser.Browser()
-    >>> this_browser.load(browser.URL(url))
-    create_text: x=1 y=1 text=l
-    ...
-    create_text: x=1 y=3 text=l
-    ...
