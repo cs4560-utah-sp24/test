@@ -42,6 +42,10 @@ and `return "Text('{}')".format(self.text)`
     [Text('he'), Tag('body'), Text('l'), Tag('/body'), Text('lo')]
     >>> browser.lex('he<body>l<div>l</div>o</body>')
     [Text('he'), Tag('body'), Text('l'), Tag('div'), Text('l'), Tag('/div'), Text('o'), Tag('/body')]
+    >>> browser.lex('he<body>l<div>l</div>o</body>')
+    [Text('he'), Tag('body'), Text('l'), Tag('div'), Text('l'), Tag('/div'), Text('o'), Tag('/body')]
+    >>> browser.lex('hello world')
+    [Text('hello world')]
 
 Note that the tags do not have to match:
 
@@ -79,6 +83,9 @@ rather a mock font that has faked metrics.
     >>> test_layout("<big><big><i>abc</i></big>def</big>") #doctest: +NORMALIZE_WHITESPACE
     [(13.0, 22.5, 'abc', Font size=24 weight=normal slant=italic style=None), 
      (109.0, 25.5, 'def', Font size=20 weight=normal slant=roman style=None)]
+     
+    >>> test_layout("hello world")
+    [(13.0, 22.5, 'hello world', Font size=24 weight=normal slant=italic style=None)]
 
 Lines of text are spaced to make room for the tallest text. Let's lay
 out text with mixed font sizes, and then measure the line heights:
