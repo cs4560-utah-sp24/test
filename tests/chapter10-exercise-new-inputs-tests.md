@@ -1,17 +1,11 @@
 Tests for WBE Chapter 10 Exercise `New inputs`
 ============================================
 
-Description
------------
-Add support for hidden and password input elements.
-Hidden inputs shouldn’t show up or take up space, while password input elements
-    should show ther contents as stars instead of characters.
+Add support for hidden and password input elements. Hidden inputs
+shouldn’t show up or take up space, while password input elements
+should show ther contents as stars instead of characters.
 
-
-Extra Requirements
-------------------
-* To hide the input element set its width and height to `0.0`
-
+To hide the input element set its width and height to `0.0`
 
 Test code
 ---------
@@ -42,28 +36,28 @@ There are many ways to achieve this effect, we will set the width and height of
     the element to 0.0.
 
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> browser.print_tree(this_browser.tabs[0].document)
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=45.0)
          BlockLayout(x=13, y=18, width=774, height=45.0)
            BlockLayout(x=13, y=18, width=774, height=45.0)
-             InlineLayout(x=13, y=18, width=774, height=15.0)
+             BlockLayout(x=13, y=18, width=774, height=15.0)
                LineLayout(x=13, y=18, width=774, height=15.0)
-                 TextLayout(x=13, y=20.25, width=36, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 TextLayout(x=61, y=20.25, width=84, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 InputLayout(x=157, y=20.25, width=200, height=12)
-             InlineLayout(x=13, y=33.0, width=774, height=15.0)
+                 TextLayout(x=13, y=20.25, width=36, height=12, word=Not)
+                 TextLayout(x=61, y=20.25, width=84, height=12, word=hidden:)
+                 InputLayout(x=157, y=20.25, width=200, height=12, tag=input)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
-                 TextLayout(x=13, y=35.25, width=84, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 InputLayout(x=109, y=35.25, width=0.0, height=0.0)
-             InlineLayout(x=13, y=48.0, width=774, height=15.0)
+                 TextLayout(x=13, y=35.25, width=84, height=12, word=Hidden:)
+                 InputLayout(x=109, y=35.25, width=0.0, height=0.0, tag=input)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12)
+                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
 
 Submission of the form should still pass along the value.
 
-    >>> this_browser.handle_click(wbemocks.ClickEvent(21, 100+58))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(21, this_browser.chrome.bottom+58))
     >>> req = wbemocks.socket.last_request(url + "tricky").decode().lower()
     >>> req.startswith("post")
     True
@@ -87,37 +81,36 @@ Make a page with a password input element.
 The password element should be all `*`.
 
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> browser.print_tree(this_browser.tabs[0].document)
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=45.0)
          BlockLayout(x=13, y=18, width=774, height=45.0)
            BlockLayout(x=13, y=18, width=774, height=45.0)
-             InlineLayout(x=13, y=18, width=774, height=15.0)
+             BlockLayout(x=13, y=18, width=774, height=15.0)
                LineLayout(x=13, y=18, width=774, height=15.0)
-                 TextLayout(x=13, y=20.25, width=60, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 InputLayout(x=85, y=20.25, width=200, height=12)
-             InlineLayout(x=13, y=33.0, width=774, height=15.0)
+                 TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
+                 InputLayout(x=85, y=20.25, width=200, height=12, tag=input)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
-                 TextLayout(x=13, y=35.25, width=108, height=12, font=Font size=12 weight=normal slant=roman style=None)
-                 InputLayout(x=133, y=35.25, width=200, height=12)
-             InlineLayout(x=13, y=48.0, width=774, height=15.0)
+                 TextLayout(x=13, y=35.25, width=108, height=12, word=Password:)
+                 InputLayout(x=133, y=35.25, width=200, height=12, tag=input)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12)
+                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
 
-    >>> form = this_browser.tabs[0].document.children[0].children[0].children[0]
+    >>> document = this_browser.active_tab.document
+    >>> form = document.children[0].children[0].children[0]
     >>> para = form.children[1].children[0]
     >>> pswd = para.children[1]
-    >>> dl = list()
-    >>> pswd.paint(dl)
-    >>> dl #doctest: +NORMALIZE_WHITESPACE
-    [DrawRect(top=35.25 left=133 bottom=47.25 right=333 color=lightblue),
-     DrawText(top=35.25 left=133 bottom=47.25 text=***** font=Font size=12 weight=normal slant=roman style=None)]
+    >>> wbemocks.print_list(pswd.paint())
+    DrawRect(top=35.25 left=133 bottom=47.25 right=333 color=lightblue)
+    DrawText(top=35.25 left=133 bottom=47.25 text=***** font=Font size=12 weight=normal slant=roman style=None)
 
 
 Submission of the form should still pass along the value.
 
-    >>> this_browser.handle_click(wbemocks.ClickEvent(21, 100+58))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(21, this_browser.chrome.bottom+58))
     >>> req = wbemocks.socket.last_request(url + "login").decode().lower()
     >>> req.startswith("post")
     True
@@ -125,4 +118,3 @@ Submission of the form should still pass along the value.
     True
     >>> req.endswith("name=skroob&password=12345")
     True
-

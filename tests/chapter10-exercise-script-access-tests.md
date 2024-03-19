@@ -1,23 +1,17 @@
 Tests for WBE Chapter 10 Exercise `Script access`
 ============================================
 
-Description
------------
-Implement the document.cookie JavaScript API.
-Reading this field should return a string containing the cookie value ~~and
-    parameters~~, formatted similarly to the Cookie header.
-Writing to this field updates the cookie value and parameters, just like
-    receiving a Set-Cookie header does.
-Also implement the HttpOnly cookie parameter; cookies with this parameter
-    cannot be read or written from JavaScript.
+Implement the document.cookie JavaScript API. Reading this field
+should return a string containing the cookie value ~~and parameters~~,
+formatted similarly to the `Cookie` header. Writing to this field
+updates the cookie value and parameters, just like receiving a
+`Set-Cookie` header does. Also implement the `HttpOnly` cookie
+parameter; cookies with this parameter cannot be read or written from
+JavaScript.
 
-
-Extra Requirements
-------------------
-* Implementation is made easier since the browser supports one cookie per host,
-  so getting will return either 0 or 1 cookie and setting will overwrite the
-  cookie (if allowable).
-
+Implementation is made easier since the browser supports one cookie
+per host, so getting `document.cookie` will return either 0 or 1
+cookie and setting it will overwrite the cookie (if allowable).
 
 Test code
 ---------
@@ -36,7 +30,7 @@ Open an empty page to get the javascript instance
     >>> url = "http://wbemocks.wbemocks.chapter10-script-access/"
     >>> wbemocks.socket.respond_ok(url, "Empty")
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> js = this_browser.tabs[0].js
 
 Check that javascript doesn't see any cookies, and that the cookie jar is empty.
@@ -74,9 +68,9 @@ Set the cookie and use the parameter syntax.
 Load a new page with a http only cookie.
 
     >>> url = "http://wbemocks.wbemocks.chapter10-script-access-http-only/"
-    >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\nSet-Cookie: no=share; SameSite=None; HttpOnly\r\n\r\nEmpty")
+    >>> wbemocks.socket.respond(url, b"HTTP/1.0 200 OK\r\nSet-Cookie: no=share;SameSite=None;HttpOnly\r\n\r\nEmpty")
     >>> this_browser = browser.Browser()
-    >>> this_browser.load(url)
+    >>> this_browser.new_tab(browser.URL(url))
     >>> js = this_browser.tabs[0].js
 
 Reading from javascript should show nothing, but the cookie jar will have the

@@ -1,4 +1,4 @@
-Tests for WBE Chapter 5 Exercise `Scrollbar`
+Tests for WBE Chapter 2 Exercise `Scrollbar`
 =======================
 
 Stop your browser from scrolling down past the last display
@@ -8,10 +8,13 @@ scrollbar reflects what part of the full document the browser
 can see, as in the figure showing page and screen coordinates.
 Hide the scrollbar if the whole document fits onscreen.
 
-You do **not** need to prevent scrolling past the content's end. 
-Draw the scrollbar on top of all other elements on the page,
-including text. Do not change where line breaks happen.
-Testing boilerplate:
+We'll only implement a subset of a real browser's scrollbar functionality. Specifically:
+
+- You don't have to make the text narrower on the page. Instead, just make sure the scrollbar is positioned over any text.
+- You don't have to prevent scrolling past the bottom of the page. Just make sure the scrollbar is correctly positioned when the user is not past the bottom of the page.
+
+Tests
+-----
 
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
