@@ -1,13 +1,19 @@
 Tests for WBE Chapter 2 Exercise `Line Breaks`
 ==============================================
 
-A line break is represented by the sequence `\n`.The difference 
-between `\n` and `\r\n` stems from old typewriter mechanisms. `\n`
-(line feed) moves down to a new line, while `\r` (carriage return) 
-moves the carriage to the beginning of the line. `\r\n`, 
-combining both, is used in some systems (like Windows) to start a 
-new line.
+Change `layout` to end the current line and start a new one
+when it sees a newline character. Increment `y` by more than
+`VSTEP` to give the illusion of paragraph breaks. There are
+poems embedded in "Journey to the West"; now you’ll be able
+to make them out.
 
+Specifically, detect the `\n` character and add a line break.
+
+(Side note: The difference  between `\n` and `\r\n` stems from old typewriter
+mechanisms. `\n` (line feed) moves down to a new line, while `\r`
+(carriage return)  moves the carriage to the beginning of the line.
+`\r\n`, combining both, is used in some systems (like Windows) to
+start a new line.)
 Testing boilerplate:
 
     >>> import wbemocks
