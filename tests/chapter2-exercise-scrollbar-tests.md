@@ -1,6 +1,13 @@
 Tests for WBE Chapter 2 Exercise `Scrollbar`
 =======================
 
+Stop your browser from scrolling down past the last display
+list entry. At the right edge of the screen, draw a blue,
+rectangular scrollbar. Make sure the size and position of the
+scrollbar reflects what part of the full document the browser
+can see, as in the figure showing page and screen coordinates.
+Hide the scrollbar if the whole document fits onscreen.
+
 We'll only implement a subset of a real browser's scrollbar functionality. Specifically:
 
 - You don't have to make the text narrower on the page. Instead, just make sure the scrollbar is positioned over any text.
