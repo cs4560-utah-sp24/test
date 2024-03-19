@@ -1,17 +1,16 @@
 Tests for WBE Chapter 5 Exercise `Scrollbar`
 =======================
 
-The scrolling feature in this scenario does not need to include
-functionality to prevent scrolling beyond the content's end. 
-Scrolling past the bottom of the page content is an acceptable
-behavior and aligns with the basic functionality of the 
-scrolling mechanism being tested.
+Stop your browser from scrolling down past the last display
+list entry. At the right edge of the screen, draw a blue,
+rectangular scrollbar. Make sure the size and position of the
+scrollbar reflects what part of the full document the browser
+can see, as in the figure showing page and screen coordinates.
+Hide the scrollbar if the whole document fits onscreen.
 
-In the design of the scrollbar, it should be rendered on top of
-all other elements on the page, including text. This is to 
-ensure that the scrollbar remains visible and accessible at 
-all times, regardless of the page's content or layout.
-
+You do **not** need to prevent scrolling past the content's end. 
+Draw the scrollbar on top of all other elements on the page,
+including text. Do not change where line breaks happen.
 Testing boilerplate:
 
     >>> import wbemocks
