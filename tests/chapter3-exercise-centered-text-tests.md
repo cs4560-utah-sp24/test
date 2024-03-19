@@ -69,3 +69,14 @@ You should be able to mix centered and normal text on different lines
      (336.0, 61.0, 'do', Font size=16 weight=normal slant=roman style=None), 
      (384.0, 61.0, 'center', Font size=16 weight=normal slant=roman style=None),
      (496.0, 61.0, 'me', Font size=16 weight=normal slant=roman style=None)]
+
+
+Ensure that the application correctly handles the transition from centered to regular text within the same sequence
+
+    >>> test_layout('<h1 class="title">center this</h1>then this is regular')
+    [(312.0, 21.0, 'center', Font size=16 weight=normal slant=roman style=None),
+     (424.0, 21.0, 'this', Font size=16 weight=normal slant=roman style=None), 
+     (13.0, 41.0, 'then', Font size=16 weight=normal slant=roman style=None), 
+     (93.0, 41.0, 'this', Font size=16 weight=normal slant=roman style=None), 
+     (173.0, 41.0, 'is', Font size=16 weight=normal slant=roman style=None), 
+     (221.0, 41.0, 'regular', Font size=16 weight=normal slant=roman style=None)]
