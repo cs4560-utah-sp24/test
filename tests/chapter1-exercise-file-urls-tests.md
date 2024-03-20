@@ -1,11 +1,16 @@
 Tests for WBE Chapter 1 Exercise `File URLs`
 ============================================
 
-The __file__ scheme allows a web browser to open files on the local computer 
-  directly.
-In this case there will be no host or port, just the path to the file.
+Add support for the file scheme, which allows the browser to open
+local files. For example, `file:///path/goes/here` should refer to the
+file on your computer at location `/path/goes/here`. Also make it so
+that, if your browser is started without a URL being given, some
+specific file on your computer is opened. You can use that file for
+quick testing.
 
-For file URL the `host` and `port` should be `None`.
+For file URL the `host` and `port` should be `None`. If the file
+doesn't exist, raise a `FileNotFoundError`; this should happen
+automatically when you call `open`.
 
 Tests 
 -----
@@ -51,7 +56,9 @@ Here we make a file, put some text in it, and make a file scheme request.
     >>> body
     'Hello world'
     
-Requesting a nonexistent file should result in error.
+Requesting a nonexistent file should result in a `FileNotFoundError`:
 
-    >>> wbemocks.errors(browser.URL("file:///this/file/does/not/exist").request)
-    True
+    >>> browser.URL("file:///this/file/does/not/exist").request()
+    Traceback (most recent call last):
+      ...
+    FileNotFoundError: [Errno 2] No such file or directory: '/this/file/does/not/exist'

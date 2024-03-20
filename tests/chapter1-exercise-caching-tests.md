@@ -1,6 +1,21 @@
 Tests for WBE Chapter 1 Exercise `Caching`
 ==========================================
 
+Typically, the same images, styles, and scripts are used on multiple
+pages; downloading them repeatedly is a waste. It’s generally valid to
+cache any HTTP response, as long as it was requested with GET and
+received a 200 response. Implement a cache in your browser and test it
+by requesting the same file multiple times. Servers control caches
+using the `Cache-Control` header. Add support for this header,
+specifically for `no-store` and `max-age` values. If the
+`Cache-Control` header contains any other value than these two, it’s
+best not to cache the response.
+
+Also don't cache things if the `Cache-Control` header is missing.
+
+Tests
+-----
+
 Testing boilerplate:
 
     >>> import time

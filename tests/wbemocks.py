@@ -551,14 +551,6 @@ tkinter.font.Font = MockFont
 
 tkinter.Label = MockLabel
 
-def errors(f, *args, **kwargs):
-    try:
-        f(*args, **kwargs)
-    except Exception:
-        return True
-    else:
-        return False
-
 def breakpoint(name, *args):
     args_str = (", " + ", ".join(["'{}'".format(arg) for arg in args]) if args else "")
     print("breakpoint(name='{}'{})".format(name, args_str))

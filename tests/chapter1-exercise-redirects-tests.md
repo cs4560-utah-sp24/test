@@ -1,6 +1,31 @@
 Tests for WBE Chapter 1 Exercise `Redirects`
 ============================================
 
+Error codes in the 300 range request a redirect. When your browser
+encounters one, it should make a new request to the URL given in the
+`Location` header. Sometimes the `Location` header is a full URL, but
+sometimes it skips the host and scheme and just starts with a `/`
+(meaning the same host and scheme as the original request). The new
+URL might itself be a redirect, so make sure to handle that case. You
+don’t, however, want to get stuck in a redirect loop, so make sure to
+limit how many redirects your browser can follow in a row. You can
+test this with the URL http://browser.engineering/redirect, which
+redirects back to this page, and its `/redirect2` and `/redirect3`
+cousins which do more complicated redirect chains.
+
+Limit the number of redirects in a chain to 10. Define the following
+exception class and raise it for redirect loops:
+
+```
+class RedirectLoopError(Exception): pass
+```
+
+If you instead get a `RecursionError` that means you didn't detect a
+redirect loop.
+
+Tests
+-----
+
 Testing boilerplate:
 
     >>> import wbemocks
@@ -63,13 +88,14 @@ Now that you have seen the content of the redirect response we
     'I need to hide better'
 
 Redirection opens up the possibly for infinite loops, these should
-  lead to an error.
-The simplest infinite loop is a redirect to itself.
+lead to an error. The simplest infinite loop is a redirect to itself.
 
     >>> url = 'http://wbemocks.test/redirect4'
     >>> wbemocks.socket.redirect_url(from_url=url, to_url=url)
-    >>> wbemocks.errors(browser.URL(url).request)
-    True
+    >>> browser.URL(url).request() #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+      ...
+    browser.RedirectLoopError: Infinite redirect loop
 
 Infinite loops can be more complex, this is a two stage loop.
 
@@ -77,10 +103,14 @@ Infinite loops can be more complex, this is a two stage loop.
     >>> url2 = 'http://wbemocks.test/target5'
     >>> wbemocks.socket.redirect_url(from_url=url1, to_url=url2)
     >>> wbemocks.socket.redirect_url(from_url=url2, to_url=url1)
-    >>> wbemocks.errors(browser.URL(url1).request)
-    True
-    >>> wbemocks.errors(browser.URL(url2).request)
-    True
+    >>> browser.URL(url1).request() #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+      ...
+    browser.RedirectLoopError: Infinite redirect loop avoided
+    >>> browser.URL(url2).request() #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+      ...
+    browser.RedirectLoopError: Infinite redirect loop
 
 The browser should not perform a redirect for non 3XX status codes, even if
   a __Location__ header is present

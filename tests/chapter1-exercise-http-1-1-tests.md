@@ -1,6 +1,26 @@
 Tests for WBE Chapter 1 Exercise `HTTP/1.1`
 ===========================================
 
+Along with `Host`, send the `Connection` header in the request
+function with the value `close`. Your browser can now declare that it
+is using HTTP/1.1. Also add a `User-Agent` header. Its value can be
+whatever you want---it identifies your browser to the host. Make it
+easy to add further headers in the future.
+
+Add an optional `headers` argument to your `request` method. It should
+be a dictionary mapping header names to header values, which should be
+sent along with the request. If the `headers` argument includes a
+header your browser already sends, like `Host`, `User-Agent`, or
+`Connection`, the value in the `headers` argument should override the
+default.
+
+**Warning**: Default values for optional arguments in Python generally should
+not be mutable objects like dictionaries, for reasons detailed in the
+[Python guide](https://docs.python-guide.org/writing/gotchas/#default-args).
+
+Test
+----
+
 Testing boilerplate:
 
     >>> import time
@@ -46,14 +66,7 @@ Use a new mock HTTP server with a new URL to avoid possible caching errors.
     ...             "Body text").encode(),
     ...   method="GET")
 
-
-In addition to these changes, the signature of your `request` method should 
-  now include an optional argument, `headers`, which is a dictionary mapping 
-  strings to strings representing header names mapping to their values.
-
-**Warning**: Default values for optional arguments in Python generally should
-not be mutable objects like dictionaries, for reasons detailed in the
-[Python guide](https://docs.python-guide.org/writing/gotchas/#default-args).
+Let's test the extra headers feature:
     
     >>> extra_client_headers = {"ClientHeader" : "42"}
     >>> body = browser.URL(url).request(headers=extra_client_headers)
