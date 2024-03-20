@@ -9,11 +9,15 @@ to make them out.
 
 Specifically, detect the `\n` character and add a line break.
 
-(Side note: The difference  between `\n` and `\r\n` stems from old typewriter
-mechanisms. `\n` (line feed) moves down to a new line, while `\r`
-(carriage return)  moves the carriage to the beginning of the line.
-`\r\n`, combining both, is used in some systems (like Windows) to
-start a new line.)
+(Side note: The difference between `\n` and `\r\n` stems from old
+typewriter mechanisms. `\n` (line feed) moves down to a new line,
+while `\r` (carriage return) moves the carriage to the beginning of
+the line. `\r\n`, combining both, is used in some systems (like
+Windows) to start a new line.)
+
+Tests
+-----
+
 Testing boilerplate:
 
     >>> import wbemocks
@@ -22,24 +26,6 @@ Testing boilerplate:
     >>> _ = wbemocks.patch_canvas()
     >>> import browser
 
-Doctest note
-------------
-
-The following tests use a feature of doctest that allows matching
-  arbitrary text.
-This is so that these tests can specify only part of the output.
-An ellipse, `...`,  in the _output_ will match any text.
-We use this since your browser may or may not specify a font depending on if
-  the zoom exercise is complete.
-
-    >>> print("My name is Inigo Montoya")
-    My name is ...
-    >>> print("My name is Inigo Montoya")
-    My ... Montoya
-
-
-Testing `resize`
-------------------
 
 Let's override text spacing to make it easy to do math
 when testing:
@@ -72,10 +58,10 @@ Each additional newline moves the text down by twice `VSTEP`
     ...         "\r\n" +
     ...         "d"))
     >>> this_browser.load(browser.URL(url))
-    create_text: x=1 y=1 text=u...
-    create_text: x=1 y=7 text=d...
+    create_text: x=1 y=1 text=u
+    create_text: x=1 y=7 text=d
 
-Make sure that cursor_x is reset on a line break:
+Make sure that `cursor_x` is reset on a line break:
 
     >>> url = 'http://wbemocks.test/cursor-reset-test'
     >>> wbemocks.socket.respond_200(url=url, body="eren\r\nmika")

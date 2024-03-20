@@ -419,8 +419,8 @@ class MockCanvas:
             assert self.IMAGE_SIZE == (image.w, image.h), \
                 "Expecting a {}x{} image but got a {}x{} image".format(
                     *self.IMAGE_SIZE, image.w, image.h)
+        cmd = "create_image: x={} y={} image={}".format(x, y, image)
         self._draw(cmd)
-        cmd = "create_oval: x={} y={} image={}".format(x, y, image)
         if self._allow("create_image", y + image.h): print(cmd)
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):

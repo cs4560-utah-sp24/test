@@ -10,8 +10,7 @@ file contains tests for this functionality.
     >>> _ = wbemocks.ssl.patch().start()
     >>> import browser
 	
-Please also define a `set_parameters` function in your browser, with
-the following contents:
+Please copy this `set_parameters` function into your browser:
 
 ``` {.python}
 def set_parameters(**params):
@@ -23,8 +22,8 @@ def set_parameters(**params):
 	if "SCROLL_STEP" in params: SCROLL_STEP = params["SCROLL_STEP"]
 ```
 
-This function makes it possible to put the actual constant definitions
-in another file, if you'd like to do that.
+If you'd like to define these constants in some other file, you can do
+that by modifying this function definition.
 
 Testing `lex`
 -------------
@@ -94,8 +93,6 @@ Testing `Browser`
 
 The Browser class defines a simple web browser, with methods to load,
 draw to the screen, and scroll down.
-
-# Testing `Browser.load`
 
 Let's first mock a URL to load:
 

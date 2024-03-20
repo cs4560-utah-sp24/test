@@ -1,6 +1,20 @@
 Tests for WBE Chapter 2 Exercise `Resizing`
 ==============================================
 
+Make the browser resizable. To do so, pass the fill and expand
+arguments to `canvas.pack`, call and bind to the `<Configure>` event,
+which happens when the window is resized. The window’s new width and
+height can be found in the width and height fields on the event
+object. Remember that when the window is resized, the line breaks must
+change, so you will need to call layout again.
+
+Make sure that your `Browser` class handles resize events in a
+`resize` method.
+
+
+Tests
+-----
+
 Testing boilerplate:
 
     >>> import wbemocks
@@ -8,11 +22,6 @@ Testing boilerplate:
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
     >>> import browser
-
-Testing `resize`
-------------------
-
-Make sure that your `Browser` class handles resize events in a `resize` method.
 
 Let's override text spacing and line width to make it easy to do math
 when testing:
@@ -31,26 +40,26 @@ The `x` value is always one, but `y` increments, since the canvas is of width
 
     >>> this_browser = browser.Browser()
     >>> this_browser.load(browser.URL(url))
-    create_text: x=1 y=1 text=a...
-    create_text: x=1 y=2 text=b...
-    create_text: x=1 y=3 text=c...
-    create_text: x=1 y=4 text=d...
+    create_text: x=1 y=1 text=a
+    create_text: x=1 y=2 text=b
+    create_text: x=1 y=3 text=c
+    create_text: x=1 y=4 text=d
 
 Calling `resize` with a wider window should allow the text to be on one line.
 Now all the characters have the same `y`, but different `x` increments.
 
     >>> e = wbemocks.ResizeEvent(width=100, height=10)
     >>> this_browser.resize(e)
-    create_text: x=1 y=1 text=a...
-    create_text: x=2 y=1 text=b...
-    create_text: x=3 y=1 text=c...
-    create_text: x=4 y=1 text=d...
+    create_text: x=1 y=1 text=a
+    create_text: x=2 y=1 text=b
+    create_text: x=3 y=1 text=c
+    create_text: x=4 y=1 text=d
 
 Calling `resize` with a narrower window should split the text across two lines.
 
     >>> e = wbemocks.ResizeEvent(width=4, height=10)
     >>> this_browser.resize(e)
-    create_text: x=1 y=1 text=a...
-    create_text: x=2 y=1 text=b...
-    create_text: x=1 y=2 text=c...
-    create_text: x=2 y=2 text=d...
+    create_text: x=1 y=1 text=a
+    create_text: x=2 y=1 text=b
+    create_text: x=1 y=2 text=c
+    create_text: x=2 y=2 text=d

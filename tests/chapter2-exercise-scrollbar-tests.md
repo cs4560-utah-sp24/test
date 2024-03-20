@@ -8,10 +8,18 @@ scrollbar reflects what part of the full document the browser
 can see, as in the figure showing page and screen coordinates.
 Hide the scrollbar if the whole document fits onscreen.
 
-We'll only implement a subset of a real browser's scrollbar functionality. Specifically:
+We'll only implement a subset of a real browser's scrollbar
+functionality. Specifically:
 
-- You don't have to make the text narrower on the page. Instead, just make sure the scrollbar is positioned over any text.
-- You don't have to prevent scrolling past the bottom of the page. Just make sure the scrollbar is correctly positioned when the user is not past the bottom of the page.
+- The scrollbar should be a blue rectangle, 8 pixels wide, on the
+  right edge of the canvas.
+
+- You don't have to make the text narrower on the page. Instead, just
+  make sure the scrollbar is positioned over any text.
+
+- You don't have to prevent scrolling past the bottom of the page.
+  Just make sure the scrollbar is correctly positioned when the user
+  is not past the bottom of the page.
 
 Tests
 -----
@@ -37,9 +45,8 @@ pixels tall, the page is a total of 200 pixels tall. Only 100 pixels
 appears on the screen at once, so the scrollbar should be 50 pixels
 tall.
 
-The scrollbar should be a blue rectangle, 8 pixels wide, on the right
-edge of the canvas. To make the scrollbar always renders on top of
-other content make sure to draw it last.
+To make the scrollbar always renders on top of other content make sure
+to draw it last.
 
     >>> this_browser = browser.Browser()
     >>> this_browser.load(browser.URL(url))
