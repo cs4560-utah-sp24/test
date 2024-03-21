@@ -103,7 +103,7 @@ class socket:
         assert self.connected and self.host and self.port, \
             "You cannot call makefile() on a socket until you call connect()"
 
-        assert self.request and self.method and self.path \
+        assert self.request and self.method and self.path, \
             "You didn't send anything to the socket before calling makefile() on it"
 
         if self.port == 80 and self.scheme == "http":
