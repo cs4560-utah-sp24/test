@@ -2,20 +2,23 @@ Tests for WBE Chapter 8 Exercise `Rich Buttons`
 ===============================================
 
 Make it possible for a button to contain arbitrary elements as
-children, and render them correctly. The children should be contained
-inside the button instead of spilling out---this can make a button
-really tall. Think about edge cases, like a button that contains
-another button, an input area, or a link, and test real browsers to
-see what they do.
+children, and render them correctly. ~~The children should be
+contained inside the button instead of spilling out---this can make a
+button really tall.~~ Think about edge cases, like a button that
+contains another button, an input area, or a link, and test real
+browsers to see what they do.
 
 You don't need to handle buttons inside buttons---a normal browser
 prevents that during parsing. You do, however, need to handle links,
 input areas, or even paragraphs inside a button.
 
+You also don't need to prevent the button contents from spilling out.
+(It would be make for a very hard execise.) Instead, make all buttons
+`INPUT_WIDHT_PX` by lineheight no matter their content.
+
 To do so, each `<button>` should create a `BlockLayout` child to draw
-its contents. All buttons should be `INPUT_WIDHT_PX` by lineheight no
-matter their content. (Avoiding this is pretty complex.) You'll still
-need to add a little bit of multi-pass layout to avoid issues.
+its contents. You'll need to add a little bit of multi-pass layout to
+avoid layout dependency issues.
 
 Make sure click handling works correctly when buttons contain
 clickable objects like links. For example, in this button
