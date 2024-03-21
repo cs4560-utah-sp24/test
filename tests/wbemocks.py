@@ -78,7 +78,7 @@ class socket:
         if self.method == "POST":
             req = self.request.decode("latin1")
             assert "\r\n\r\n" in req, "HTTP request does not separate headers from body with an empty line"
-            beginning, self.body = req.split("\r\n\r\n")
+            beginning, self.body = req.split("\r\n\r\n", 1)
             headers = [item.split(":", 1) for item in beginning.split("\r\n")[1:]]
             content_length = None
             for tup in headers:
