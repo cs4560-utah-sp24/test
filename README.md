@@ -106,7 +106,9 @@ runs tests for the file URLs exercise.
 
 The tests themselves are written in Markdown using [doctest][doctest]
 to run them. Any failing tests will output the relevant paragraph of
-Markdown explanation as well as the expected and actual output.
+Markdown explanation as well as the expected and actual output. To
+help with `print`-debugging, any line of output beginning with `!dbg`
+is ignored.
 
 [doctest]: https://docs.python.org/3/library/doctest.html
 

@@ -199,6 +199,22 @@ def patched_get_doctest(self, string, globs, name, filename, lineno):
     out._failed_examples = []
     return out
 
+old_check_output = doctest.OutputChecker.check_output
+
+def patched_check_output(self, want, got, optionflags):
+    """
+    Strips all debug lines out from `got` before checking output. By
+    stripping them here but not in output_difference, we end up
+    calling debug-only diffs a successful result, but still print the
+    output when the diff has non-debug-only lines.
+    """
+    got_no_debug = "\n".join([
+        line for line in
+        got.split("\n")
+        if not line.startswith("!dbg")
+    ])
+    return old_check_output(self, want, got_no_debug, optionflags)
+
 def patched_failure_header(self, test, example):
     """
     Print the full block being executed, including the text
@@ -279,6 +295,7 @@ def patch_doctest():
     doctest.DocTestRunner.report_failure = patched_report_failure
     doctest.DocTestRunner.report_unexpected_exception = patched_report_unexpected_exception
     doctest.DocTestRunner._failure_header = patched_failure_header
+    doctest.OutputChecker.check_output = patched_check_output
     doctest._SpoofOut.truncate = patched_truncate
     doctest.DocTestParser.parse = patched_parse
     doctest.DocTestParser.get_doctest = patched_get_doctest
