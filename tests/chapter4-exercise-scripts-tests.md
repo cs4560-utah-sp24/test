@@ -1,14 +1,13 @@
 Tests for WBE Chapter 4 Exercise `Scripts`
 ==========================================
 
+Scripts: JavaScript code embedded in a `<script>` tag uses the left
+angle bracket to mean less-than. Modify your lexer so that the
+contents of `<script>` tags are treated specially: no tags are allowed
+inside `<script>`, except the `</script>` close tag.
+
 Description
 ------------
-
-Scripts: JavaScript code embedded in a `<script>` tag uses the left angle 
-  bracket to mean less-than. 
-Modify your lexer so that the contents of `<script>` tags are treated 
-  specially: no tags are allowed inside `<script>`, except the `</script>` 
-  close tag.
 
 Testing boilerplate:
 

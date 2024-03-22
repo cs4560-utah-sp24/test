@@ -1,6 +1,14 @@
 Tests for WBE Chapter 3 Exercise `Centered Text`
 ==============================================
 
+This book’s page titles are centered; make your browser do the same
+for text between `<h1 class="title">` and `</h1>`. Each line has to be
+centered individually, because different lines will have different
+lengths.
+
+Tests
+-----
+
 Testing boilerplate:
 
     >>> import wbemocks

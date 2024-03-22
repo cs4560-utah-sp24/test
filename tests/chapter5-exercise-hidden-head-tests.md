@@ -1,13 +1,13 @@
 Tests for WBE Chapter 5 Exercise `Hidden Head`
 =======================
 
-Description
------------
+There’s a good chance your browser is still showing scripts, styles,
+and page titles at the top of every page you visit. Make it so that
+the `<head>` element and its contents are never displayed. Those
+elements should still be in the HTML tree, but not in the layout tree.
 
-There’s a good chance your browser is still showing scripts, styles, and page 
-  titles at the top of every page you visit. 
-Make it so that the `<head>` element and its contents are never displayed. 
-Those elements should still be in the HTML tree, but not in the layout tree.
+Tests
+-----
 
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()

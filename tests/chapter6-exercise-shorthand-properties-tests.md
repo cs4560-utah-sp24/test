@@ -22,8 +22,8 @@ If the user provides fewer than 4 fields, use them in this order:
 - If more than four fields are provided, join the fourth onward with
   spaces to make up the `font-family`.
 
-Description
------------
+Tests
+-----
 
 We'll have a helper function to print CSS key-value pairs:
 

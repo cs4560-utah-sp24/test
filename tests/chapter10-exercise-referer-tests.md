@@ -18,8 +18,8 @@ Note the differences in spelling, the headers are `Referer` and
 [wiki-referer]: https://en.wikipedia.org/wiki/HTTP_referer#Etymology
 
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 

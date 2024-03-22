@@ -1,6 +1,14 @@
 Tests for WBE Chapter 3 Exercise `Small Caps`
 ==============================================
 
+Make the `<abbr>` element render text in small caps~~, like this~~.
+Inside an `<abbr>` tag, lower-case letters should be small,
+capitalized, and bold, while all other characters (upper case,
+numbers, etc) should be drawn in the normal font.
+
+Tests
+-----
+
 Testing boilerplate:
 
     >>> import wbemocks
@@ -8,7 +16,8 @@ Testing boilerplate:
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
     >>> import browser
-    >>> browser.WIDTH = 800
+    >>> browser.WIDTH
+    800
     >>> def test_layout(text):
     ...   dl = browser.Layout(browser.lex(text)).display_list
     ...   return wbemocks.normalize_display_list(dl)

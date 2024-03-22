@@ -1,9 +1,6 @@
 Tests for WBE Chapter 7 Exercise `Bookmarks`
 =======================
 
-Description
------------
-
 Implement basic bookmarks. Add a button to the browser chrome;
 clicking it should bookmark the page. When you’re looking at a
 bookmarked page, that bookmark button should look different (maybe
@@ -58,8 +55,8 @@ class Rect:
             self.left, self.top, self.right, self.bottom)
 ```
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 

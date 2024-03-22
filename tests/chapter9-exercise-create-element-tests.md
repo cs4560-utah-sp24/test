@@ -9,8 +9,8 @@ Implement all three methods.
 You don't have to handle edge cases; the tests only call `appendChild`
 and `insertBefore` to add newly created elements with valid arguments.
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 

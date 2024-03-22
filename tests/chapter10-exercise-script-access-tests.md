@@ -13,8 +13,8 @@ Implementation is made easier since the browser supports one cookie
 per host, so getting `document.cookie` will return either 0 or 1
 cookie and setting it will overwrite the cookie (if allowable).
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 

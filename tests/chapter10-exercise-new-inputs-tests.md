@@ -7,8 +7,8 @@ should show ther contents as stars instead of characters.
 
 To hide the input element set its width and height to `0.0`
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 

@@ -5,8 +5,8 @@ Add support for the `children` property on JavaScript `Node`s.
 `Node.children` returns the immediate `Element` children of a node, as
 an array. `Text` children are not included.
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 

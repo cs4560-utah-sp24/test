@@ -17,17 +17,15 @@ elements gets made into a single `BlockLayout`.
 
 Some quick notes:
 
-- As directed, modify `BlockLayout` to take a list of nodes as an
-  argument. You can assume that in block layout mode, there will only
-  be one node in the list.
+- Add an optional `more_nodes` argument to `BlockLayout`. You can
+  assume that it will only be used in inline layout mode.
   
-- However, some of the tests will create `BlockLayout` elements by
-  passing a single node in. So check if the "list" of nodes is
-  actually a single `Element` and if so wrap that in a list.
+- Make sure to process all of the `more_nodes` after processing the
+  main `node`.
   
-- When creating child `BlockLayout` elements, put consecutive text
-  nodes and elements not in `BLOCK_ELEMENTS` into the same
-  `BlockLayout`
+- When creating child `BlockLayout` elements, group runs of text nodes
+  and elements not in `BLOCK_ELEMENTS` and make a single `BlockLayout`
+  out of each run.
 
 Tests
 -----

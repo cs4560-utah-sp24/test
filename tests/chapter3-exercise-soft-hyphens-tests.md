@@ -1,6 +1,18 @@
 Tests for WBE Chapter 3 Exercise `Soft Hyphens`
 ==============================================
 
+The soft hyphen character, written `\N{soft hyphen}` in Python,
+represents a place where the text renderer can, but doesn’t have to,
+insert a hyphen and break the word across lines. Add support for it.
+If a word doesn’t fit at the end of a line, check if it has soft
+hyphens, and if so break the word across lines. Remember that a word
+can have multiple soft hyphens in it, and make sure to draw a hyphen
+when you break a word. The word
+“super­cala­fraga­listic­expi­ala­do­shus” is a good test case.
+
+Tests
+-----
+
 Testing boilerplate:
 
     >>> import wbemocks

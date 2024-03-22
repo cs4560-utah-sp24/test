@@ -1,6 +1,13 @@
 Tests for WBE Chapter 3 Exercise `Superscripts`
 ==============================================
 
+Add support for the `<sup>` tag. Text in this tag should be smaller
+(perhaps half the normal text size) and be placed so that the top of a
+superscript lines up with the top of a normal letter.
+
+Tests
+-----
+
 Testing boilerplate:
 
     >>> import wbemocks

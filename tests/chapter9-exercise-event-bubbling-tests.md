@@ -15,8 +15,8 @@ clicks on a link from actually following the link.
 Do not change the return value of `dispatchEvent` (this is a
 publically accessible function that web pages can call).
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 

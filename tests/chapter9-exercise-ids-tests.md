@@ -12,8 +12,8 @@ that ids will not collide. You don't have to (but can if you'd like)
 support adding and removing elements through other APIs your browser
 supports.
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 

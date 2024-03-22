@@ -3,7 +3,7 @@ Tests for WBE Chapter 4 Exercise `Quoted attributes`
 
 Quoted attributes can contain spaces and right angle brackets. Fix the
 lexer so that this is supported properly. Hint: the current lexer is a
-finite state machine, with two states (determined by in_tag). You’ll
+finite state machine, with two states (determined by `in_tag`). You’ll
 need more states.
 
 For this assignment, you don't need to handle left or right angle
@@ -11,7 +11,6 @@ brackets in attributes, but you do need to handle spaces.
 
 Description
 ------------
-
 
 Testing boilerplate:
 

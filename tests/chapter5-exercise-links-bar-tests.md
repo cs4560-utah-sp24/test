@@ -1,6 +1,17 @@
 Tests for WBE Chapter 5 Exercise `Links Bar`
 ============================================
 
+At the top and bottom of each chapter of this book is a gray bar
+naming the chapter and offering back and forward links. It is enclosed
+in a `<nav class="links">` tag. Have your browser give this links bar
+the light gray background a real browser would.
+
+Give links bars a background of `lightgray`. Normal `<nav>` elements
+are *not* the links bar, and don't have any special styling.
+
+Tests
+-----
+
     >>> import sys
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
@@ -9,9 +20,6 @@ Tests for WBE Chapter 5 Exercise `Links Bar`
     >>> import browser
 
 The links bar in each chapter is enclosed in `<nav class="links">`.
-Importantly, normal `<nav>` elements are *not* the links bar, and
-don't have any special styling. Meanwhile, actual links bars should
-have a background of `lightgray`.
 
 Let's test that the links bar is displayed correctly by looking at the
 HTML tree, layout tree, and display list. First, let's test that

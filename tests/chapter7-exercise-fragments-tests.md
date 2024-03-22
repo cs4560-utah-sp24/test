@@ -1,9 +1,6 @@
 Tests for WBE Chapter 7 Exercise `Fragments`
 =======================
 
-Description
------------
-
 URLs can contain a fragment, which comes at the end of a URL and is
 separated from the path by a hash sign `#`. When the browser navigates
 to a URL with a fragment, it should scroll the page so that the

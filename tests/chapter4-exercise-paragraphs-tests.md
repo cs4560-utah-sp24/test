@@ -1,13 +1,19 @@
 Tests for WBE Chapter 4 Exercise `Paragraphs`
 =============================================
 
+It’s not clear what it would mean for one paragraph to contain
+another. Change the parser so that a document like
+`<p>hello<p>world</p>` results in two sibling paragraphs instead of
+one paragraph inside another; real browsers do this too. ~~Do the same
+for `<li>` elements, but make sure nested lists are still possible.~~
+
+Make sure to handle cases like `<p><b><p>`. In this case, all tags
+inside the first paragraph should be closed and then re-opened in the
+second paragraph.
+
+
 Description
 ------------
-
-It’s not clear what it would mean for one paragraph to contain another. 
-Change the parser so that a document like `<p>hello<p>world</p>` results in two
-  sibling paragraphs instead of one paragraph inside another; real browsers do 
-  this too.
 
 Testing boilerplate:
 

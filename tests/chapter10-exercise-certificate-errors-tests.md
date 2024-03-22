@@ -21,8 +21,8 @@ instead display the following web page:
 Secure Connection Failed
 ```
 
-Test code
----------
+Tests
+-----
 
 Boilerplate.
 
