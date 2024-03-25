@@ -251,9 +251,24 @@ class SilentTk:
     def __init__(self, *args, **kwargs):
         global TK_INITIALIZED
         TK_INITIALIZED = True
+        self.canvas_count = 0
         
     def bind(self, event, callback):
         pass
+    
+    def create_canvas(self, *args, **kwargs):
+        self.canvas_count += 1
+        if self.canvas_count > 1:
+            raise Exception("More than one Canvas has been created in a Tk instance.")
+        return SilentCanvas(*args, **kwargs)
+    
+original_canvas_init = tkinter.Canvas.__init__
+def new_canvas_init(self, master=None, *args, **kwargs):
+    if isinstance(master, SilentTk):
+        master.create_canvas()
+    original_canvas_init(self, master, *args, **kwargs)
+
+tkinter.Canvas.__init__ = new_canvas_init
 
 tkinter.Tk = SilentTk
     
@@ -324,6 +339,7 @@ tkinter.PhotoImage = PhotoImage
 TK_CANVAS_CALLS = list()
 class SilentCanvas:
     def __init__(self, *args, **kwargs):
+        pack_called = False
         global TK_CANVAS_CALLS
         TK_CANVAS_CALLS = list()
 
@@ -353,7 +369,8 @@ class SilentCanvas:
         pass
 
     def pack(self, expand=None, fill=None):
-        pass
+        assert not self.pack_called, "pack should only be called once"
+        self.pack_called = True
 
     def delete(self, v):
         global TK_CANVAS_CALLS
