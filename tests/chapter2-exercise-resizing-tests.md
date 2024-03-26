@@ -9,7 +9,7 @@ object. Remember that when the window is resized, the line breaks must
 change, so you will need to call layout again.
 
 Make sure that your `Browser` class handles resize events in a
-`resize` method.
+`resize` method. Do not redownload the page in `resize`.
 
 
 Tests
@@ -45,8 +45,17 @@ The `x` value is always one, but `y` increments, since the canvas is of width
     create_text: x=1 y=3 text=c
     create_text: x=1 y=4 text=d
 
+Now we change what `url` points to to make sure we don't redownload
+the page when resizing:
+
+    >>> wbemocks.socket.respond_200(url=url,
+    ...   body="efgh")
+
 Calling `resize` with a wider window should allow the text to be on one line.
 Now all the characters have the same `y`, but different `x` increments.
+
+If you see `efgh` instead of `abcd`, your browser is re-downloading
+the page when resizing; don't do that.
 
     >>> e = wbemocks.ResizeEvent(width=100, height=10)
     >>> this_browser.resize(e)
