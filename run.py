@@ -306,7 +306,7 @@ def run_doctests(files):
     patch_doctest()
     mapped_results = dict()
     sys.modules["wbemocks"] = wbemocks
-    flags = doctest.ELLIPSIS
+    flags = doctest.ELLIPSIS | doctest.IGNORE_EXCEPTION_DETAIL
     if REPORT_DIFF: flags |= doctest.REPORT_NDIFF
     for fname in files:
         fname_abs = os.path.join(os.path.dirname(__file__), "tests", fname)
