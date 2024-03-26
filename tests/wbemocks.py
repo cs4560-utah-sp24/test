@@ -254,7 +254,7 @@ class SilentTk:
     def __init__(self, *args, **kwargs):
         global TK_INITIALIZED
         TK_INITIALIZED = True
-        self.canvas_count = 0
+        self.has_canvas = False
         
     def bind(self, event, callback):
         pass
@@ -340,11 +340,12 @@ tkinter.PhotoImage = PhotoImage
 
 TK_CANVAS_CALLS = list()
 class SilentCanvas:
-    def __init__(self, *args, **kwargs):
-        global is_potentially_resizing
-        pack_called = False
+    def __init__(self, parent, *args, **kwargs):
         global TK_CANVAS_CALLS
         TK_CANVAS_CALLS = list()
+        assert not parent.has_canvas, "Each Tk window should only have one Canvas"
+        parent.has_canvas = True
+        self.pack_called = False
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):
         global TK_CANVAS_CALLS
@@ -372,7 +373,7 @@ class SilentCanvas:
         pass
 
     def pack(self, expand=None, fill=None):
-        assert not self.pack_called, "pack should only be called once"
+        assert not self.pack_called, "Only call pack() once on each Canvas"
         self.pack_called = True
 
     def delete(self, v):
@@ -393,6 +394,8 @@ class MockCanvas:
     LOG = []
 
     def __init__(self, *args, **kwargs):
+        assert not parent.has_canvas, "Each Tk window should only have one Canvas"
+        parent.has_canvas = True
         self.pack_called = False
 
     def _allow(self, cmdname, ytop):
@@ -460,7 +463,7 @@ class MockCanvas:
         if self._allow("create_text", y2): print(cmd)
 
     def pack(self, expand=None, fill=None):
-        assert not self.pack_called, "pack should only be called once"
+        assert not self.pack_called, "Only call pack() once on each Canvas"
         self.pack_called = True
 
     def delete(self, v):
