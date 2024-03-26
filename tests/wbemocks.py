@@ -34,6 +34,7 @@ def fake_badssl(hostname):
         raise SSLCertVerificationError()
 
 NO_CACHE = False
+is_resizing = False
 class socket:
     URLs = {}
     Requests = {}
@@ -71,6 +72,8 @@ class socket:
             self.scheme = "http"
 
     def send(self, text):
+        global is_resizing
+        assert not is_resizing, "No new requests should be issued during resizing"
         self.request += text
         self.method, self.path, _ = self.request.decode("latin1").split(" ", 2)
         socket.recent_request_path = self.path
@@ -251,9 +254,23 @@ class SilentTk:
     def __init__(self, *args, **kwargs):
         global TK_INITIALIZED
         TK_INITIALIZED = True
+        self.has_canvas = False
         
     def bind(self, event, callback):
         pass
+    
+    def create_canvas(self, *args, **kwargs):
+        self.canvas_count += 1
+        assert self.canvas_count <= 1, "Only one Canvas instance should be created per Tk object"
+        return SilentCanvas(*args, **kwargs)
+    
+original_canvas_init = tkinter.Canvas.__init__
+def new_canvas_init(self, master=None, *args, **kwargs):
+    if isinstance(master, SilentTk):
+        master.create_canvas()
+    original_canvas_init(self, master, *args, **kwargs)
+
+tkinter.Canvas.__init__ = new_canvas_init
 
 tkinter.Tk = SilentTk
     
@@ -323,9 +340,12 @@ tkinter.PhotoImage = PhotoImage
 
 TK_CANVAS_CALLS = list()
 class SilentCanvas:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, parent, *args, **kwargs):
         global TK_CANVAS_CALLS
         TK_CANVAS_CALLS = list()
+        assert not parent.has_canvas, "Each Tk window should only have one Canvas"
+        parent.has_canvas = True
+        self.pack_called = False
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):
         global TK_CANVAS_CALLS
@@ -353,7 +373,8 @@ class SilentCanvas:
         pass
 
     def pack(self, expand=None, fill=None):
-        pass
+        assert not self.pack_called, "Only call pack() once on each Canvas"
+        self.pack_called = True
 
     def delete(self, v):
         global TK_CANVAS_CALLS
@@ -373,7 +394,9 @@ class MockCanvas:
     LOG = []
 
     def __init__(self, *args, **kwargs):
-        pass
+        assert not parent.has_canvas, "Each Tk window should only have one Canvas"
+        parent.has_canvas = True
+        self.pack_called = False
 
     def _allow(self, cmdname, ytop):
         if self.HIDE_COMMANDS == "*": return False
@@ -440,7 +463,8 @@ class MockCanvas:
         if self._allow("create_text", y2): print(cmd)
 
     def pack(self, expand=None, fill=None):
-        pass
+        assert not self.pack_called, "Only call pack() once on each Canvas"
+        self.pack_called = True
 
     def delete(self, v):
         assert v == "all"
