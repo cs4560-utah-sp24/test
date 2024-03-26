@@ -97,7 +97,7 @@ Create an input and add it inside the `<p>` before the `<b>`
 
     >>> browser.print_tree(this_browser.active_tab.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=30.0)
+       BlockLayout(x=13, y=18, width=774, height=30.0)...
          BlockLayout(x=13, y=18, width=774, height=30.0)
            BlockLayout(x=13, y=18, width=774, height=15.0)
              LineLayout(x=13, y=18, width=774, height=15.0)
