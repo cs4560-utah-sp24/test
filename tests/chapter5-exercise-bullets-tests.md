@@ -66,3 +66,16 @@ It is possible that multiple lines are contained in a `li`, and in these
     DrawRect(top=26.0 left=24 bottom=30.0 right=28 color=black)
     DrawText(top=21.0 left=39 bottom=37.0 text=hello font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=41.0 left=39 bottom=57.0 text=world font=Font size=16 weight=normal slant=roman style=None)
+
+Verify that <li> tag widths are reduced to account for bullet spacing, not just their horizontal starting positions.
+
+    >>> content = "<html><body><li>Item1</li><li>Item2</li></body></html>"
+    >>> url = browser.URL(wbemocks.socket.serve(content))
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(url)
+    >>> browser.print_tree(this_browser.document)
+     DocumentLayout()
+       BlockLayout(x=13, y=18, width=774, height=40.0)
+         BlockLayout(x=13, y=18, width=774, height=40.0)
+           BlockLayout(x=39, y=18, width=748, height=20.0)
+           BlockLayout(x=39, y=38.0, width=748, height=20.0)

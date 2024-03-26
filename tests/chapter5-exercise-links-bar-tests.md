@@ -67,7 +67,7 @@ Next, let's test that a proper links bar has a `lightgray` background:
            BlockLayout(x=13, y=18, width=774, height=20.0)
            BlockLayout(x=13, y=38.0, width=774, height=20.0)
     >>> dl = []
-    >>> browser.paint_tree(doc, dl)
+    >>> browser. (doc, dl)
     >>> wbemocks.print_list(dl)
     DrawRect(top=18 left=13 bottom=38.0 right=787 color=lightgray)
     DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
@@ -145,3 +145,59 @@ very narrow browsers (like on mobile).
     DrawText(top=61.0 left=13 bottom=77.0 text=B font=Font size=16 weight=normal slant=roman style=None)
      
 Importantly, the background in this case is big enough to contain both lines.
+
+Ensure `<nav>` elements without a class attribute correctly split multiple words and do not display any special background styling.
+
+    >>> nodes = browser.HTMLParser("""<!doctype html>
+    ... <nav>Word1 Word2 Word3</nav>B""").parse()
+    >>> browser.print_tree(nodes)
+     <html>
+       <body>
+         <nav>
+           'Word1 Word2 Word3'
+         'B'
+
+    >>> doc = browser.DocumentLayout(nodes)
+    >>> doc.layout()
+    >>> browser.print_tree(doc)
+     DocumentLayout()
+       BlockLayout(x=13, y=18, width=774, height=40.0)
+         BlockLayout(x=13, y=18, width=774, height=40.0)
+           BlockLayout(x=13, y=18, width=774, height=20.0)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0)
+
+    >>> dl = []
+    >>> browser.paint_tree(doc, dl)
+    >>> wbemocks.print_list(dl)
+    DrawText(top=21.0 left=13 bottom=37.0 text=Word1 font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=21.0 left=109 bottom=37.0 text=Word2 font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=21.0 left=205 bottom=37.0 text=Word3 font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
+
+
+Make sure your browser treats the class attribute in HTML case-insensitively, recognizing class names regardless of letter case.
+
+    >>> nodes = browser.HTMLParser("""<!doctype html>
+    ... <nav class="LINKS">A</nav>B""").parse()
+    >>> browser.print_tree(nodes)
+     <html>
+       <body>
+         <nav class="LINKS">
+           'A'
+         'B'
+
+    >>> doc = browser.DocumentLayout(nodes)
+    >>> doc.layout()
+    >>> browser.print_tree(doc)
+     DocumentLayout()
+       BlockLayout(x=13, y=18, width=774, height=40.0)
+         BlockLayout(x=13, y=18, width=774, height=40.0)
+           BlockLayout(x=13, y=18, width=774, height=20.0)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0)
+
+    >>> dl = []
+    >>> browser.paint_tree(doc, dl)
+    >>> wbemocks.print_list(dl)
+    DrawRect(top=18 left=13 bottom=38.0 right=787 color=lightgray)
+    DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
