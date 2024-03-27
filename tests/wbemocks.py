@@ -180,6 +180,8 @@ class socket:
 
     @classmethod
     def last_request(cls, url):
+        assert url in cls.Requests, \
+            "Your browser should be requesting '{}', but it isn't".format(url)
         return cls.Requests[url][-1]
 
     @classmethod
