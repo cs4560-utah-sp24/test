@@ -268,6 +268,6 @@ Ensure fragment identifiers in URLs are differentiated based on case sensitivity
     >>> int(this_browser.active_tab.scroll)
     258
 
-    >>> this_browser.active_tab.load(browser.URL(str(url) + "#Fragment"))
+    >>> this_browser.active_tab.load(browser.URL(url + "#Fragment"))
     >>> int(this_browser.active_tab.scroll)
     18
