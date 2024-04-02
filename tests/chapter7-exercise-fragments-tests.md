@@ -13,6 +13,9 @@ fragment links.
 You'll want to parse the fragment in the `URL` constructor and add it
 to the printed output, like this:
 
+Clicking a fragment link should update the displayed URL in the address bar,
+scrolling the identified element to the screen's top.
+
 ```
 class URL:
     def __repr__(self):
@@ -252,3 +255,30 @@ Clicking a fragment link when a fragment url is already loaded should
     URL(scheme=http, host=test, port=80, path='/4', fragment=relpath)
     >>> this_browser.tabs[0].scroll
     543.0
+
+Ensure fragment identifiers in URLs are differentiated based on case sensitivity during comparison.
+
+    >>> body = ('<h1 id="Fragment">Upper Case Fragment</h1>' +
+    ...         'a<br>'*15 +
+    ...         '<h1 id="fragment">Lower Case fragment</h1>' +
+    ...         'b<br>'*40)
+    >>> url = browser.URL(wbemocks.socket.serve(body))
+    >>> this_browser.new_tab(url)
+    create_text: x=13 y=80.25 text=Upper font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=85 y=80.25 text=Case font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=145 y=80.25 text=Fragment font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=13 y=95.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=13 y=110.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=13 y=125.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=13 y=140.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=13 y=155.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=13 y=170.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
+    create_text: x=13 y=185.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
+
+    >>> this_browser.active_tab.load(browser.URL(str(url) + "#fragment"))
+    >>> this_browser.active_tab.scroll
+    258.0
+
+    >>> this_browser.active_tab.load(browser.URL(str(url) + "#Fragment"))
+    >>> this_browser.active_tab.scroll
+    18
