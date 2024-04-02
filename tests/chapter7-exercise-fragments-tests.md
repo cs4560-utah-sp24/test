@@ -264,7 +264,7 @@ Ensure fragment identifiers in URLs are differentiated based on case sensitivity
     ...         'b<br>'*40)
     >>> url = wbemocks.socket.serve(body)
 
-    >>> this_browser.active_tab.load(browser.URL(str(url) + "#fragment"))
+    >>> this_browser.active_tab.load(browser.URL(url + "#fragment"))
     >>> int(this_browser.active_tab.scroll)
     258
 
