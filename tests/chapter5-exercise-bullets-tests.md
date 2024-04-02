@@ -69,7 +69,7 @@ It is possible that multiple lines are contained in a `li`, and in these
 
 Verify that <li> tag widths are reduced to account for bullet spacing, not just their horizontal starting positions.
 
-    >>> content = "<html><body><li>Item1</li><li>Item2</li></body></html>"
+    >>> content = "<ul><li>Item1</li><li>Item2</li></ul>"
     >>> url = browser.URL(wbemocks.socket.serve(content))
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
@@ -77,5 +77,6 @@ Verify that <li> tag widths are reduced to account for bullet spacing, not just 
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=40.0)
          BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=39, y=18, width=748, height=20.0)
-           BlockLayout(x=39, y=38.0, width=748, height=20.0)
+           BlockLayout(x=13, y=18, width=774, height=40.0)
+             BlockLayout(x=39, y=18, width=748, height=20.0)
+             BlockLayout(x=39, y=38.0, width=748, height=20.0)

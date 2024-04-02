@@ -67,7 +67,7 @@ Next, let's test that a proper links bar has a `lightgray` background:
            BlockLayout(x=13, y=18, width=774, height=20.0)
            BlockLayout(x=13, y=38.0, width=774, height=20.0)
     >>> dl = []
-    >>> browser. (doc, dl)
+    >>> browser.paint_tree(doc, dl)
     >>> wbemocks.print_list(dl)
     DrawRect(top=18 left=13 bottom=38.0 right=787 color=lightgray)
     DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
@@ -199,5 +199,30 @@ Make sure your browser treats the class attribute in HTML case-insensitively, re
     >>> browser.paint_tree(doc, dl)
     >>> wbemocks.print_list(dl)
     DrawRect(top=18 left=13 bottom=38.0 right=787 color=lightgray)
+    DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
+    
+Test for not using substring match, like class=`blinks`
+=====================================================
+
+    >>> nodes = browser.HTMLParser("""<!doctype html>
+    ... <nav class="blinks">A</nav>B""").parse()
+    >>> browser.print_tree(nodes)
+     <html>
+       <body>
+         <nav class="blinks">
+           'A'
+         'B'
+    >>> doc = browser.DocumentLayout(nodes)
+    >>> doc.layout()
+    >>> browser.print_tree(doc)
+     DocumentLayout()
+       BlockLayout(x=13, y=18, width=774, height=40.0)
+         BlockLayout(x=13, y=18, width=774, height=40.0)
+           BlockLayout(x=13, y=18, width=774, height=20.0)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0)
+    >>> dl = []
+    >>> browser.paint_tree(doc, dl)
+    >>> wbemocks.print_list(dl)
     DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
