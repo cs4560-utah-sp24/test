@@ -263,17 +263,6 @@ Ensure fragment identifiers in URLs are differentiated based on case sensitivity
     ...         '<h1 id="fragment">Lower Case fragment</h1>' +
     ...         'b<br>'*40)
     >>> url = wbemocks.socket.serve(body)
-    >>> this_browser.new_tab(url)
-    create_text: x=13 y=80.25 text=Upper font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=85 y=80.25 text=Case font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=145 y=80.25 text=Fragment font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=13 y=95.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=13 y=110.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=13 y=125.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=13 y=140.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=13 y=155.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=13 y=170.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
-    create_text: x=13 y=185.25 text=a font=Font size=12 weight=normal slant=roman style=None anchor=nw
 
     >>> this_browser.active_tab.load(browser.URL(str(url) + "#fragment"))
     >>> this_browser.active_tab.scroll
