@@ -157,3 +157,13 @@ The first display list entry is now a gray rect, since it's for a `<pre>` elemen
 
     >>> this_browser.display_list[0]
     DrawRect(top=18 left=13 bottom=38.0 right=787 color=gray)
+
+Verify that `<br>` tags effectively create line breaks within the text content.
+
+    >>> html = "<p>Line1<br>Line2</p>"
+    >>> url = browser.URL(wbemocks.socket.serve(html))
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(url)
+    >>> this_browser.display_list #doctest: +NORMALIZE_WHITESPACE
+    [DrawText(top=21.0 left=13 bottom=37.0 text=Line1 font=Font size=16 weight=normal slant=roman style=None), 
+    DrawText(top=41.0 left=13 bottom=57.0 text=Line2 font=Font size=16 weight=normal slant=roman style=None)]
