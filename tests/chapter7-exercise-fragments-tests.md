@@ -253,8 +253,8 @@ Clicking a fragment link when a fragment url is already loaded should
 
     >>> this_browser.tabs[0].url
     URL(scheme=http, host=test, port=80, path='/4', fragment=relpath)
-    >>> this_browser.tabs[0].scroll
-    543.0
+    >>> int(this_browser.active_tab.scroll)
+    543
 
 Ensure fragment identifiers in URLs are differentiated based on case sensitivity during comparison.
 
