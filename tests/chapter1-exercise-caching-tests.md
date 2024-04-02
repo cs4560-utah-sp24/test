@@ -97,7 +97,7 @@ Here we cache, then change, another URL and check that both of the URLs cached
     'Keep this for a while'
     
 A cached entry can be invalidated by time elapsing, so here we cache a response
-  with a one second life and wait for it to be invalidated.
+with a one second life and wait for it to be invalidated.
 
     >>> url = "http://wbemocks.test/cache_me3"
     >>> wbemocks.socket.respond(url=url, 
@@ -130,42 +130,41 @@ The responses cached earlier should still be valid.
     >>> body
     'Keep this for a while, also'
     
-    
- Objective: Verify that your caching mechanism doesn't serve stale data when the scheme, host, or port of the requested URL changes.
+Finally, the caching shouldn't apply if the scheme, host, or port changes.
  
-    >>> URL_base = "http://wbemocks.test/cache_me1"
-    >>> wbemocks.socket.respond(url=URL_base,
+    >>> url_base = "http://wbemocks.test/page1"
+    >>> wbemocks.socket.respond(url=url_base,
     ...   response=("HTTP/1.0 200 Ok\r\n" +
     ...             "Cache-Control: max-age=9001\r\n" +
     ...             "\r\n" +
-    ...             "Different port page").encode())
-    >>> browser.URL(URL_base).request()
-    'Different port page'
+    ...             "Base page").encode())
+    >>> browser.URL(url_base).request()
+    'Base page'
 
-    >>> URL_diff_scheme = "https://wbemocks.test/cache_me1"
-    >>> wbemocks.socket.respond(url=URL_diff_scheme, 
+    >>> url_scheme = "https://wbemocks.test/page1"
+    >>> wbemocks.socket.respond(url=url_scheme, 
     ...   response=("HTTP/1.0 200 Ok\r\n" +
     ...             "Cache-Control: max-age=9001\r\n" +
     ...             "\r\n" +
     ...             "Different scheme page").encode())
-    >>> browser.URL(URL_diff_scheme).request()
+    >>> browser.URL(url_scheme).request()
     'Different scheme page'
 
-    >>> URL_diff_host = "http://mock.test/cache_me1"
-    >>> wbemocks.socket.respond(url=URL_diff_host, 
+    >>> url_host = "http://mock.test/page1"
+    >>> wbemocks.socket.respond(url=url_host, 
     ...   response=("HTTP/1.0 200 Ok\r\n" +
     ...             "Cache-Control: max-age=9001\r\n" +
     ...             "\r\n" +
     ...             "Different host page").encode())
-    >>> browser.URL(URL_diff_host).request()
+    >>> browser.URL(url_host).request()
     'Different host page'
     
     
-    >>> URL_diff_port = "http://wbemocks.test:8080/cache_me1"
-    >>> wbemocks.socket.respond(url=URL_diff_port, 
+    >>> url_port = "http://wbemocks.test:8080/page1"
+    >>> wbemocks.socket.respond(url=url_port, 
     ...   response=("HTTP/1.0 200 Ok\r\n" +
     ...             "Cache-Control: max-age=9001\r\n" +
     ...             "\r\n" +
-    ...             "Keep this PORT for a while").encode())
-    >>> browser.URL(URL_diff_port).request()
-    'Keep this PORT for a while'
+    ...             "Different port page").encode())
+    >>> browser.URL(url_port).request()
+    'Different port page'
