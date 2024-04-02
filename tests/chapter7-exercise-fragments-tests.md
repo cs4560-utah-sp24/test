@@ -262,7 +262,7 @@ Ensure fragment identifiers in URLs are differentiated based on case sensitivity
     ...         'a<br>'*15 +
     ...         '<h1 id="fragment">Lower Case fragment</h1>' +
     ...         'b<br>'*40)
-    >>> url = browser.URL(wbemocks.socket.serve(body))
+    >>> url = wbemocks.socket.serve(body)
     >>> this_browser.new_tab(url)
     create_text: x=13 y=80.25 text=Upper font=Font size=12 weight=normal slant=roman style=None anchor=nw
     create_text: x=85 y=80.25 text=Case font=Font size=12 weight=normal slant=roman style=None anchor=nw
