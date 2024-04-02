@@ -13,6 +13,9 @@ fragment links.
 You'll want to parse the fragment in the `URL` constructor and add it
 to the printed output, like this:
 
+Clicking a fragment link should update the displayed URL in the address bar,
+scrolling the identified element to the screen's top.
+
 ```
 class URL:
     def __repr__(self):
@@ -250,5 +253,21 @@ Clicking a fragment link when a fragment url is already loaded should
 
     >>> this_browser.tabs[0].url
     URL(scheme=http, host=test, port=80, path='/4', fragment=relpath)
-    >>> this_browser.tabs[0].scroll
-    543.0
+    >>> int(this_browser.active_tab.scroll)
+    543
+
+Ensure fragment identifiers in URLs are differentiated based on case sensitivity during comparison.
+
+    >>> body = ('<h1 id="Fragment">Upper Case Fragment</h1>' +
+    ...         'a<br>'*15 +
+    ...         '<h1 id="fragment">Lower Case fragment</h1>' +
+    ...         'b<br>'*40)
+    >>> url = wbemocks.socket.serve(body)
+
+    >>> this_browser.active_tab.load(browser.URL(url + "#fragment"))
+    >>> int(this_browser.active_tab.scroll)
+    258
+
+    >>> this_browser.active_tab.load(browser.URL(url + "#Fragment"))
+    >>> int(this_browser.active_tab.scroll)
+    18

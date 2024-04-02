@@ -36,15 +36,19 @@ This should clear out the text in the address bar, so type some things into it.
     'Mickey Mouse'
 
 Pressing the backspace key (delete on Macs) should remove the rightmost
-character.
+character. Also make sure draw() is called after backspace.
 
     >>> this_browser.handle_backspace(wbemocks.Event())
     >>> this_browser.chrome.address_bar
     'Mickey Mous'
 
+    >>> wbemocks.TK_CANVAS_CALLS = []
     >>> this_browser.handle_backspace(wbemocks.Event())
     >>> this_browser.chrome.address_bar
     'Mickey Mou'
+
+    >>> not wbemocks.TK_CANVAS_CALLS
+    False
 
     >>> this_browser.handle_backspace(wbemocks.Event())
     >>> this_browser.chrome.address_bar
