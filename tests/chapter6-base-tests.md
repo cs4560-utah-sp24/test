@@ -209,6 +209,17 @@ The default styles for many elements are the same:
     ... "html { font-size: 10px} body { font-size: 90% } \
     ... div { font-size: 90% } ").parse()
 
+    >>> len(browser.DEFAULT_STYLE_SHEET) > 0
+    True
+
+    >>> all(rule[1] for rule in browser.DEFAULT_STYLE_SHEET)
+    True
+
+    >>> DEFAULT_STYLE_SHEET = browser.DEFAULT_STYLE_SHEET
+    >>> link_rules = [rule for rule in DEFAULT_STYLE_SHEET if isinstance(rule[0], browser.TagSelector) and rule[0].tag == "a"]
+    >>> any("color" in rule[1] and rule[1]["color"] == "blue" for rule in link_rules)
+    True
+
 Percentage font sizes work as expected:
 
     >>> browser.style(html, rules)

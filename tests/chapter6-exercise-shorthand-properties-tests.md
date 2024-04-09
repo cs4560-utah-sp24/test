@@ -108,3 +108,19 @@ Later specifications override earlier ones.
     font-style: normal
     font-weight: lighter
 
+Check if "font" is the last property in a rule body, with and without a final semicolon, ensuring correct parsing.
+
+    >>> pairs = browser.CSSParser("a { color: blue; font: bold 12px Arial; }").body()
+    >>> print_pairs(pairs)
+    color: blue
+    font-family: Arial
+    font-size: 12px
+    font-weight: bold
+
+    >>> pairs = browser.CSSParser("a { color: blue; font: italic bold 14px Times New Roman }").body()
+    >>> print_pairs(pairs)
+    color: blue
+    font-family: Times New Roman
+    font-size: 14px
+    font-style: italic
+    font-weight: bold

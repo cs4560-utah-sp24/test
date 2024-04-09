@@ -94,3 +94,15 @@ In this example the height of the `div` is due to text wrapping.
            BlockLayout(x=13, y=18, width=100.0, height=60.0)
 
 
+Check that height is used in block layout modes
+
+    >>> body = '<div style="height:150px"><p>foo</p></div>'
+    >>> url = browser.URL(wbemocks.socket.serve(body))
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(url)
+    >>> browser.print_tree(this_browser.document)
+     DocumentLayout()
+       BlockLayout(x=13, y=18, width=774, height=150.0)
+         BlockLayout(x=13, y=18, width=774, height=150.0)
+           BlockLayout(x=13, y=18, width=774, height=150.0)
+             BlockLayout(x=13, y=18, width=774, height=150.0)
