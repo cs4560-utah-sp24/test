@@ -4,13 +4,19 @@ Tests for WBE Chapter 4 Exercise `Comments`
 Description
 ------------
 
-Update the HTML lexer to support comments. Comments in HTML begin with `<!--` 
-  and end with `-->`.
-However, comments aren’t the same as tags: they can contain any text, including
-  left and right angle brackets.
+Update the HTML lexer to support comments. Comments in HTML begin with
+`<!--` and end with `-->`. However, comments aren’t the same as tags:
+they can contain any text, including left and right angle brackets.
 The lexer should skip comments, not generating any token at all.
 Check: is `<!-->` a comment, or does it just start one?
 
+You should already correctly support comments that don't contain angle
+brackets, because you will parse them as a tag whose name starts with
+an exclamation mark.
+
+
+Tests
+-----
 
 Testing boilerplate:
 
@@ -92,3 +98,25 @@ There are some edge cases to take care of.
      <html>
        <body>
          'thing'
+		 
+		 
+Test case for handling text outside of comments		 
+	>>> test_parse("This is normal text --> following text should also be normal")
+     <html>
+       <body>
+         'This is normal text --> following text should also be normal'
+	 
+	 
+Test combinations "nested" cases
+	>>> test_parse("This is normal text<!-- <!-- --> following text should also be normal")
+     <html>
+       <body>
+         'This is normal text following text should also be normal'
+
+	 
+ Test the case of <!-- !--> (should be one comment)
+ 	>>> test_parse("This is normal text<!-- !--> following text should also be normal")
+     <html>
+       <body>
+         'This is normal text following text should also be normal'
+	 
