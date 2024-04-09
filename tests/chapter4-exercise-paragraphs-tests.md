@@ -1,13 +1,18 @@
 Tests for WBE Chapter 4 Exercise `Paragraphs`
 =============================================
 
+It’s not clear what it would mean for one paragraph to contain
+another. Change the parser so that a document like
+`<p>hello<p>world</p>` results in two sibling paragraphs instead of
+one paragraph inside another; real browsers do this too. 
+
+Make sure to handle cases like `<p><b><p>`. In this case, all tags
+inside the first paragraph should be closed and then re-opened in the
+second paragraph.
+
+
 Description
 ------------
-
-It’s not clear what it would mean for one paragraph to contain another. 
-Change the parser so that a document like `<p>hello<p>world</p>` results in two
-  sibling paragraphs instead of one paragraph inside another; real browsers do 
-  this too.
 
 Testing boilerplate:
 
@@ -48,3 +53,25 @@ Any tags that are open when encountering the second paragraph should be closed
          <p>
            <b>
              'world'
+			 
+			 
+Test when <p> tags have different attributes from each other			 
+	>>> test_parse("<p class='first-paragraph'>This has a class</p><p id='second-paragraph'>This has an ID</p>")
+     <html>
+       <body>
+         <p class="first-paragraph">
+           'This has a class'
+         <p id="second-paragraph">
+           'This has an ID'
+		 
+		 
+ Test that parent pointers are set correctly	 
+	>>> test_parse("<div><p>Paragraph within a div</p><b>Bold text</b></div>")
+     <html>
+       <body>
+         <div>
+           <p>
+             'Paragraph within a div'
+           <b>
+             'Bold text'
+
