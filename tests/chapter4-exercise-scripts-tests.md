@@ -1,14 +1,13 @@
 Tests for WBE Chapter 4 Exercise `Scripts`
 ==========================================
 
+Scripts: JavaScript code embedded in a `<script>` tag uses the left
+angle bracket to mean less-than. Modify your lexer so that the
+contents of `<script>` tags are treated specially: no tags are allowed
+inside `<script>`, except the `</script>` close tag.
+
 Description
 ------------
-
-Scripts: JavaScript code embedded in a `<script>` tag uses the left angle 
-  bracket to mean less-than. 
-Modify your lexer so that the contents of `<script>` tags are treated 
-  specially: no tags are allowed inside `<script>`, except the `</script>` 
-  close tag.
 
 Testing boilerplate:
 
@@ -66,3 +65,17 @@ The script should end only with a complete end script tag.
        <head>
          <script>
            ' "</scri" "pt>" '
+		   
+		   
+ Test <script> tags with attributes 		   
+    >>> test_parse("<script defer src='my-script.js'>Should be treated as text</script>")
+     <html>
+       <head>
+         <script defer src="my-script.js">
+           'Should be treated as text'
+         </script>
+		 
+		 
+  
+  
+  
