@@ -18,20 +18,20 @@ MDT = datetime.timezone(datetime.timedelta(hours=-6), "MDT")
 GH_JSON_PATH = "test/gh.json"
 
 CHAPTER_DEADLINES = {
-    "chapter1": datetime.datetime(2024, 1, 29, tzinfo=MST),
-    "chapter2": datetime.datetime(2024, 2,  5, tzinfo=MST),
-    "chapter3": datetime.datetime(2024, 2, 12, tzinfo=MST),
-    "chapter4": datetime.datetime(2024, 2, 19, tzinfo=MST),
-    "chapter5": datetime.datetime(2024, 2, 26, tzinfo=MST),
-    "chapter6": datetime.datetime(2024, 3,  4, tzinfo=MST),
+    "ch01": datetime.datetime(2024, 1, 29, tzinfo=MST),
+    "ch02": datetime.datetime(2024, 2,  5, tzinfo=MST),
+    "ch03": datetime.datetime(2024, 2, 12, tzinfo=MST),
+    "ch04": datetime.datetime(2024, 2, 19, tzinfo=MST),
+    "ch05": datetime.datetime(2024, 2, 26, tzinfo=MST),
+    "ch06": datetime.datetime(2024, 3,  4, tzinfo=MST),
     # Spring break
-    "chapter7": datetime.datetime(2024, 3, 18, tzinfo=MDT),
-    "chapter8": datetime.datetime(2024, 3, 25, tzinfo=MDT),
-    "chapter9": datetime.datetime(2024, 4,  1, tzinfo=MDT),
-    "chapter10": datetime.datetime(2024,4,  8, tzinfo=MDT),
+    "ch07": datetime.datetime(2024, 3, 18, tzinfo=MDT),
+    "ch08": datetime.datetime(2024, 3, 25, tzinfo=MDT),
+    "ch09": datetime.datetime(2024, 4,  1, tzinfo=MDT),
+    "ch10": datetime.datetime(2024,4,  8, tzinfo=MDT),
 }
 
-def getCurrentChapter():
+def get_current_chapter():
     chapter = min([
         (chapter, deadline)
         for chapter, deadline in CHAPTER_DEADLINES.items()
@@ -42,95 +42,70 @@ def getCurrentChapter():
         return chapter[0]
     else:
         print("WARNING: No chapters outstanding, using chapter10", file=sys.stderr)
-        return "chapter10"
+        return list(CHAPTER_DEADLINES)[-1] # Depends on sorted dictionaries
 
-
-DEFAULT_CICD = getCurrentChapter()
 
 CURRENT_TESTS = {
-    "chapter1": ["chapter1-base-tests.md",
-                 "chapter1-exercise-http-1-1-tests.md",
-                 "chapter1-exercise-file-urls-tests.md",
-                 "chapter1-exercise-redirects-tests.md",
-                 "chapter1-exercise-caching-tests.md",
-                 ],
-    "chapter2": ["chapter2-base-tests.md",
-                 "chapter2-exercise-line-breaks-tests.md",
-                 "chapter2-exercise-resizing-tests.md",
-                 "chapter2-exercise-scrollbar-tests.md",
-                 "chapter2-exercise-emoji-tests.md",
-                 ],
-    "chapter3": ["chapter3-base-tests.md",
-                 "chapter3-exercise-centered-text-tests.md",
-                 "chapter3-exercise-superscripts-tests.md",
-                 "chapter3-exercise-soft-hyphens-tests.md",
-                 "chapter3-exercise-small-caps-tests.md",
-                 ],
-    "chapter4": ["chapter4-base-tests.md",
-                 "chapter4-exercise-comments-tests.md",
-                 "chapter4-exercise-paragraphs-tests.md",
-                 "chapter4-exercise-scripts-tests.md",
-                 "chapter4-exercise-quoted-attributes-tests.md",
-                 ],
-    "chapter5": ["chapter5-base-tests.md",
-                 "chapter5-exercise-hidden-head-tests.md",
-                 "chapter5-exercise-bullets-tests.md",
-                 "chapter5-exercise-links-bar-tests.md",
-                 "chapter5-exercise-anonymous-boxes-tests.md",
-                 ],
-    "chapter6": ["chapter6-base-tests.md",
-                 "chapter6-exercise-fonts-tests.md",
-                 "chapter6-exercise-width-height-tests.md",
-                 "chapter6-exercise-class-selectors-tests.md",
-                 "chapter6-exercise-shorthand-properties-tests.md",
-                 ],
-    "chapter7": ["chapter7-base-tests.md",
-                 "chapter7-exercise-backspace-tests.md",
-                 "chapter7-exercise-middle-click-tests.md",
-                 "chapter7-exercise-fragments-tests.md",
-                 "chapter7-exercise-bookmarks-tests.md",
-                 ],
-    "chapter8": ["chapter8-base-tests.md",
-                 "chapter8-exercise-enter-key-tests.md",
-                 "chapter8-exercise-check-boxes-tests.md",
-                 "chapter8-exercise-get-forms-tests.md",
-                 "chapter8-exercise-rich-buttons-tests.md",
-                 ],
-    "chapter9": ["chapter9-base-tests.md",
-                 "chapter9-exercise-create-element-tests.md",
-                 "chapter9-exercise-node-children-tests.md",
-                 "chapter9-exercise-ids-tests.md",
-                 "chapter9-exercise-event-bubbling-tests.md",
-                 ],
-    "chapter10": ["chapter10-base-tests.md",
-                  "chapter10-exercise-new-inputs-tests.md",
-                  "chapter10-exercise-certificate-errors-tests.md",
-                  "chapter10-exercise-script-access-tests.md",
-                  "chapter10-exercise-referer-tests.md",
-                  ],
+    "ch01": ["base.md",
+             "ex-http-11.md",
+             "ex-file-urls.md",
+             "ex-redirects.md",
+             "ex-caching.md",
+             ],
+    "ch02": ["base.md",
+             "ex-line-breaks.md",
+             "ex-resizing.md",
+             "ex-scrollbar.md",
+             "ex-emoji.md",
+             ],
+    "ch03": ["base.md",
+             "ex-centered-text.md",
+             "ex-superscripts.md",
+             "ex-soft-hyphens.md",
+             "ex-small-caps.md",
+             ],
+    "ch04": ["base.md",
+             "ex-comments.md",
+             "ex-paragraphs.md",
+             "ex-scripts.md",
+             "ex-quoted-attributes.md",],
+    "ch05": ["base.md",
+             "ex-hidden-head.md",
+             "ex-bullets.md",
+             "ex-links-bar.md",
+             "ex-anonymous-boxes.md",
+             ],
+    "ch06": ["base.md",
+             "ex-fonts.md",
+             "ex-width-height.md",
+             "ex-class-selectors.md",
+             "ex-shorthand-properties.md",
+             ],
+    "ch07": ["base.md",
+             "ex-backspace.md",
+             "ex-middle-click.md",
+             "ex-fragments.md",
+             "ex-bookmarks.md",
+             ],
+    "ch08": ["base.md",
+             "ex-enter-key.md",
+             "ex-check-boxes.md",
+             "ex-get-forms.md",
+             "ex-rich-buttons.md",
+             ],
+    "ch09": ["base.md",
+             "ex-create-element.md",
+             "ex-node-children.md",
+             "ex-ids.md",
+             "ex-event-bubbling.md",
+             ],
+    "ch10": ["base.md",
+             "ex-new-inputs.md",
+             "ex-certificate-errors.md",
+             "ex-script-access.md",
+             "ex-referer.md",
+             ],
 }
-
-all_tests = list()
-specific_file_tests = {}
-
-'''
-add option to run all tests by running script w/ argval 'all',
-and add option to run individual test files by name (removing '-exercise-' infix substring if present)
-'''
-for chapterkey, tests in CURRENT_TESTS.items():
-    all_tests.extend(tests)
-
-    specific_file_tests[chapterkey + '-exercises'] = tests[1:]
-
-    for i, test in enumerate(tests):
-        arg_val = re.sub(r'-exercise', '', test)
-        arg_val = re.sub(r'-tests.md', '', arg_val)
-        specific_file_tests[arg_val] = [test]
-        specific_file_tests[chapterkey + '-' + str(i + 1)] = [test]
-
-CURRENT_TESTS["all"] = all_tests
-
-CURRENT_TESTS.update(specific_file_tests)
 
 REPORT_FIRST_ERROR = False
 REPORT_DIFF = False
@@ -309,7 +284,7 @@ def run_doctests(files):
     flags = doctest.ELLIPSIS | doctest.IGNORE_EXCEPTION_DETAIL
     if REPORT_DIFF: flags |= doctest.REPORT_NDIFF
     for fname in files:
-        fname_abs = os.path.join(os.path.dirname(__file__), "tests", fname)
+        fname_abs = os.path.join(os.path.dirname(__file__), fname)
         doctest.testfile(fname_abs, module_relative=False, optionflags=flags)
         mapped_results[fname] = LAST_TEST_RESULT
         LAST_TEST_RESULT = None
@@ -319,8 +294,7 @@ def parse_arguments(argv):
     parser = argparse.ArgumentParser(description='WBE test runner')
     parser.add_argument("chapter",
                         nargs="?",
-                        default=DEFAULT_CICD,
-                        choices=list(CURRENT_TESTS),
+                        default="current",
                         help="Which chapter's tests to run")
     parser.add_argument("--index",
                         type=int,
@@ -459,15 +433,41 @@ def upload_py(testkey):
     
     print(f"ERROR: upload failed because {msg}, continuing", file=sys.stderr)
 
+def get_tests(testkey):
+    if testkey == "all":
+        return sum([get_tests(chname) for chname in CURRENT_TESTS], [])
+
+    if "-" in testkey:
+        chapter, ex = testkey.split("-", 1)
+    elif testkey.isdigit():
+        chapter, ex = get_current_chapter(), testkey
+    elif testkey in CURRENT_TESTS:
+        chapter, ex = testkey, "all"
+    elif testkey == "current":
+        chapter, ex = get_current_chapter(), "all"
+
+    assert chapter in CURRENT_TESTS, f"Unknown chapter {chapter}"
+    chapter_tests = [
+        os.path.join(chapter, testname)
+        for testname in CURRENT_TESTS[chapter]
+    ]
+
+    if ex == "all":
+        return chapter_tests
+    elif ex.isdigit():
+        assert 0 < int(ex) <= 5, f"Invalid test index {ex} in {chapter} (1-5 allowed)"
+        return [chapter_tests[int(ex) - 1]]
+    else:
+        ex_name = os.path.join(chapter, "ex-" + ex + ".md")
+        assert ex_name in chapter_tests, f"Unknown test {ex} in {chapter}"
+        return [ex_name]
+
 def main(argv):
     args = parse_arguments(argv)
 
     testkey = args.chapter
-    if args.index is not None:
-        assert args.chapter.startswith("chapter")
-        testkey = args.chapter + "-" + str(args.index)
+    tests = get_tests(testkey)
 
-    tests = CURRENT_TESTS[testkey]
     bpath = args.browser_path
     sys.path.append(bpath)
     upload_proc = None

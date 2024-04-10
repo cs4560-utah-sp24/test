@@ -395,7 +395,7 @@ class MockCanvas:
     IMAGE_SIZE = None
     LOG = []
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, parent, *args, **kwargs):
         assert not parent.has_canvas, "Each Tk window should only have one Canvas"
         parent.has_canvas = True
         self.pack_called = False
