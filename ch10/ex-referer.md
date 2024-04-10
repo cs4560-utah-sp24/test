@@ -7,9 +7,9 @@ containing the URL it is coming from. Sites often use this for
 analytics. Implement this in your browser. However, some URLs contain
 personal data that they don’t want revealed to other websites, so
 browsers support a `Referrer-Policy` header, which can contain values
-like `no-referer` (never send the `Referer` header when leaving this page)
-or `same-origin` (only do so if navigating to another page on the same
-origin). Implement those two values for `Referrer-Policy`.
+like `no-referrer` (never send the `Referer` header when leaving this
+page) or `same-origin` (only do so if navigating to another page on
+the same origin). Implement those two values for `Referrer-Policy`.
 
 Note the differences in spelling, the headers are `Referer` and
 `Referrer-Policy`, and the value is `no-referrer`. You can blame
