@@ -458,9 +458,10 @@ def get_tests(testkey):
         assert 0 < int(ex) <= 5, f"Invalid test index {ex} in {chapter} (1-5 allowed)"
         return [chapter_tests[int(ex) - 1]]
     else:
-        ex_name = os.path.join(chapter, "ex-" + ex + ".md")
-        assert ex_name in chapter_tests, f"Unknown test {ex} in {chapter}"
-        return [ex_name]
+        ex_name = "base.md" if ex == "base" else "ex-" + ex + ".md"
+        ex_file = os.path.join(chapter, ex_name)
+        assert ex_file in chapter_tests, f"Unknown test {ex} in {chapter}"
+        return [ex_file]
 
 def main(argv):
     args = parse_arguments(argv)
