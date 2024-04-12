@@ -35,6 +35,7 @@ Tests
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
+    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Let's first test what happens if we have a list of block-level
@@ -45,11 +46,11 @@ elements:
     >>> document.layout()
     >>> browser.print_tree(document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=60.0)
-         BlockLayout(x=13, y=18, width=774, height=60.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-           BlockLayout(x=13, y=58.0, width=774, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=60.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=60.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<div>)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node=<h6>)
+           BlockLayout(x=13, y=58.0, width=774, height=20.0, node=<main>)
 
 Let's also make sure that this can be painted:
 
@@ -68,8 +69,8 @@ only creates one `BlockLayout`:
     >>> document.layout()
     >>> browser.print_tree(document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=20.0)
-         BlockLayout(x=13, y=18, width=774, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=20.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=20.0, node=<body>)
 
 That also can be painted:
 
@@ -88,10 +89,10 @@ Finally, let's test a simple mix of both:
     >>> document.layout()
     >>> browser.print_tree(document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0)
-         BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=40.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=40.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<div>)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node=<i>)
 
 That also can be painted:
 
@@ -112,15 +113,15 @@ One more: let's test it with a complex mix of inline and block:
     >>> document.layout()
     >>> browser.print_tree(document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=140.0)
-         BlockLayout(x=13, y=18, width=774, height=140.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-           BlockLayout(x=13, y=58.0, width=774, height=20.0)
-           BlockLayout(x=13, y=78.0, width=774, height=20.0)
-           BlockLayout(x=13, y=98.0, width=774, height=20.0)
-           BlockLayout(x=13, y=118.0, width=774, height=20.0)
-           BlockLayout(x=13, y=138.0, width=774, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=140.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=140.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node='hi')
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node=<div>)
+           BlockLayout(x=13, y=58.0, width=774, height=20.0, node='is')
+           BlockLayout(x=13, y=78.0, width=774, height=20.0, node=<div>)
+           BlockLayout(x=13, y=98.0, width=774, height=20.0, node=<b>)
+           BlockLayout(x=13, y=118.0, width=774, height=20.0, node=<div>)
+           BlockLayout(x=13, y=138.0, width=774, height=20.0, node=' code')
 
 This, too, can be painted:
 

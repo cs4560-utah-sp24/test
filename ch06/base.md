@@ -56,16 +56,16 @@ Testing tree_to_list
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
-           BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node=<div>)
     >>> list = []
     >>> retval = browser.tree_to_list(this_browser.document, list)
-    >>> retval #doctest: +NORMALIZE_WHITESPACE
-    [DocumentLayout(),
-     BlockLayout(x=13, y=18, width=774, height=15.0),
-     BlockLayout(x=13, y=18, width=774, height=15.0),
-     BlockLayout(x=13, y=18, width=774, height=15.0)]
+    >>> wbemocks.print_list(retval)
+    DocumentLayout()
+    BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+    BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
+    BlockLayout(x=13, y=18, width=774, height=15.0, node=<div>)
     >>> retval == list
     True
 

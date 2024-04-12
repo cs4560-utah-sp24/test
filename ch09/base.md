@@ -91,7 +91,7 @@ matching nodes:
     >>> page = """<!doctype html>
     ... <div>
     ...   <p id=lorem>Lorem</p>
-    ...   <p class=ipsum>Ipsum</p>
+    ...   <p>Ipsum</p>
     ... </div>"""
     >>> url = wbemocks.socket.serve(page)
     >>> b = browser.Browser()
@@ -149,17 +149,17 @@ Once we've changed the page, the browser should rerender:
 
     >>> browser.print_tree(b.active_tab.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=30.0)
-         BlockLayout(x=13, y=18, width=774, height=30.0)
-           BlockLayout(x=13, y=18, width=774, height=30.0)
-             BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=30.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=30.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=30.0, node=<div>)
+             BlockLayout(x=13, y=18, width=774, height=15.0, node=<p id="blah">)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=48, height=12, word=This)
                  TextLayout(x=73, y=20.25, width=24, height=12, word=is)
                  TextLayout(x=109, y=20.25, width=12, height=12, word=a)
                  TextLayout(x=133, y=20.25, width=36, height=12, word=new)
                  TextLayout(x=181, y=20.25, width=96, height=12, word=element!)
-             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=60, height=12, word=Ipsum)
 
@@ -182,13 +182,13 @@ The page is rerendered again:
 
     >>> browser.print_tree(b.active_tab.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=30.0)
-         BlockLayout(x=13, y=18, width=774, height=30.0)
-           BlockLayout(x=13, y=18, width=774, height=30.0)
-             BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=30.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=30.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=30.0, node=<div>)
+             BlockLayout(x=13, y=18, width=774, height=15.0, node=<p id="blah">)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=60, height=12, word=Lorem)
-             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=60, height=12, word=Ipsum)
 
@@ -269,16 +269,16 @@ events. The display list gives us coordinates for clicking.
     URL(scheme=http, host=test, port=80, path='/16')
     >>> browser.print_tree(b.active_tab.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=30.0)
-         BlockLayout(x=13, y=18, width=774, height=30.0)
-           BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=30.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=30.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node=<a href="page2">)
              LineLayout(x=13, y=18, width=774, height=15.0)
                TextLayout(x=13, y=20.25, width=60, height=12, word=Click)
                TextLayout(x=85, y=20.25, width=36, height=12, word=me!)
-           BlockLayout(x=13, y=33.0, width=774, height=15.0)
+           BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<form action="/post">)
              LineLayout(x=13, y=33.0, width=774, height=15.0)
-               InputLayout(x=13, y=35.25, width=200, height=12, tag=input)
-               InputLayout(x=225, y=35.25, width=200, height=12, tag=button)...
+               InputLayout(x=13, y=35.25, width=200, height=12, node=<input name="input" value="hi">)
+               InputLayout(x=225, y=35.25, width=200, height=12, node=<button>)...
     >>> b.active_tab.click(14, 20)
     a clicked
     >>> b.active_tab.click(14, 40)

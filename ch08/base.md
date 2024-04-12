@@ -72,20 +72,20 @@ Testing InputLayout
                'Submit!'
     >>> browser.print_tree(this_browser.tabs[0].document) #doctest: +ELLIPSIS
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=45.0)
-         BlockLayout(x=13, y=18, width=774, height=45.0)
-           BlockLayout(x=13, y=18, width=774, height=45.0)
-             BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=45.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=45.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=45.0, node=<form action="/chapter8-base/submit" method="POST">)
+             BlockLayout(x=13, y=18, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
-                 InputLayout(x=85, y=20.25, width=200, height=12, tag=input)
-             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+                 InputLayout(x=85, y=20.25, width=200, height=12, node=<input name="name" value="1">)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=96, height=12, word=Comment:)
-                 InputLayout(x=121, y=35.25, width=200, height=12, tag=input)
-             BlockLayout(x=13, y=48.0, width=774, height=15.0)
+                 InputLayout(x=121, y=35.25, width=200, height=12, node=<input name="comment" value="2=3">)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
+                 InputLayout(x=13, y=50.25, width=200, height=12, node=<button>)...
 
 The display list of a button should include its contents, and the display list
 of a text input should be its `value` attribute:

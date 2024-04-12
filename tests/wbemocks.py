@@ -15,7 +15,16 @@ from ssl import SSLCertVerificationError
 
 
 def normalize_display_list(dl):
-    dl = [(float(t[0]), float(t[1]), t[2].replace("\xad", ""), *t[3:]) for t in dl]
+    if dl and isinstance(dl[0], tuple):
+        dl = [
+            (float(t[0]), float(t[1]), t[2].replace("\xad", ""), *t[3:])
+            for t in dl
+        ]
+    elif dl:
+        dl = [
+            (float(t.rect.left), float(t.rect.top), t.text.replace("\xad", ""), t.font)
+            for t in dl
+        ]
     return dl
 
 def print_list(dl):

@@ -38,8 +38,8 @@ The layout tree should only contain one inline layout object, corresponding to
          
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=20.0)
-         BlockLayout(x=13, y=18, width=774, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=20.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=20.0, node=<body>)
   
 The display list should only contain `DrawText` objects for the body text.
   

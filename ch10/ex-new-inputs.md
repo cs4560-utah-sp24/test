@@ -39,21 +39,21 @@ There are many ways to achieve this effect, we will set the width and height of
     >>> this_browser.new_tab(browser.URL(url))
     >>> browser.print_tree(this_browser.tabs[0].document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=45.0)
-         BlockLayout(x=13, y=18, width=774, height=45.0)
-           BlockLayout(x=13, y=18, width=774, height=45.0)
-             BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=45.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=45.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=45.0, node=<form action="/tricky" method="POST">)
+             BlockLayout(x=13, y=18, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=36, height=12, word=Not)
                  TextLayout(x=61, y=20.25, width=84, height=12, word=hidden:)
-                 InputLayout(x=157, y=20.25, width=200, height=12, tag=input)
-             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+                 InputLayout(x=157, y=20.25, width=200, height=12, node=<input name="visible" value="1">)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=84, height=12, word=Hidden:)
-                 InputLayout(x=109, y=35.25, width=0.0, height=0.0, tag=input)
-             BlockLayout(x=13, y=48.0, width=774, height=15.0)
+                 InputLayout(x=109, y=35.25, width=0.0, height=0.0, node=<input type="hidden" name="invisible" value="doNotShowMe">)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
+                 InputLayout(x=13, y=50.25, width=200, height=12, node=<button>)...
 
 Submission of the form should still pass along the value.
 
@@ -84,20 +84,20 @@ The password element should be all `*`.
     >>> this_browser.new_tab(browser.URL(url))
     >>> browser.print_tree(this_browser.tabs[0].document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=45.0)
-         BlockLayout(x=13, y=18, width=774, height=45.0)
-           BlockLayout(x=13, y=18, width=774, height=45.0)
-             BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=45.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=45.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=45.0, node=<form action="/login" method="POST">)
+             BlockLayout(x=13, y=18, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
-                 InputLayout(x=85, y=20.25, width=200, height=12, tag=input)
-             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+                 InputLayout(x=85, y=20.25, width=200, height=12, node=<input name="name" value="Skroob">)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=108, height=12, word=Password:)
-                 InputLayout(x=133, y=35.25, width=200, height=12, tag=input)
-             BlockLayout(x=13, y=48.0, width=774, height=15.0)
+                 InputLayout(x=133, y=35.25, width=200, height=12, node=<input type="password" name="password" value="12345">)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
+                 InputLayout(x=13, y=50.25, width=200, height=12, node=<button>)...
 
     >>> document = this_browser.active_tab.document
     >>> form = document.children[0].children[0].children[0]

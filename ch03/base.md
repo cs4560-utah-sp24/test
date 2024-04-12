@@ -7,6 +7,7 @@ HTML tags. This file contains tests for the additional functionality.
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
+    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Make sure you have the expected default values for `HSTEP`, `VSTEP`,
@@ -119,9 +120,7 @@ Testing `Browser`
 
 Now let's test integration of layout into the Browser class.
 
-    >>> url = 'http://wbemocks.test/chapter3-example1'
-    >>> wbemocks.socket.respond_200(url=url, 
-    ...   body="<small>abc<i>def</i></small>")
+    >>> url = wbemocks.socket.serve("<small>abc<i>def</i></small>")
     >>> this_browser = browser.Browser()
     >>> this_browser.load(browser.URL(url))
 

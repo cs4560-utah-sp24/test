@@ -19,6 +19,7 @@ Setup
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
+    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Set up the URL and web page, this is the content that we will be examining.
@@ -36,10 +37,10 @@ The layout tree should only contain two inline layout objects, corresponding to
          
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0)
-         BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=39, y=18, width=748, height=20.0)
-           BlockLayout(x=39, y=38.0, width=748, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=40.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=40.0, node=<body>)
+           BlockLayout(x=39, y=18, width=748, height=20.0, node=<li>)
+           BlockLayout(x=39, y=38.0, width=748, height=20.0, node=<li>)
 
 The text inside the `li` should be indented over by `2 * HSTEP`.
 The bullet itself should be a black rectangle, 4 by 4 pixels, centered 
@@ -75,8 +76,8 @@ Verify that <li> tag widths are reduced to account for bullet spacing, not just 
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0)
-         BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=13, y=18, width=774, height=40.0)
-             BlockLayout(x=39, y=18, width=748, height=20.0)
-             BlockLayout(x=39, y=38.0, width=748, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=40.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=40.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=40.0, node=<ul>)
+             BlockLayout(x=39, y=18, width=748, height=20.0, node=<li>)
+             BlockLayout(x=39, y=38.0, width=748, height=20.0, node=<li>)

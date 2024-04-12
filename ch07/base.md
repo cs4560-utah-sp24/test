@@ -59,9 +59,9 @@ Here is how the lines are represented in chapter 7:
 
     >>> browser.print_tree(this_browser.tabs[0].document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=45.0)
-         BlockLayout(x=13, y=18, width=774, height=45.0)
-           BlockLayout(x=13, y=18, width=774, height=45.0)
+       BlockLayout(x=13, y=18, width=774, height=45.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=45.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=45.0, node=<div>)
              LineLayout(x=13, y=18, width=774, height=15.0)
                TextLayout(x=13, y=20.25, width=48, height=12, word=This)
                TextLayout(x=73, y=20.25, width=24, height=12, word=is)
@@ -98,8 +98,8 @@ The browser can have multiple tabs:
 
     >>> browser.print_tree(this_browser.tabs[1].document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
            LineLayout(x=13, y=18, width=774, height=15.0)
              TextLayout(x=13, y=20.25, width=60, height=12, word=Click)
              TextLayout(x=85, y=20.25, width=24, height=12, word=me)

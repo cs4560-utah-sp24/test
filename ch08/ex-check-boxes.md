@@ -58,20 +58,20 @@ This is the form page.
     >>> this_browser.new_tab(browser.URL(url2))
     >>> browser.print_tree(this_browser.active_tab.document) #doctest: +ELLIPSIS
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=45.0)
-         BlockLayout(x=13, y=18, width=774, height=45.0)
-           BlockLayout(x=13, y=18, width=774, height=45.0)
-             BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=45.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=45.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=45.0, node=<form action="/chapter8-check-boxes/submit" method="POST">)
+             BlockLayout(x=13, y=18, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
-                 InputLayout(x=85, y=20.25, width=200, height=12, tag=input)
-             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+                 InputLayout(x=85, y=20.25, width=200, height=12, node=<input name="name" value="Bob">)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=108, height=12, word=Checkbox:)
-                 InputLayout(x=133, y=35.25, width=16, height=16, tag=input, unchecked)
-             BlockLayout(x=13, y=48.0, width=774, height=15.0)
+                 InputLayout(x=133, y=35.25, width=16, height=16, node=<input name="checkey" type="checkbox">)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
+                 InputLayout(x=13, y=50.25, width=200, height=12, node=<button>)...
 
 Send the form with the box unchecked. This will be matched against the earlier description.
 
@@ -101,20 +101,20 @@ checkbox.
     >>> this_browser.handle_click(wbemocks.ClickEvent(141, 43  + this_browser.chrome.bottom))
     >>> browser.print_tree(this_browser.active_tab.document) #doctest: +ELLIPSIS
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=45.0)
-         BlockLayout(x=13, y=18, width=774, height=45.0)
-           BlockLayout(x=13, y=18, width=774, height=45.0)
-             BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=45.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=45.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=45.0, node=<form action="/chapter8-check-boxes/submit" method="POST">)
+             BlockLayout(x=13, y=18, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=18, width=774, height=15.0)
                  TextLayout(x=13, y=20.25, width=60, height=12, word=Name:)
-                 InputLayout(x=85, y=20.25, width=200, height=12, tag=input)
-             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+                 InputLayout(x=85, y=20.25, width=200, height=12, node=<input name="name" value="Alice">)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=33.0, width=774, height=15.0)
                  TextLayout(x=13, y=35.25, width=108, height=12, word=Checkbox:)
-                 InputLayout(x=133, y=35.25, width=16, height=16, tag=input, checked)
-             BlockLayout(x=13, y=48.0, width=774, height=15.0)
+                 InputLayout(x=133, y=35.25, width=16, height=16, node=<input name="checkey" type="checkbox" checked="">)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0, node=<p>)
                LineLayout(x=13, y=48.0, width=774, height=15.0)
-                 InputLayout(x=13, y=50.25, width=200, height=12, tag=button)...
+                 InputLayout(x=13, y=50.25, width=200, height=12, node=<button>)...
                  
 Now the form should be sent without the checkbox checked:
 

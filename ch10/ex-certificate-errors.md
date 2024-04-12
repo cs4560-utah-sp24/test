@@ -1,5 +1,5 @@
 Tests for WBE Chapter 10 Exercise `Certificate errors`
-============================================
+======================================================
 
 When accessing an HTTPS page, the web server can send an invalid
 certificate (`badssl.com` hosts various invalid certificates you can
@@ -68,8 +68,8 @@ When the certificate is invalid display the above page and do not display a
     >>> this_browser.new_tab(browser.URL("https://untrusted-root.badssl.com/"))
     >>> browser.print_tree(this_browser.tabs[0].document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
            LineLayout(x=13, y=18, width=774, height=15.0)
              TextLayout(x=13, y=20.25, width=72, height=12, word=Secure)
              TextLayout(x=97, y=20.25, width=120, height=12, word=Connection)

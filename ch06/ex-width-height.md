@@ -28,9 +28,9 @@ With no width or height properties the browser should perform the existing layou
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
-           BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node=<div>)
 
 Specifying width should set the width of the element.
 
@@ -40,9 +40,9 @@ Specifying width should set the width of the element.
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
-           BlockLayout(x=13, y=18, width=1000.0, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
+           BlockLayout(x=13, y=18, width=1000.0, height=15.0, node=<div style="width:1000px">)
 
 Specifying height changes the element's hight, which will in turn cascade up the tree.
 
@@ -52,9 +52,9 @@ Specifying height changes the element's hight, which will in turn cascade up the
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=100.0)
-         BlockLayout(x=13, y=18, width=774, height=100.0)
-           BlockLayout(x=13, y=18, width=774, height=100.0)
+       BlockLayout(x=13, y=18, width=774, height=100.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=100.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=100.0, node=<div style="height:100px">)
 
 You should be able to set both simultaneously.
 
@@ -64,9 +64,9 @@ You should be able to set both simultaneously.
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=200.0)
-         BlockLayout(x=13, y=18, width=774, height=200.0)
-           BlockLayout(x=13, y=18, width=900.0, height=200.0)
+       BlockLayout(x=13, y=18, width=774, height=200.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=200.0, node=<body>)
+           BlockLayout(x=13, y=18, width=900.0, height=200.0, node=<div style="width:900px;height:200px">)
 
 If a value is negative you should use the automatic layout.
 
@@ -76,9 +76,9 @@ If a value is negative you should use the automatic layout.
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
-           BlockLayout(x=13, y=18, width=774, height=15.0)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node=<div style="width:-10px">)
 
 Make sure that text wrapping still works.
 In this example the height of the `div` is due to text wrapping.
@@ -89,8 +89,8 @@ In this example the height of the `div` is due to text wrapping.
     >>> this_browser.load(url)
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=60.0)
-         BlockLayout(x=13, y=18, width=774, height=60.0)
-           BlockLayout(x=13, y=18, width=100.0, height=60.0)
+       BlockLayout(x=13, y=18, width=774, height=60.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=60.0, node=<body>)
+           BlockLayout(x=13, y=18, width=100.0, height=60.0, node=<div style="width:100px">)
 
 

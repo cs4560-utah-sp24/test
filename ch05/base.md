@@ -40,6 +40,7 @@ Testing layout_mode
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
+    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 The `layout_mode` function returns "inline" if the object is a `Text` node
@@ -118,19 +119,19 @@ Testing the layout tree
 
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=60.0)
-         BlockLayout(x=13, y=18, width=774, height=60.0)
-           BlockLayout(x=13, y=18, width=774, height=0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-             BlockLayout(x=13, y=38.0, width=774, height=0)
-             BlockLayout(x=13, y=38.0, width=774, height=20.0)
-           BlockLayout(x=13, y=58.0, width=774, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=60.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=60.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=0, node=<div>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<div>)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node=<div>)
+             BlockLayout(x=13, y=38.0, width=774, height=0, node=<div>)
+             BlockLayout(x=13, y=38.0, width=774, height=20.0, node='text')
+           BlockLayout(x=13, y=58.0, width=774, height=20.0, node=<span>)
 
-    >>> this_browser.display_list #doctest: +NORMALIZE_WHITESPACE
-    [DrawText(top=21.0 left=13 bottom=37.0 text=text font=Font size=16 weight=normal slant=roman style=None), 
-     DrawText(top=41.0 left=13 bottom=57.0 text=text font=Font size=16 weight=normal slant=roman style=None), 
-     DrawText(top=61.0 left=13 bottom=77.0 text=text font=Font size=16 weight=normal slant=roman style=None)]
+    >>> wbemocks.print_list(this_browser.display_list)
+    DrawText(top=21.0 left=13 bottom=37.0 text=text font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=41.0 left=13 bottom=57.0 text=text font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=61.0 left=13 bottom=77.0 text=text font=Font size=16 weight=normal slant=roman style=None)
 
 Testing background painting
 ===========================
@@ -149,9 +150,9 @@ Testing background painting
 
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=20.0)
-         BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
+       BlockLayout(x=13, y=18, width=774, height=20.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=20.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<pre>)
 
 The first display list entry is now a gray rect, since it's for a `<pre>` element:
 

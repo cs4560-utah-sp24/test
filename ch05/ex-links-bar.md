@@ -17,6 +17,8 @@ Tests
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
+    >>> wbemocks.MockCanvas.hide_all()
+    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 The links bar in each chapter is enclosed in `<nav class="links">`.
@@ -26,49 +28,45 @@ HTML tree, layout tree, and display list. First, let's test that
 ordinary `<nav>` nodes don't have any special styling. You should be
 able to pass with without any changes to the base browser.
 
-    >>> nodes = browser.HTMLParser("""<!doctype html>
-    ... <nav>A</nav>B""").parse()
-    >>> browser.print_tree(nodes)
+    >>> url = wbemocks.socket.serve("""<!doctype html>
+    ... <nav>A</nav>B""")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(browser.URL(url))
+    >>> browser.print_tree(this_browser.nodes)
      <html>
        <body>
          <nav>
            'A'
          'B'
-    >>> doc = browser.DocumentLayout(nodes)
-    >>> doc.layout()
-    >>> browser.print_tree(doc)
+    >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0)
-         BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-    >>> dl = []
-    >>> browser.paint_tree(doc, dl)
-    >>> wbemocks.print_list(dl)
+       BlockLayout(x=13, y=18, width=774, height=40.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=40.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<nav>)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node='B')
+    >>> wbemocks.print_list(this_browser.display_list)
     DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
 
 Next, let's test that a proper links bar has a `lightgray` background:
 
-    >>> nodes = browser.HTMLParser("""<!doctype html>
-    ... <nav class="links">A</nav>B""").parse()
-    >>> browser.print_tree(nodes)
+    >>> url = wbemocks.socket.serve("""<!doctype html>
+    ... <nav class="links">A</nav>B""")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(browser.URL(url))
+    >>> browser.print_tree(this_browser.nodes)
      <html>
        <body>
          <nav class="links">
            'A'
          'B'
-    >>> doc = browser.DocumentLayout(nodes)
-    >>> doc.layout()
-    >>> browser.print_tree(doc)
+    >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0)
-         BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-    >>> dl = []
-    >>> browser.paint_tree(doc, dl)
-    >>> wbemocks.print_list(dl)
+       BlockLayout(x=13, y=18, width=774, height=40.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=40.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<nav class="links">)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node='B')
+    >>> wbemocks.print_list(this_browser.display_list)
     DrawRect(top=18 left=13 bottom=38.0 right=787 color=lightgray)
     DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
@@ -78,12 +76,14 @@ case, I also write the second links bar `<nav class=links>`, without
 the quotes. This should still work because the HTML parser treats both
 syntaxes the same.
 
-    >>> nodes = browser.HTMLParser("""<!doctype html>
+    >>> url = wbemocks.socket.serve("""<!doctype html>
     ... <nav class="links">A</nav>
     ... B
     ... <nav class=links>C</nav>
-    ... """).parse()
-    >>> browser.print_tree(nodes)
+    ... """)
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(browser.URL(url))
+    >>> browser.print_tree(this_browser.nodes)
      <html>
        <body>
          <nav class="links">
@@ -91,18 +91,14 @@ syntaxes the same.
          '\nB\n'
          <nav class="links">
            'C'
-    >>> doc = browser.DocumentLayout(nodes)
-    >>> doc.layout()
-    >>> browser.print_tree(doc)
+    >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=60.0)
-         BlockLayout(x=13, y=18, width=774, height=60.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-           BlockLayout(x=13, y=58.0, width=774, height=20.0)
-    >>> dl = []
-    >>> browser.paint_tree(doc, dl)
-    >>> wbemocks.print_list(dl)
+       BlockLayout(x=13, y=18, width=774, height=60.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=60.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<nav class="links">)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node='\nB\n')
+           BlockLayout(x=13, y=58.0, width=774, height=20.0, node=<nav class="links">)
+    >>> wbemocks.print_list(this_browser.display_list)
     DrawRect(top=18 left=13 bottom=38.0 right=787 color=lightgray)
     DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
@@ -117,10 +113,12 @@ Finally, let's test that this works even when there are multiple lines
 of text inside the nav bar. This even happens on the book website with
 very narrow browsers (like on mobile).
 
-    >>> nodes = browser.HTMLParser("""<!doctype html>
+    >>> url = wbemocks.socket.serve("""<!doctype html>
     ... <nav class="links">A<br>C</nav>
-    ... B""").parse()
-    >>> browser.print_tree(nodes)
+    ... B""")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(browser.URL(url))
+    >>> browser.print_tree(this_browser.nodes)
      <html>
        <body>
          <nav class="links">
@@ -128,17 +126,13 @@ very narrow browsers (like on mobile).
            <br>
            'C'
          '\nB'
-    >>> doc = browser.DocumentLayout(nodes)
-    >>> doc.layout()
-    >>> browser.print_tree(doc)
+    >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=60.0)
-         BlockLayout(x=13, y=18, width=774, height=60.0)
-           BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=13, y=58.0, width=774, height=20.0)
-    >>> dl = []
-    >>> browser.paint_tree(doc, dl)
-    >>> wbemocks.print_list(dl)
+       BlockLayout(x=13, y=18, width=774, height=60.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=60.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=40.0, node=<nav class="links">)
+           BlockLayout(x=13, y=58.0, width=774, height=20.0, node='\nB')
+    >>> wbemocks.print_list(this_browser.display_list)
     DrawRect(top=18 left=13 bottom=58.0 right=787 color=lightgray)
     DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=41.0 left=13 bottom=57.0 text=C font=Font size=16 weight=normal slant=roman style=None)
@@ -148,81 +142,47 @@ Importantly, the background in this case is big enough to contain both lines.
 
 Ensure `<nav>` elements without a class attribute correctly split multiple words and do not display any special background styling.
 
-    >>> nodes = browser.HTMLParser("""<!doctype html>
-    ... <nav>Word1 Word2 Word3</nav>B""").parse()
-    >>> browser.print_tree(nodes)
+    >>> url = wbemocks.socket.serve("""<!doctype html>
+    ... <nav>Word1 Word2 Word3</nav>B""")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(browser.URL(url))
+    >>> browser.print_tree(this_browser.nodes)
      <html>
        <body>
          <nav>
            'Word1 Word2 Word3'
          'B'
-
-    >>> doc = browser.DocumentLayout(nodes)
-    >>> doc.layout()
-    >>> browser.print_tree(doc)
+    >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0)
-         BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-
-    >>> dl = []
-    >>> browser.paint_tree(doc, dl)
-    >>> wbemocks.print_list(dl)
+       BlockLayout(x=13, y=18, width=774, height=40.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=40.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<nav>)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node='B')
+    >>> wbemocks.print_list(this_browser.display_list)
     DrawText(top=21.0 left=13 bottom=37.0 text=Word1 font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=21.0 left=109 bottom=37.0 text=Word2 font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=21.0 left=205 bottom=37.0 text=Word3 font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
 
 
-Make sure your browser treats the class attribute in HTML case-insensitively, recognizing class names regardless of letter case.
-
-    >>> nodes = browser.HTMLParser("""<!doctype html>
-    ... <nav class="LINKS">A</nav>B""").parse()
-    >>> browser.print_tree(nodes)
-     <html>
-       <body>
-         <nav class="LINKS">
-           'A'
-         'B'
-
-    >>> doc = browser.DocumentLayout(nodes)
-    >>> doc.layout()
-    >>> browser.print_tree(doc)
-     DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0)
-         BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-
-    >>> dl = []
-    >>> browser.paint_tree(doc, dl)
-    >>> wbemocks.print_list(dl)
-    DrawRect(top=18 left=13 bottom=38.0 right=787 color=lightgray)
-    DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
-    
 Test for not using substring match, like class=`blinks`
-=====================================================
 
-    >>> nodes = browser.HTMLParser("""<!doctype html>
-    ... <nav class="blinks">A</nav>B""").parse()
-    >>> browser.print_tree(nodes)
+    >>> url = wbemocks.socket.serve("""<!doctype html>
+    ... <nav class="blinks">A</nav>B""")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(browser.URL(url))
+    >>> browser.print_tree(this_browser.nodes)
      <html>
        <body>
          <nav class="blinks">
            'A'
          'B'
-    >>> doc = browser.DocumentLayout(nodes)
-    >>> doc.layout()
-    >>> browser.print_tree(doc)
+    >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0)
-         BlockLayout(x=13, y=18, width=774, height=40.0)
-           BlockLayout(x=13, y=18, width=774, height=20.0)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0)
-    >>> dl = []
-    >>> browser.paint_tree(doc, dl)
-    >>> wbemocks.print_list(dl)
+       BlockLayout(x=13, y=18, width=774, height=40.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=40.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=20.0, node=<nav class="blinks">)
+           BlockLayout(x=13, y=38.0, width=774, height=20.0, node='B')
+    >>> wbemocks.print_list(this_browser.display_list)
     DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
     DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
