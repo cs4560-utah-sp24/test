@@ -34,12 +34,11 @@ Check that the id from the page was added to the js environment.
 
     >>> js.run("alice;")
     {'handle': 0}
-    >>> browser.print_tree(this_browser.active_tab.document)
-     DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=0)
-         BlockLayout(x=13, y=18, width=774, height=0)
-           BlockLayout(x=13, y=18, width=774, height=0)
-             BlockLayout(x=13, y=18, width=774, height=0)
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="alice">
+           <div>
 
 Modify the page but do not add an id.
 
@@ -47,16 +46,13 @@ Modify the page but do not add an id.
     ...        " = '<b>No</b> new ids added')")
     >>> js.run("alice;")
     {'handle': 0}
-    >>> browser.print_tree(this_browser.active_tab.document)
-     DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
-           BlockLayout(x=13, y=18, width=774, height=15.0)
-             LineLayout(x=13, y=18, width=774, height=15.0)
-               TextLayout(x=13, y=20.25, width=24, height=12, word=No)
-               TextLayout(x=49, y=20.25, width=36, height=12, word=new)
-               TextLayout(x=97, y=20.25, width=36, height=12, word=ids)
-               TextLayout(x=145, y=20.25, width=60, height=12, word=added)
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="alice">
+           <b>
+             'No'
+           ' new ids added'
 
 Replace that content with something that has an id.
 
@@ -66,16 +62,14 @@ Replace that content with something that has an id.
     {'handle': 0}
     >>> js.run("one;")
     {'handle': 1}
-    >>> browser.print_tree(this_browser.active_tab.document)
-     DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
-           BlockLayout(x=13, y=18, width=774, height=15.0)
-             LineLayout(x=13, y=18, width=774, height=15.0)
-               TextLayout(x=13, y=20.25, width=36, height=12, word=One)
-               TextLayout(x=61, y=20.25, width=36, height=12, word=new)
-               TextLayout(x=109, y=20.25, width=24, height=12, word=id)
-               TextLayout(x=145, y=20.25, width=60, height=12, word=added)
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="alice">
+           <b id="one">
+             'One'
+           ' new id added'
+
 
 Replace the id with something that has a different id.
 
@@ -91,16 +85,12 @@ Replace the id with something that has a different id.
         at eval (eval:1) preventsyield
     >>> js.run("replacement;")
     {'handle': 2}
-    >>> browser.print_tree(this_browser.active_tab.document)
-     DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
-           BlockLayout(x=13, y=18, width=774, height=15.0)
-             BlockLayout(x=13, y=18, width=774, height=15.0)
-               LineLayout(x=13, y=18, width=774, height=15.0)
-                 TextLayout(x=13, y=20.25, width=24, height=12, word=Id)
-                 TextLayout(x=49, y=20.25, width=36, height=12, word=was)
-                 TextLayout(x=97, y=20.25, width=96, height=12, word=replaced)
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="alice">
+           <p id="replacement">
+             'Id was replaced'
 
 Empty the document of ids.
 
@@ -124,13 +114,10 @@ Empty the document of ids.
     _dukpy.JSRuntimeError: ReferenceError: identifier 'replacement' undefined
         at [anon] (duk_js_var.c:1239) internal
         at eval (eval:1) preventsyield
-    >>> browser.print_tree(this_browser.active_tab.document)
-     DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=15.0)
-         BlockLayout(x=13, y=18, width=774, height=15.0)
-           LineLayout(x=13, y=18, width=774, height=15.0)
-             TextLayout(x=13, y=20.25, width=24, height=12, word=No)
-             TextLayout(x=49, y=20.25, width=36, height=12, word=ids)
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         'No ids'
 
 
 
