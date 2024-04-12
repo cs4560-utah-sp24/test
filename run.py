@@ -437,6 +437,9 @@ def get_tests(testkey):
     if testkey == "all":
         return sum([get_tests(chname) for chname in CURRENT_TESTS], [])
 
+    if testkey.startswith("ch") and len(testkey) > 2 and testkey[2] != "0" and testkey[2:4] != "10":
+        testkey = "ch0" + testkey[2:]
+
     if "-" in testkey:
         chapter, ex = testkey.split("-", 1)
     elif testkey.isdigit():
@@ -445,6 +448,9 @@ def get_tests(testkey):
         chapter, ex = testkey, "all"
     elif testkey == "current":
         chapter, ex = get_current_chapter(), "all"
+    else:
+        assert False, f"Could not parse test {testkey}"
+        
 
     assert chapter in CURRENT_TESTS, f"Unknown chapter {chapter}"
     chapter_tests = [
