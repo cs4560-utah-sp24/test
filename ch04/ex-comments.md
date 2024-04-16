@@ -99,7 +99,7 @@ There are some edge cases to take care of.
 		 
 Test case for handling text outside of comments	
 
-	>>> test_parse("This is normal text --> following text should also be normal")
+    >>> test_parse("This is normal text --> following text should also be normal")
      <html>
        <body>
          'This is normal text --> following text should also be normal'
@@ -107,7 +107,7 @@ Test case for handling text outside of comments
 	 
 Test combinations "nested" cases
 
-	>>> test_parse("This is normal text<!-- <!-- --> following text should also be normal")
+    >>> test_parse("This is normal text<!-- <!-- --> following text should also be normal")
      <html>
        <body>
          'This is normal text' 
@@ -116,7 +116,7 @@ Test combinations "nested" cases
 	 
  Test the case of <!-- !--> (should be one comment)
  
- 	>>> test_parse("This is normal text<!-- !--> following text should also be normal")
+    >>> test_parse("This is normal text<!-- !--> following text should also be normal")
      <html>
        <body>
          'This is normal text' 
