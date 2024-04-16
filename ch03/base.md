@@ -44,7 +44,7 @@ and `return "Text('{}')".format(self.text)`
     [Text('he'), Tag('body'), Text('l'), Tag('div'), Text('l'), Tag('/div'), Text('o'), Tag('/body')]
     >>> browser.lex('hello world')
     [Text('hello world')]
-
+	
 Note that the tags do not have to match:
 
     >>> browser.lex('he<body>l</div>lo')
@@ -82,9 +82,14 @@ rather a mock font that has faked metrics.
     [(13.0, 22.5, 'abc', Font size=24 weight=normal slant=italic style=None), 
      (109.0, 25.5, 'def', Font size=20 weight=normal slant=roman style=None)]
      
-    >>> test_layout("hello world")
-    [(13.0, 22.5, 'hello', Font size=16 weight=normal slant=roman style=None),
-	(13.0, 42.5, 'world', Font size=16 weight=normal slant=roman style=None)]
+    >>> content = "hello world"
+    >>> url = browser.URL(wbemocks.socket.serve(content))
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(url)
+    >>> def test_layout(content):
+    ...   dl = browser.Layout(browser.lex(content)).display_list
+    ...   wbemocks.print_list(wbemocks.normalize_display_list(dl))
+
 
 Lines of text are spaced to make room for the tallest text. Let's lay
 out text with mixed font sizes, and then measure the line heights:
