@@ -19,7 +19,6 @@ Setup
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Set up the URL and web page, this is the content that we will be examining.

@@ -36,7 +36,6 @@ Boilerplate.
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 First, let's test that a simple button looks normal:

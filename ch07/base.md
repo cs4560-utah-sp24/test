@@ -28,7 +28,6 @@ Tests
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
     >>> content = """

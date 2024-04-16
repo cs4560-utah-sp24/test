@@ -16,7 +16,6 @@ Boilerplate.
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> wbemocks.NO_CACHE = True
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Make a page with a hidden input element.

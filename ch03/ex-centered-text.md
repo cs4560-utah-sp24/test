@@ -15,7 +15,6 @@ Testing boilerplate:
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 The headers mentioned in the exercise description are centered due to

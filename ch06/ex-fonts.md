@@ -29,9 +29,11 @@ We'll define a little helper function to test styles:
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
+    >>> wbemocks.NORMALIZE_FONT = False
     >>> import browser
-    >>> def print_style(style):
+    >>> def print_font_style(style):
     ...     for key in sorted(style):
+    ...         if key == "vertical-align": continue
     ...         val = style[key]
     ...         print(f"{key}: {val}")
 
@@ -41,7 +43,7 @@ The default font-family should be "Times".
     >>> body = browser.Element("body", {}, html)
     >>> div = browser.Element("div", {}, body)
     >>> browser.style(html, [])
-    >>> print_style(html.style)
+    >>> print_font_style(html.style)
     color: black
     font-family: Times
     font-size: 16px

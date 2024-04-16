@@ -5,7 +5,6 @@ Chapter 4 (Constructing a Document Tree) adds support for the document tree
 (i.e. the DOM).  This file contains tests for the additional functionality.
 
     >>> import wbemocks
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Notes

@@ -179,6 +179,7 @@ Testing style
     >>> def print_style(style):
     ...     for key in sorted(style):
     ...         if key == "font-family": continue
+    ...         if key == "vertical-align": continue
     ...         val = style[key]
     ...         print(f"{key}: {val}")
 

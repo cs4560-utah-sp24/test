@@ -38,7 +38,6 @@ Boilerplate.
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
     >>> this_browser = browser.Browser()
     >>> this_browser.chrome.bottom

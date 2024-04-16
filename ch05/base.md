@@ -40,7 +40,6 @@ Testing layout_mode
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 The `layout_mode` function returns "inline" if the object is a `Text` node

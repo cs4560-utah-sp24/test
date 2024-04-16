@@ -14,7 +14,6 @@ Testing boilerplate:
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
     >>> def test_layout(text):
     ...   dl = browser.Layout(browser.lex(text)).display_list

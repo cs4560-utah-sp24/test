@@ -543,7 +543,7 @@ def unpatch_canvas():
     tkinter.Canvas = original_tkinter_canvas
 
 
-NORMALIZE_FONT = False
+NORMALIZE_FONT = True
 class MockFont:
     def __init__(self, size=None, weight=None, slant=None, style=None, family=None):
         self.size = size

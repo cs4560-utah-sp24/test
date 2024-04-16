@@ -8,7 +8,6 @@ interaction.
     >>> import wbemocks
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Note that we aren't mocking `dukpy`. It should just run JavaScript normally!

@@ -30,7 +30,6 @@ Boilerplate.
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> wbemocks.NO_CACHE = True
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Check that using http does not add the lock character.

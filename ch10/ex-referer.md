@@ -27,7 +27,6 @@ Boilerplate.
     >>> _ = wbemocks.socket.patch().start()
     >>> _ = wbemocks.ssl.patch().start()
     >>> wbemocks.NO_CACHE = True
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Load a page with some CSS, and check that `Referer` is used.

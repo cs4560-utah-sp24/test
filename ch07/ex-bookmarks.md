@@ -65,7 +65,6 @@ Boilerplate.
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
     >>> wbemocks.MockCanvas.hide_all()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 Let's first make sure the bookmarks button is in the right place:

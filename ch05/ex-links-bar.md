@@ -18,7 +18,6 @@ Tests
     >>> _ = wbemocks.ssl.patch().start()
     >>> _ = wbemocks.patch_canvas()
     >>> wbemocks.MockCanvas.hide_all()
-    >>> wbemocks.NORMALIZE_FONT = True
     >>> import browser
 
 The links bar in each chapter is enclosed in `<nav class="links">`.
