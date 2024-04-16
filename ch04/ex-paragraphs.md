@@ -63,6 +63,14 @@ Test when `<p>` tags have different attributes from each other
        <body>
          <p>This is a paragraph with 
          <p>another nested paragraph inside.
-		 
-		 
+
+
+Test that parent pointers are set correctly			 
+
+    >>>test_parse("<p>This is <b>paragraph one</b> with <p>nested paragraph two</p></p>")
+     <html>
+       <body>
+         <p>
+           'This is <b>paragraph one with '
+           '<p>nested paragraph two'
 
