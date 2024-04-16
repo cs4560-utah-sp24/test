@@ -54,3 +54,15 @@ Any tags that are open when encountering the second paragraph should be closed
          <p>
            <b>
              'world'
+
+			 
+Test when <p> tags have different attributes from each other	
+
+	>>> test_no_nested_paragraphs("<p>This is a paragraph with <p>another nested paragraph inside.</p></p>")
+     <html>
+       <body>
+         <p>This is a paragraph with 
+         <p>another nested paragraph inside.
+		 
+		 
+
