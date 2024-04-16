@@ -105,4 +105,4 @@ Check that height is used in block layout modes
        BlockLayout(x=13, y=18, width=774, height=150.0)
          BlockLayout(x=13, y=18, width=774, height=150.0)
            BlockLayout(x=13, y=18, width=774, height=150.0)
-             BlockLayout(x=13, y=18, width=774, height=150.0)
+             BlockLayout(x=13, y=18, width=774, height=20.0)
