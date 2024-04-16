@@ -18,19 +18,20 @@ MDT = datetime.timezone(datetime.timedelta(hours=-6), "MDT")
 GH_JSON_PATH = "test/gh.json"
 
 CHAPTER_DEADLINES = {
-    "chapter1": datetime.datetime(2024, 1, 29, tzinfo=MST),
-    "chapter2": datetime.datetime(2024, 2,  5, tzinfo=MST),
-    "chapter3": datetime.datetime(2024, 2, 12, tzinfo=MST),
-    "chapter4": datetime.datetime(2024, 2, 19, tzinfo=MST),
-    "chapter5": datetime.datetime(2024, 2, 26, tzinfo=MST),
-    "chapter6": datetime.datetime(2024, 3,  4, tzinfo=MST),
-    "chapter7": datetime.datetime(2024, 3, 11, tzinfo=MDT),
-    "chapter8": datetime.datetime(2024, 3, 18, tzinfo=MDT),
-    "chapter9": datetime.datetime(2024, 3, 25, tzinfo=MDT),
-    "chapter10": datetime.datetime(2024,4,  1, tzinfo=MDT),
+    "ch01": datetime.datetime(2024, 1, 29, tzinfo=MST),
+    "ch02": datetime.datetime(2024, 2,  5, tzinfo=MST),
+    "ch03": datetime.datetime(2024, 2, 12, tzinfo=MST),
+    "ch04": datetime.datetime(2024, 2, 19, tzinfo=MST),
+    "ch05": datetime.datetime(2024, 2, 26, tzinfo=MST),
+    "ch06": datetime.datetime(2024, 3,  4, tzinfo=MST),
+    # Spring break
+    "ch07": datetime.datetime(2024, 3, 18, tzinfo=MDT),
+    "ch08": datetime.datetime(2024, 3, 25, tzinfo=MDT),
+    "ch09": datetime.datetime(2024, 4,  1, tzinfo=MDT),
+    "ch10": datetime.datetime(2024,4,  8, tzinfo=MDT),
 }
 
-def getCurrentChapter():
+def get_current_chapter():
     chapter = min([
         (chapter, deadline)
         for chapter, deadline in CHAPTER_DEADLINES.items()
@@ -41,98 +42,73 @@ def getCurrentChapter():
         return chapter[0]
     else:
         print("WARNING: No chapters outstanding, using chapter10", file=sys.stderr)
-        return "chapter10"
+        return list(CHAPTER_DEADLINES)[-1] # Depends on sorted dictionaries
 
-
-DEFAULT_CICD = getCurrentChapter()
 
 CURRENT_TESTS = {
-    "chapter1": ["chapter1-base-tests.md",
-                 "chapter1-exercise-http-1-1-tests.md",
-                 "chapter1-exercise-file-urls-tests.md",
-                 "chapter1-exercise-redirects-tests.md",
-                 "chapter1-exercise-caching-tests.md",
-                 # "chapter1-binary-tests.md",
-                 ],
-    "chapter2": ["chapter2-base-tests.md",
-                 "chapter2-exercise-line-breaks-tests.md",
-                 "chapter2-exercise-resizing-tests.md",
-                 "chapter2-exercise-scrollbar-tests.md",
-                 "chapter2-exercise-emoji-tests.md",
-                 ],
-    "chapter3": ["chapter3-base-tests.md",
-                 "chapter3-exercise-centered-text-tests.md",
-                 "chapter3-exercise-superscripts-tests.md",
-                 "chapter3-exercise-soft-hyphens-tests.md",
-                 "chapter3-exercise-small-caps-tests.md",
-                 ],
-    "chapter4": ["chapter4-base-tests.md",
-                 "chapter4-exercise-comments-tests.md",
-                 "chapter4-exercise-paragraphs-tests.md",
-                 "chapter4-exercise-scripts-tests.md",
-                 "chapter4-exercise-quoted-attributes-tests.md",
-                 ],
-    "chapter5": ["chapter5-base-tests.md",
-                 "chapter5-exercise-hidden-head-tests.md",
-                 "chapter5-exercise-bullets-tests.md",
-                 "chapter5-exercise-links-bar-tests.md",
-                 "chapter5-exercise-anonymous-boxes-tests.md",
-                 ],
-    "chapter6": ["chapter6-base-tests.md",
-                 "chapter6-exercise-fonts-tests.md",
-                 "chapter6-exercise-width-height-tests.md",
-                 "chapter6-exercise-class-selectors-tests.md",
-                 "chapter6-exercise-shorthand-properties-tests.md",
-                 ],
-    "chapter7": ["chapter7-base-tests.md",
-                 "chapter7-exercise-backspace-tests.md",
-                 "chapter7-exercise-middle-click-tests.md",
-                 "chapter7-exercise-fragments-tests.md",
-                 "chapter7-exercise-bookmarks-tests.md",
-                 ],
-    "chapter8": ["chapter8-base-tests.md",
-                 "chapter8-exercise-enter-key-tests.md",
-                 "chapter8-exercise-check-boxes-tests.md",
-                 "chapter8-exercise-tab-tests.md",
-                 "chapter8-exercise-get-forms-tests.md",
-                 ],
-    "chapter9": ["chapter9-base-tests.md",
-                 "chapter9-exercise-create-element-tests.md",
-                 "chapter9-exercise-node-children-tests.md",
-                 "chapter9-exercise-ids-tests.md",
-                 "chapter9-exercise-event-bubbling-tests.md",
-                 ],
-    "chapter10": ["chapter10-base-tests.md",
-                  "chapter10-exercise-new-inputs-tests.md",
-                  "chapter10-exercise-certificate-errors-tests.md",
-                  "chapter10-exercise-script-access-tests.md",
-                  "chapter10-exercise-referer-tests.md",
-                  ],
+    "ch01": ["base.md",
+             "ex-http-11.md",
+             "ex-file-urls.md",
+             "ex-redirects.md",
+             "ex-caching.md",
+             ],
+    "ch02": ["base.md",
+             "ex-line-breaks.md",
+             "ex-resizing.md",
+             "ex-scrollbar.md",
+             "ex-emoji.md",
+             ],
+    "ch03": ["base.md",
+             "ex-centered-text.md",
+             "ex-superscripts.md",
+             "ex-soft-hyphens.md",
+             "ex-small-caps.md",
+             ],
+    "ch04": ["base.md",
+             "ex-comments.md",
+             "ex-paragraphs.md",
+             "ex-scripts.md",
+             "ex-quoted-attributes.md",],
+    "ch05": ["base.md",
+             "ex-hidden-head.md",
+             "ex-bullets.md",
+             "ex-links-bar.md",
+             "ex-anonymous-boxes.md",
+             ],
+    "ch06": ["base.md",
+             "ex-fonts.md",
+             "ex-width-height.md",
+             "ex-class-selectors.md",
+             "ex-shorthand-properties.md",
+             ],
+    "ch07": ["base.md",
+             "ex-backspace.md",
+             "ex-middle-click.md",
+             "ex-fragments.md",
+             "ex-bookmarks.md",
+             ],
+    "ch08": ["base.md",
+             "ex-enter-key.md",
+             "ex-check-boxes.md",
+             "ex-get-forms.md",
+             "ex-rich-buttons.md",
+             ],
+    "ch09": ["base.md",
+             "ex-create-element.md",
+             "ex-node-children.md",
+             "ex-ids.md",
+             "ex-event-bubbling.md",
+             ],
+    "ch10": ["base.md",
+             "ex-new-inputs.md",
+             "ex-certificate-errors.md",
+             "ex-script-access.md",
+             "ex-referer.md",
+             ],
 }
 
-all_tests = list()
-specific_file_tests = {}
-
-'''
-add option to run all tests by running script w/ argval 'all',
-and add option to run individual test files by name (removing '-exercise-' infix substring if present)
-'''
-for chapterkey, tests in CURRENT_TESTS.items():
-    all_tests.extend(tests)
-
-    specific_file_tests[chapterkey + '-exercises'] = tests[1:]
-
-    for i, test in enumerate(tests):
-        arg_val = re.sub(r'-exercise', '', test)
-        arg_val = re.sub(r'-tests.md', '', arg_val)
-        specific_file_tests[arg_val] = [test]
-        specific_file_tests[chapterkey + '-' + str(i + 1)] = [test]
-
-CURRENT_TESTS["all"] = all_tests
-
-CURRENT_TESTS.update(specific_file_tests)
-
 REPORT_FIRST_ERROR = False
+REPORT_DIFF = False
 
 # Below this are a variety of "fixes" to doctest that make it more user-friendly
 
@@ -198,6 +174,22 @@ def patched_get_doctest(self, string, globs, name, filename, lineno):
     out._failed_examples = []
     return out
 
+old_check_output = doctest.OutputChecker.check_output
+
+def patched_check_output(self, want, got, optionflags):
+    """
+    Strips all debug lines out from `got` before checking output. By
+    stripping them here but not in output_difference, we end up
+    calling debug-only diffs a successful result, but still print the
+    output when the diff has non-debug-only lines.
+    """
+    got_no_debug = "\n".join([
+        line for line in
+        got.split("\n")
+        if not line.startswith("!dbg")
+    ])
+    return old_check_output(self, want, got_no_debug, optionflags)
+
 def patched_failure_header(self, test, example):
     """
     Print the full block being executed, including the text
@@ -234,8 +226,8 @@ def patched_failure_header(self, test, example):
         if isinstance(x, str):
             s += x
         else:
-            s += ">>> " + x.source
-            if x.want:
+            s += ">>> " + "\n... ".join(x.source.strip("\n").split("\n")) + "\n"
+            if x.want and i != example_idx:
                 s += x.want
     out.append(doctest._indent(s))
     return '\n'.join(out) + "\n"
@@ -278,6 +270,7 @@ def patch_doctest():
     doctest.DocTestRunner.report_failure = patched_report_failure
     doctest.DocTestRunner.report_unexpected_exception = patched_report_unexpected_exception
     doctest.DocTestRunner._failure_header = patched_failure_header
+    doctest.OutputChecker.check_output = patched_check_output
     doctest._SpoofOut.truncate = patched_truncate
     doctest.DocTestParser.parse = patched_parse
     doctest.DocTestParser.get_doctest = patched_get_doctest
@@ -288,9 +281,10 @@ def run_doctests(files):
     patch_doctest()
     mapped_results = dict()
     sys.modules["wbemocks"] = wbemocks
-    flags = doctest.ELLIPSIS
+    flags = doctest.ELLIPSIS | doctest.IGNORE_EXCEPTION_DETAIL
+    if REPORT_DIFF: flags |= doctest.REPORT_NDIFF
     for fname in files:
-        fname_abs = os.path.join(os.path.dirname(__file__), "tests", fname)
+        fname_abs = os.path.join(os.path.dirname(__file__), fname)
         doctest.testfile(fname_abs, module_relative=False, optionflags=flags)
         mapped_results[fname] = LAST_TEST_RESULT
         LAST_TEST_RESULT = None
@@ -300,20 +294,38 @@ def parse_arguments(argv):
     parser = argparse.ArgumentParser(description='WBE test runner')
     parser.add_argument("chapter",
                         nargs="?",
-                        default=DEFAULT_CICD,
-                        choices=list(CURRENT_TESTS),
+                        default="current",
                         help="Which chapter's tests to run")
     parser.add_argument("--index",
                         type=int,
                         help="Run the nth test from the chapter. "
                         "(Requires passing a full chapter name.)")
-    parser.add_argument("--gh", action="store_true",
-                        help="Write results to " + GH_JSON_PATH +
-                        "(For generating grade summaries)")
-    parser.add_argument("--ghsetup", action="store_true",
-                        help="Output environment variables for Github")
-    parser.add_argument("--no-upload", action="store_true",
-                        help="Do not upload a copy of the code to the instructor")
+
+    # Control over output
+    parser.add_argument(
+        "--all", action="store_true",
+        help="Run all the tests, instead of stopping at the first failure.")
+    parser.add_argument(
+        "--diff", action="store_true",
+        help="Show a line-by-line diff between expected and actual output")
+
+    # Control over test configuration
+    parser.add_argument(
+        '-b', '--browser_path',
+        help='Directory containing browser.py'),
+
+    # Control over uploader
+    parser.add_argument(
+        "--no-upload", action="store_true",
+        help="Do not upload a copy of the code to the instructor")
+
+    # Control over GH mode
+    parser.add_argument(
+        "--gh", action="store_true",
+        help=f"Write results to {GH_JSON_PATH} (for generating grade summaries)")
+    parser.add_argument(
+        "--ghsetup", action="store_true",
+        help="Output environment variables for Github CI script")
     args = parser.parse_args(argv[1:])
 
     return args
@@ -342,6 +354,7 @@ def upload_py(testkey):
 
     all_modules = set(sys.modules.keys())
     import browser
+    if os.path.exists("server.py"): import server
     new_modules = set(sys.modules.keys()) - all_modules
     browser_path = os.path.realpath(browser.__file__)
     files = []
@@ -349,6 +362,7 @@ def upload_py(testkey):
     base_path = os.path.dirname(browser_path)
     for module_name in new_modules:
         module = sys.modules[module_name]
+        if not hasattr(module, "__file__"): continue
         module_path = os.path.realpath(module.__file__)
         try:
             if os.path.commonpath([module_path, base_path]) == base_path:
@@ -419,18 +433,52 @@ def upload_py(testkey):
     
     print(f"ERROR: upload failed because {msg}, continuing", file=sys.stderr)
 
+def get_tests(testkey):
+    if testkey == "all":
+        return sum([get_tests(chname) for chname in CURRENT_TESTS], [])
+
+    if testkey.startswith("ch") and len(testkey) > 2 and testkey[2] != "0" and testkey[2:4] != "10":
+        testkey = "ch0" + testkey[2:]
+
+    if "-" in testkey:
+        chapter, ex = testkey.split("-", 1)
+    elif testkey.isdigit():
+        chapter, ex = get_current_chapter(), testkey
+    elif testkey in CURRENT_TESTS:
+        chapter, ex = testkey, "all"
+    elif testkey == "current":
+        chapter, ex = get_current_chapter(), "all"
+    else:
+        assert False, f"Could not parse test {testkey}"
+        
+
+    assert chapter in CURRENT_TESTS, f"Unknown chapter {chapter}"
+    chapter_tests = [
+        os.path.join(chapter, testname)
+        for testname in CURRENT_TESTS[chapter]
+    ]
+
+    if ex == "all":
+        return chapter_tests
+    elif ex.isdigit():
+        assert 0 < int(ex) <= 5, f"Invalid test index {ex} in {chapter} (1-5 allowed)"
+        return [chapter_tests[int(ex) - 1]]
+    else:
+        ex_name = "base.md" if ex == "base" else "ex-" + ex + ".md"
+        ex_file = os.path.join(chapter, ex_name)
+        assert ex_file in chapter_tests, f"Unknown test {ex} in {chapter}"
+        return [ex_file]
+
 def main(argv):
     args = parse_arguments(argv)
 
     testkey = args.chapter
-    if args.index is not None:
-        assert args.chapter.startswith("chapter")
-        testkey = args.chapter + "-" + str(args.index)
+    tests = get_tests(testkey)
 
-    tests = CURRENT_TESTS[testkey]
-
+    bpath = args.browser_path
+    sys.path.append(bpath)
     upload_proc = None
-    if not (args.no_upload or args.ghsetup or args.gh):
+    if not (args.no_upload or args.ghsetup):
         upload_proc = multiprocessing.Process(target=upload_py, args=(testkey,))
         upload_proc.start()
 
@@ -438,8 +486,9 @@ def main(argv):
         ghsetup(tests)
         return 0
 
-    global REPORT_FIRST_ERROR
-    REPORT_FIRST_ERROR = not args.gh
+    global REPORT_FIRST_ERROR, REPORT_DIFF
+    REPORT_FIRST_ERROR = not args.gh and not args.all
+    REPORT_DIFF = args.diff
     mapped_results = run_doctests(tests)
     total_state = "all passed"
     print("\nSummarised results\n")
@@ -458,6 +507,7 @@ def main(argv):
             current_data = json.load(open(GH_JSON_PATH))
         else:
             current_data = []
+        current_data = [t for t in current_data if t[0] in ALL_TESTS]
         res = sorted(current_data + list(mapped_results.items()),
                      key=lambda a: ALL_TESTS.index(a[0]))
         with open(GH_JSON_PATH, "w") as f:

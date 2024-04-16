@@ -15,12 +15,21 @@ from ssl import SSLCertVerificationError
 
 
 def normalize_display_list(dl):
-    dl = [(float(t[0]), float(t[1]), t[2].replace("\xad", ""), *t[3:]) for t in dl]
+    if dl and isinstance(dl[0], tuple):
+        dl = [
+            (float(t[0]), float(t[1]), t[2].replace("\xad", ""), *t[3:])
+            for t in dl
+        ]
+    elif dl:
+        dl = [
+            (float(t.rect.left), float(t.rect.top), t.text.replace("\xad", ""), t.font)
+            for t in dl
+        ]
     return dl
 
 def print_list(dl):
     for l in dl:
-        print(l)
+        print(repr(l))
 
 class certifi:
     def where(self):
@@ -34,6 +43,7 @@ def fake_badssl(hostname):
         raise SSLCertVerificationError()
 
 NO_CACHE = False
+is_resizing = False
 class socket:
     URLs = {}
     Requests = {}
@@ -71,12 +81,16 @@ class socket:
             self.scheme = "http"
 
     def send(self, text):
+        global is_resizing
+        assert not is_resizing, "No new requests should be issued during resizing"
         self.request += text
         self.method, self.path, _ = self.request.decode("latin1").split(" ", 2)
         socket.recent_request_path = self.path
 
         if self.method == "POST":
-            beginning, self.body = self.request.decode("latin1").split("\r\n\r\n")
+            req = self.request.decode("latin1")
+            assert "\r\n\r\n" in req, "HTTP request does not separate headers from body with an empty line"
+            beginning, self.body = req.split("\r\n\r\n", 1)
             headers = [item.split(":", 1) for item in beginning.split("\r\n")[1:]]
             content_length = None
             for tup in headers:
@@ -84,7 +98,7 @@ class socket:
                 if key.lower() == "content-length":
                     content_length = val.strip()
             assert content_length is not None, "Content-Length not present in headers"
-            assert len(self.body) == int(content_length), len(self.body)
+            assert len(self.body) == int(content_length), "Payload {!r} is {} bytes but Content-Length is given as {}".format(self.body, len(self.body), content_length)
 
     def makefile(self, mode, encoding, newline):
         """
@@ -96,9 +110,14 @@ class socket:
         if not set(mode) <= {"r", "b"}:
             raise ValueError("invalid mode %r (only r, b allowed)" % (mode,))
         binary = "b" in mode  # 't' or 'b'
+            
 
         assert self.connected and self.host and self.port, \
-            "You cannot call makefile() on a socket until you call connect() and send()"
+            "You cannot call makefile() on a socket until you call connect()"
+
+        assert self.request and self.method and self.path, \
+            "You didn't send anything to the socket before calling makefile() on it"
+
         if self.port == 80 and self.scheme == "http":
             url = self.scheme + "://" + self.host + self.path
         elif self.port == 443 and self.scheme == "https":
@@ -116,7 +135,9 @@ class socket:
             f"Expected a {self.URLs[url][0]} request but got a {self.method} request to {url}"
         output = self.URLs[url][1]
         if self.URLs[url][2]:
-            assert self.body == self.URLs[url][2], (self.body, self.URLs[url][2])
+            assert self.body == self.URLs[url][2], \
+                "Expected request body of {!r} but got {!r}".format(
+                    self.URLs[url][2], self.body)
         if binary:
             return io.BytesIO(output)
         return io.StringIO(output.decode(encoding).replace(newline, "\n"), newline)
@@ -126,6 +147,7 @@ class socket:
 
     @classmethod
     def patch(cls):
+        cls.reset()
         return mock.patch("socket.socket", wraps=cls)
 
     @classmethod
@@ -136,11 +158,11 @@ class socket:
         cls.URLs[url] = [method, response, body]
 
     @classmethod
-    def respond_200(cls, url, body):
+    def respond_200(cls, url, response_body, **kwargs):
         response = ("HTTP/1.0 200 OK\r\n" +
                     "\r\n" +
-                    body).encode()
-        cls.respond(url, response, "GET")
+                    response_body).encode()
+        cls.respond(url, response, **kwargs)
 
     @classmethod
     def respond_ok(cls, url, body):
@@ -167,6 +189,8 @@ class socket:
 
     @classmethod
     def last_request(cls, url):
+        assert url in cls.Requests, \
+            "Your browser should be requesting '{}', but it isn't".format(url)
         return cls.Requests[url][-1]
 
     @classmethod
@@ -203,6 +227,12 @@ class socket:
     def last_request_path(cls):
         return cls.recent_request_path
 
+    @classmethod
+    def reset(cls):
+        cls.URLs = {}
+        cls.Requests = {}
+        cls.recent_request_path = None
+
 class ssl:
     def __init__(self, *args):
         pass
@@ -230,9 +260,28 @@ class ssl:
         _ = mock.patch("ssl.SSLContext", wraps=cls).start()
         return mock.patch("ssl.create_default_context", wraps=cls)
 
+TK_INITIALIZED = False
 class SilentTk:
+    def __init__(self, *args, **kwargs):
+        global TK_INITIALIZED
+        TK_INITIALIZED = True
+        self.has_canvas = False
+        
     def bind(self, event, callback):
         pass
+    
+    def create_canvas(self, *args, **kwargs):
+        self.canvas_count += 1
+        assert self.canvas_count <= 1, "Only one Canvas instance should be created per Tk object"
+        return SilentCanvas(*args, **kwargs)
+    
+original_canvas_init = tkinter.Canvas.__init__
+def new_canvas_init(self, master=None, *args, **kwargs):
+    if isinstance(master, SilentTk):
+        master.create_canvas()
+    original_canvas_init(self, master, *args, **kwargs)
+
+tkinter.Canvas.__init__ = new_canvas_init
 
 tkinter.Tk = SilentTk
     
@@ -240,6 +289,7 @@ class PhotoImage:
     DO_NOT_GC = weakref.WeakKeyDictionary()
 
     def __init__(self, file, *, secret_width=None, secret_height=None):
+        assert TK_INITIALIZED, "You cannot create a PhotoImage until after a Tk is constructed"
         self.filename = file
         width, height = secret_width, secret_height
 
@@ -301,9 +351,12 @@ tkinter.PhotoImage = PhotoImage
 
 TK_CANVAS_CALLS = list()
 class SilentCanvas:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, parent, *args, **kwargs):
         global TK_CANVAS_CALLS
         TK_CANVAS_CALLS = list()
+        assert not parent.has_canvas, "Each Tk window should only have one Canvas"
+        parent.has_canvas = True
+        self.pack_called = False
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):
         global TK_CANVAS_CALLS
@@ -321,7 +374,7 @@ class SilentCanvas:
         TK_CANVAS_CALLS.append("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
             x1, y1, x2, y2, width, repr(fill)))
 
-    def create_line(self, x1, y1, x2, y2, fill=None):
+    def create_line(self, x1, y1, x2, y2, fill=None, width=None):
         pass
 
     def create_oval(self, x1, y1, x2, y2):
@@ -331,39 +384,14 @@ class SilentCanvas:
         pass
 
     def pack(self, expand=None, fill=None):
-        pass
+        assert not self.pack_called, "Only call pack() once on each Canvas"
+        self.pack_called = True
 
     def delete(self, v):
         global TK_CANVAS_CALLS
         assert(v == "all")
         TK_CANVAS_CALLS = list()
 
-
-def check_bookmark_button(fill_color):
-    rec_calls = [call for call in TK_CANVAS_CALLS
-                 if call.startswith("create_rectangle")]
-    for rec_call in rec_calls:
-        parts = rec_call.split()
-        x1 = float(parts[1].split("=")[1])
-        y1 = float(parts[2].split("=")[1])
-        x2 = float(parts[3].split("=")[1])
-        y2 = float(parts[4].split("=")[1])
-        fill = parts[6].split("=")[1][1:-1]
-
-        if (755 < x1 < 775 and
-           40 < y1 < 60 and
-           780 < x2 < 800 and
-           80 < y2 < 100 and
-           fill == fill_color):
-            return True
-
-    return False
-
-def check_not_bookmarked():
-    return check_bookmark_button("white")
-
-def check_bookmarked():
-    return check_bookmark_button("yellow")
 
 def maybeint(x):
     return int(x) if (isinstance(x, float) and x == int(x)) else x
@@ -372,41 +400,57 @@ tkinter.Canvas = SilentCanvas
 
 class MockCanvas:
     HIDE_COMMANDS = set()
+    HIDE_ABOVE = 0
     IMAGE_SIZE = None
+    LOG = []
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, parent, *args, **kwargs):
+        assert not parent.has_canvas, "Each Tk window should only have one Canvas"
+        parent.has_canvas = True
+        self.pack_called = False
+
+    def _allow(self, cmdname, ytop):
+        if self.HIDE_COMMANDS == "*": return False
+        if cmdname in self.HIDE_COMMANDS: return False
+        if ytop <= self.HIDE_ABOVE: return False
+        return True
+
+    def _draw(self, str):
+        self.LOG.append(str)
 
     def create_rectangle(self, x1, y1, x2, y2, width=None, fill=None, outline=None):
-        if "create_rectangle" in self.HIDE_COMMANDS: return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
         y2 = maybeint(y2)
         width = maybeint(width)
-        print("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
-            x1, y1, x2, y2, width, repr(fill)))
+        cmd = "create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
+            x1, y1, x2, y2, width, repr(fill))
+        self._draw(cmd)
+        if self._allow("create_rectangle", max(y1, y2)): print(cmd)
 
-    def create_line(self, x1, y1, x2, y2, fill=None):
-        if "create_line" in self.HIDE_COMMANDS: return
+    def create_line(self, x1, y1, x2, y2, fill=None, width=None):
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
         y2 = maybeint(y2)
-        print("create_line: x1={} y1={} x2={} y2={} fill={}".format(
-            x1, y1, x2, y2, repr(fill)))
+        width = maybeint(width)
+        cmd = "create_line: x1={} y1={} x2={} y2={} width={} fill={}".format(
+            x1, y1, x2, y2, width, repr(fill))
+        self._draw(cmd)
+        if self._allow("create_line", max(y1, y2)): print(cmd)
 
     def create_oval(self, x1, y1, x2, y2):
-        if "create_oval" in self.HIDE_COMMANDS: return
         x1 = maybeint(x1)
         x2 = maybeint(x2)
         y1 = maybeint(y1)
         y2 = maybeint(y2)
-        print("create_oval: x1={} y1={} x2={} y2={}".format(
-            x1, y1, x2, y2))
+        cmd = "create_oval: x1={} y1={} x2={} y2={}".format(
+            x1, y1, x2, y2)
+        self._draw(cmd)
+        if self._allow("create_oval", max(y1, y2)): print(cmd)
 
     def create_image(self, x, y, image):
-        if "create_image" in self.HIDE_COMMANDS: return
         x = maybeint(x)
         y = maybeint(y)
         PhotoImage.DO_NOT_GC[image] = True
@@ -414,28 +458,40 @@ class MockCanvas:
             assert self.IMAGE_SIZE == (image.w, image.h), \
                 "Expecting a {}x{} image but got a {}x{} image".format(
                     *self.IMAGE_SIZE, image.w, image.h)
-        print("create_oval: x={} y={} image={}".format(x, y, image))
+        cmd = "create_image: x={} y={} image={}".format(x, y, image)
+        self._draw(cmd)
+        if self._allow("create_image", y + image.h): print(cmd)
 
     def create_text(self, x, y, text, font=None, anchor=None, fill=None):
-        if "create_text" in self.HIDE_COMMANDS: return
-        if text.isspace():
-            return
+        if text.isspace(): return
         if font or anchor:
-            print("create_text: x={} y={} text={} font={} anchor={}".format(
-                x, y, text, font, anchor))
+            cmd = "create_text: x={} y={} text={} font={} anchor={}".format(
+                x, y, text, font, anchor)
         else:
-            print("create_text: x={} y={} text={}".format(
-                x, y, text))
+            cmd = "create_text: x={} y={} text={}".format(x, y, text)
+        self._draw(cmd)
+        y2 = y + font.metrics("linespace")
+        if self._allow("create_text", y2): print(cmd)
 
     def pack(self, expand=None, fill=None):
-        pass
+        assert not self.pack_called, "Only call pack() once on each Canvas"
+        self.pack_called = True
 
     def delete(self, v):
-        pass
+        assert v == "all"
+        self.LOG[:] = [] # clear
 
     @classmethod
     def hide_command(cls, name):
         cls.HIDE_COMMANDS.add(name)
+
+    @classmethod
+    def hide_above(cls, y):
+        cls.HIDE_ABOVE = y
+
+    @classmethod
+    def hide_all(cls):
+        cls.HIDE_COMMANDS = "*"
 
     @classmethod
     def require_image_size(cls, w, h):
@@ -444,87 +500,50 @@ class MockCanvas:
     @classmethod
     def reset(cls):
         cls.HIDE_COMMANDS = set()
+        cls.HIDE_ABOVE = 0
         cls.IMAGE_SIZE = None
-        
+        cls.LOG = []
+
+    @classmethod
+    def all_rects(cls, rect):
+        x1, x2 = rect.left, rect.right
+        y1, y2 = rect.top, rect.bottom
+        for line in cls.LOG:
+            if line.startswith("create_rectangle: x1={} y1={} x2={} y2={}".format(x1, y1, x2, y2)):
+                print(line)
 
 original_tkinter_canvas = tkinter.Canvas
 
-class SkipChromeCanvas:
-    def __init__(self, *args, **kwargs):
-        pass
+class Event:
+    pass
 
-    def create_text(self, x, y, text, font=None, anchor=None, fill=None):
-        if text.isspace() or y < 100:
-            return
-        if font or anchor:
-            print("create_text: x={} y={} text={} font={} anchor={}".format(
-                x, y, text, font, anchor))
-        else:
-            print("create_text: x={} y={} text={}".format(
-                x, y, text))
+class ClickEvent:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
-    def create_rectangle(self, x1, y1, x2, y2, width=None, fill=None, outline=None):
-        if y1 > 100 and fill != "blue":
-            print("create_rectangle: x1={} y1={} x2={} y2={} width={} fill={}".format(
-                x1, y1, x2, y2, width, repr(fill)))
-
-    def create_line(self, x1, y1, x2, y2, fill=None):
-        pass
-
-    def create_oval(self, x1, y1, x2, y2):
-        pass
-
-    def create_polygon(self, *args, **kwargs):
-        pass
-
-    def pack(self, expand=None, fill=None):
-        pass
-
-    def delete(self, v):
-        pass
-
-
-class resize_event:
-    def __init__(self, width, height):
-        self.height = height
-        self.width = width
-
-class mousewheel_event:
-    def __init__(self, delta):
-        self.delta = delta
-        self.num = "??"
-
-class key_event:
+class KeyEvent:
     def __init__(self, char):
         self.char = char
 
-class backspace_event:
-    def __init__(self):
-        pass
-
-class enter_event:
-    def __init__(self):
-        pass
-
-class tab_event:
-    def __init__(self):
-        pass
+class ResizeEvent:
+    def __init__(self, width, height):
+        self.height = height
+        self.width = width
 
 def patch_canvas():
     MockCanvas.reset()
     tkinter.Canvas = MockCanvas
 
-def patch_skip_chrome_canvas():
-    tkinter.Canvas = SkipChromeCanvas
-
 def patch_silent_canvas():
+    MockCanvas.reset()
     tkinter.Canvas = SilentCanvas
 
 def unpatch_canvas():
     tkinter.Canvas = original_tkinter_canvas
 
 
-NORMALIZE_FONT = False
+NORMALIZE_FONT = True
 class MockFont:
     def __init__(self, size=None, weight=None, slant=None, style=None, family=None):
         self.size = size
@@ -572,14 +591,6 @@ tkinter.font.Font = MockFont
 
 tkinter.Label = MockLabel
 
-def errors(f, *args, **kwargs):
-    try:
-        f(*args, **kwargs)
-    except Exception:
-        return True
-    else:
-        return False
-
 def breakpoint(name, *args):
     args_str = (", " + ", ".join(["'{}'".format(arg) for arg in args]) if args else "")
     print("breakpoint(name='{}'{})".format(name, args_str))
@@ -592,7 +603,3 @@ def patch_breakpoint():
 def unpatch_breakpoint():
     builtins.breakpoint = builtin_breakpoint
 
-class Event:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
