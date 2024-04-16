@@ -67,14 +67,14 @@ The script should end only with a complete end script tag.
            ' "</scri" "pt>" '
 		   
 		   
- Test <script> tags with attributes 		   
+ Test `<script>` tags with attributes 		   
     
     >>> test_parse("<script defer src='my-script.js'>Should be treated as text</script>")
      <html>
        <head>
          <script defer src="my-script.js">
            'Should be treated as text'
-         </script>
+
 		 
 		 
   
