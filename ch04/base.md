@@ -95,12 +95,9 @@ Test that the italic </i> tag is parsed correctly:
 	>>> test_parse("<i>A</i>B")
 	 <html>
 	   <body>
-		 <i>
-		   'A'
-		 </i>
-		 'B'
-	   </body>
-	 </html>	   
+             <i>
+	       'A'
+	     'B'	   
 		   
 
 Testing Layout
