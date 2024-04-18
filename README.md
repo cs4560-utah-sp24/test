@@ -40,11 +40,11 @@ repository run:
     
     Summarised results
 
-                      chapter1-base-tests.md: passed
-         chapter1-exercise-http-1-1-tests.md: passed
-        chapter1-exercise-file-urls-tests.md: passed
-        chapter1-exercise-redirects-tests.md: passed
-          chapter1-exercise-caching-tests.md: passed
+                                ch01/base.md: passed
+                          ch01/ex-http-11.md: passed
+                        ch01/ex-file-urls.md: passed
+                        ch01/ex-redirects.md: passed
+                          ch01/ex-caching.md: passed
     ----------------------------------------------------
                                    Final: all passed
 
@@ -53,15 +53,14 @@ The same exact script is run by the autograder in Github Actions.
 The tests
 ---------
 
-You can find the tests themselves in `src/`. The
-`chapterN-base-tests.md` file always contains tests for the base
-browser from the book for Chapter N. You should get those passing
-first. The `chapterN-exercise-X-tests.md` file contains the tests for
-the named exercise. Before doing those, read through the file itself.
-It may indicate additional functions you have to implement for testing
-(beyond those of the book itself) or have hints, additional rules, or
-further explanations. You'll be graded on passing both the `base` and
-`exercise` tests.
+You can find the tests themselves folders `ch01` through `ch10`. The
+`base.md` file always contains tests for the base browser from the
+book. You should get those passing first. The `ex-X.md` file contains
+the tests for the named exercise. Before doing those, look at the
+file. It may indicate additional functions you have to implement for
+testing (beyond those of the book itself) or have hints, additional
+rules, or further explanations. You'll be graded on passing both the
+"base" and "exercise" tests.
 
 The full list of exercises planned to assign in CS 4560 are:
 
@@ -86,23 +85,22 @@ The full list of exercises planned to assign in CS 4560 are:
 **Chapter 10**: New inputs, certificate errors, script access, referer
 
 Note that the exercises assigned for future chapters may change
-without notice during the semester. Italicized exercises don't yet
-have tests; they'll be written during the semester.
+without notice during the semester.
 
 Running the tests
 -----------------
 
-When run, the `run-tests.py` script runs all tests for the current
-chapter. But there are some additional options that might be handy:
+When run, the `run.py` script runs all tests for the current chapter.
+But there are some additional options that might be handy:
 
 The first argument select a specific chapter. For example, `python3
-src/run-tests.py chapter1` runs the tests for the first chapter. You
-can use the argument `all` to run all available tests.
+run.py ch1` runs the tests for the first chapter. You can use the
+argument `all` to run all available tests.
 
 The first argument can also select a specific exercise. For example,
-`python3 src/run-tests.py chapter1-base` runs the base tests for the
-first chapter, while `python3 src/run-tests.py chapter1-file-urls`
-runs tests for the file URLs exercise.
+`python3 run.py ch1-base` runs the base tests for the first chapter,
+while `python3 run.py ch1-file-urls` runs tests for the file URLs
+exercise.
 
 The tests themselves are written in Markdown using [doctest][doctest]
 to run them. Any failing tests will output the relevant paragraph of
@@ -144,5 +142,5 @@ used to understand mistakes made by students and challenges in
 understanding the material. This data will never be made public and
 will not affect your grade.
 
-If you don't want to participate, just pass `--no-upload` to
-`test.py`. As before, this will not affect your grade.
+If you don't want to participate, just pass `--no-upload` to `run.py`.
+As before, this will not affect your grade.
