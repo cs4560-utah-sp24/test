@@ -437,6 +437,7 @@ def get_tests(testkey):
     if testkey == "all":
         return sum([get_tests(chname) for chname in CURRENT_TESTS], [])
 
+    if "chapter" in testkey: testkey = testkey.replace("chapter", "ch")
     if testkey.startswith("ch") and len(testkey) > 2 and testkey[2] != "0" and testkey[2:4] != "10":
         testkey = "ch0" + testkey[2:]
 

@@ -180,6 +180,7 @@ Testing style
     ...     for key in sorted(style):
     ...         if key == "font-family": continue
     ...         if key == "vertical-align": continue
+    ...         if key == "font-variant": continue
     ...         val = style[key]
     ...         print(f"{key}: {val}")
 

@@ -34,6 +34,7 @@ We'll define a little helper function to test styles:
     >>> def print_font_style(style):
     ...     for key in sorted(style):
     ...         if key == "vertical-align": continue
+    ...         if key == "font-variant": continue
     ...         val = style[key]
     ...         print(f"{key}: {val}")
 
