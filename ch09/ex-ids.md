@@ -171,4 +171,26 @@ Check binding for the new element with ID "alice"
              'Modified Content'
 
 
+Test: Add nodes more deeply nested than the top-level of the `innerHTML` string
+
+    >>> url = wbemocks.socket.serve("<div id='outer'><div id='inner'></div></div>")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> js = this_browser.active_tab.js
+
+    >>> js.run("outer;")
+    {'handle': 0}
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="outer">
+           <div id="inner">
+    >>> js.run("inner;")
+    {'handle': 1}
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="outer">
+           <div id="inner">
+
 
