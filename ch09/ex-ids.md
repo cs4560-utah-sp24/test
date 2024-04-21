@@ -121,3 +121,54 @@ Empty the document of ids.
 
 
 
+
+Create the site with an element with ID "alice"
+
+    >>> url = wbemocks.socket.serve("<div id='alice'>Content</div>")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> js = this_browser.active_tab.js
+
+Check initial binding for "alice"
+
+    >>> js.run("alice;")
+    {'handle': 0}
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="alice">
+           'Content'
+
+Modify content without changing ID
+
+    >>> js.run("void(alice.innerHTML = '<b>Modified Content</b>')")
+
+Check binding for "alice" again (should still be valid)
+
+    >>> js.run("alice;")
+    {'handle': 0}
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="alice">
+           <b>
+             'Modified Content'
+
+
+Modify content and add a new element with the same ID "alice"
+
+    >>> js.run("void(alice.outerHTML = '<div id=\"alice\">Replaced Content</div>')")
+
+Check binding for the new element with ID "alice"
+
+    >>> js.run("alice;")
+    {'handle': 0, 'outerHTML': '<div id="alice">Replaced Content</div>'}
+    >>> browser.print_tree(this_browser.active_tab.nodes)
+     <html>
+       <body>
+         <div id="alice">
+           <b>
+             'Modified Content'
+
+
+
