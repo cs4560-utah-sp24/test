@@ -44,7 +44,7 @@ These two should result in the same parse tree.
 
 Any tags that are open when encountering the second paragraph should be closed
   with the first paragraph, but also reopened and applied to the second.
-    
+
     >>> test_parse("<p><b>hello<p>world</b></p></p>")
      <html>
        <body>
@@ -54,3 +54,29 @@ Any tags that are open when encountering the second paragraph should be closed
          <p>
            <b>
              'world'
+
+
+Test when `<p>` tags have different attributes from each other
+
+    >>> test_parse("<p>This is a paragraph with <p>another nested paragraph inside.</p></p>")
+     <html>
+       <body>
+         <p>
+           'This is a paragraph with '
+         <p>
+           'another nested paragraph inside.'
+
+
+Test that parent pointers are set correctly
+
+    >>> test_parse("<p>This is <b>paragraph one</b> with <p>nested paragraph two</p></p>")
+     <html>
+       <body>
+         <p>
+           'This is '
+           <b>
+             'paragraph one'
+           ' with '
+         <p>
+           'nested paragraph two'
+
