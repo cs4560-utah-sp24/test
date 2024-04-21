@@ -31,7 +31,7 @@ Scripts should be able to contain singular less than or greater than signs.
          <script>
            ' a > b '
 
-Similarly, HTML tags in a script should just be considered part of the text 
+Similarly, HTML tags in a script should just be considered part of the text
   node.
 
     >>> test_parse("<script> <br> <body> </head> </script>")
@@ -65,3 +65,13 @@ The script should end only with a complete end script tag.
        <head>
          <script>
            ' "</scri" "pt>" '
+
+
+ Test `<script>` tags with attributes
+
+    >>> test_parse("<script defer src='my-script.js'>Should be treated as text</script>")
+     <html>
+       <head>
+         <script defer="" src="my-script.js">
+           'Should be treated as text'
+
