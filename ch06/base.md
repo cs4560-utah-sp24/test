@@ -219,10 +219,10 @@ The default styles for many elements are the same:
 
     >>> DEFAULT_STYLE_SHEET = browser.DEFAULT_STYLE_SHEET
     >>> link_rules = [
-	    ...   body for selector, body in DEFAULT_STYLE_SHEET
-	    ...   if isinstance(selector, browser.TagSelector)
-	    ...   and selector.tag == "a"
-	    ... ]
+    ...   body for selector, body in DEFAULT_STYLE_SHEET
+    ...   if isinstance(selector, browser.TagSelector)
+    ...   and selector.tag == "a"
+    ... ]
 
     >>> any(body.get("color", "black") == "blue" for body in link_rules)
     True
