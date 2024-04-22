@@ -90,3 +90,18 @@ Finally load a page setting the `Referrer-Policy` header to `same-origin`, and
     >>> "referer:" in req
     False
 
+
+
+Test: No `Referer` on first request for a new tab
+
+    >>> url = "http://wbemocks.wbemocks.chapter10-referer-4/"
+    >>> body = """<!DOCTYPE html>
+    ... <link rel="stylesheet" href="style.css" />
+    ... Empty"""
+    >>> wbemocks.socket.respond_ok(url, body)
+    >>> wbemocks.socket.respond_ok(url + "style.css", "")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> req = wbemocks.socket.last_request(url + "style.css").decode().lower()
+    >>> "referer:" not in req  # Expect no Referer header
+    False
