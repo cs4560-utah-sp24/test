@@ -30,8 +30,8 @@ input.
 
 To allow us to print these in a readable form please add a `__repr__(self):` method
   to your `Tag` and `Text` classes.
-The bodies of these methods should, respectively, be 
-`return "Tag('{}')".format(self.tag)` 
+The bodies of these methods should, respectively, be
+`return "Tag('{}')".format(self.tag)`
 and `return "Text('{}')".format(self.text)`
 
     >>> browser.lex('<body>hello</body>')
@@ -42,6 +42,9 @@ and `return "Text('{}')".format(self.text)`
     [Text('he'), Tag('body'), Text('l'), Tag('/body'), Text('lo')]
     >>> browser.lex('he<body>l<div>l</div>o</body>')
     [Text('he'), Tag('body'), Text('l'), Tag('div'), Text('l'), Tag('/div'), Text('o'), Tag('/body')]
+    >>> browser.lex('hello world')
+    [Text('hello world')]
+
 
 Note that the tags do not have to match:
 
@@ -66,7 +69,7 @@ rather a mock font that has faked metrics.
 
     >>> test_layout("<b>abc</b>")
     [(13.0, 21.0, 'abc', Font size=16 weight=bold slant=roman style=None)]
-    
+
     >>> test_layout("<big>abc</big>")
     [(13.0, 21.75, 'abc', Font size=20 weight=normal slant=roman style=None)]
 
@@ -77,8 +80,11 @@ rather a mock font that has faked metrics.
     [(13.0, 22.5, 'abc', Font size=24 weight=normal slant=italic style=None)]
 
     >>> test_layout("<big><big><i>abc</i></big>def</big>") #doctest: +NORMALIZE_WHITESPACE
-    [(13.0, 22.5, 'abc', Font size=24 weight=normal slant=italic style=None), 
+    [(13.0, 22.5, 'abc', Font size=24 weight=normal slant=italic style=None),
      (109.0, 25.5, 'def', Font size=20 weight=normal slant=roman style=None)]
+
+
+
 
 Lines of text are spaced to make room for the tallest text. Let's lay
 out text with mixed font sizes, and then measure the line heights:
@@ -86,13 +92,14 @@ out text with mixed font sizes, and then measure the line heights:
     >>> def baseline(word):
     ...     return word[1] + word[3].metrics("ascent")
 
-    >>> test_layout("Start<br>Regular<br>Regular <big><big>Big") #doctest: +NORMALIZE_WHITESPACE 
-    [(13.0, 21.0, 'Start', Font size=16 weight=normal slant=roman style=None), 
+    >>> test_layout("Start<br>Regular<br>Regular <big><big>Big") #doctest: +NORMALIZE_WHITESPACE
+    [(13.0, 21.0, 'Start', Font size=16 weight=normal slant=roman style=None),
      (13.0, 41.0, 'Regular', Font size=16 weight=normal slant=roman style=None),
-     (13.0, 68.5, 'Regular', Font size=16 weight=normal slant=roman style=None), 
+     (13.0, 68.5, 'Regular', Font size=16 weight=normal slant=roman style=None),
      (141.0, 62.5, 'Big', Font size=24 weight=normal slant=roman style=None)]
 
     >>> display_list = test_layout("Start<br>Regular<br>Regular <big><big>Big")
+
     >>> baseline(display_list[1]) - baseline(display_list[0])
     20.0
     >>> baseline(display_list[3]) - baseline(display_list[1])
@@ -101,10 +108,10 @@ out text with mixed font sizes, and then measure the line heights:
 The differing line heights don't occur when text gets smaller:
 
 
-    >>> test_layout("Start<br>Regular<br>Regular <small><small>Small")  #doctest: +NORMALIZE_WHITESPACE 
+    >>> test_layout("Start<br>Regular<br>Regular <small><small>Small")  #doctest: +NORMALIZE_WHITESPACE
     [(13.0, 21.0, 'Start', Font size=16 weight=normal slant=roman style=None),
      (13.0, 41.0, 'Regular', Font size=16 weight=normal slant=roman style=None),
-     (13.0, 61.0, 'Regular', Font size=16 weight=normal slant=roman style=None), 
+     (13.0, 61.0, 'Regular', Font size=16 weight=normal slant=roman style=None),
      (141.0, 64.0, 'Small', Font size=12 weight=normal slant=roman style=None)]
 
     >>> display_list = test_layout("Start<br>Regular<br>Regular <small><small>Small")
@@ -125,8 +132,8 @@ Now let's test integration of layout into the Browser class.
 
 Testing the display list output of this URL:
 
-    >>> wbemocks.normalize_display_list(this_browser.display_list)  #doctest: +NORMALIZE_WHITESPACE 
-    [(13.0, 20.625, 'abc', Font size=14 weight=normal slant=roman style=None), 
+    >>> wbemocks.normalize_display_list(this_browser.display_list)  #doctest: +NORMALIZE_WHITESPACE
+    [(13.0, 20.625, 'abc', Font size=14 weight=normal slant=roman style=None),
      (69.0, 20.625, 'def', Font size=14 weight=normal slant=italic style=None)]
 
 And the canvas:
@@ -137,3 +144,19 @@ And the canvas:
     create_text: x=13 y=20.625 text=abc font=Font size=14 weight=normal slant=roman style=None anchor=nw
     create_text: x=69 y=20.625 text=def font=Font size=14 weight=normal slant=italic style=None anchor=nw
     >>> wbemocks.unpatch_canvas()
+
+
+
+
+
+
+    >>> content = "hello world"
+    >>> url = browser.URL(wbemocks.socket.serve(content))
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(url)
+    >>> def test_layout(content):
+    ...   dl = browser.Layout(browser.lex(content)).display_list
+    ...   wbemocks.print_list(wbemocks.normalize_display_list(dl))
+    >>> test_layout(content)
+    (13.0, 21.0, 'hello', Font size=16 weight=normal slant=roman style=None)
+    (109.0, 21.0, 'world', Font size=16 weight=normal slant=roman style=None)
