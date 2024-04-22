@@ -90,7 +90,7 @@ Attributes can be set on tags:
              <div name1="value1" name2="value2">
                'text'
 
-Test that the italic </i> tag is parsed correctly:
+Test that the italic `</i>` tag behaves correctly:
 
         >>> test_parse("<i>A</i>B")
          <html>
