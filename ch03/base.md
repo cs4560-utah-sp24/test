@@ -146,9 +146,7 @@ And the canvas:
     >>> wbemocks.unpatch_canvas()
 
 
-
-
-
+Test with multiple words (do not forget to split on word)
 
     >>> content = "hello world"
     >>> url = browser.URL(wbemocks.socket.serve(content))
