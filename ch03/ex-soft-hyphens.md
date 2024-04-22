@@ -61,3 +61,4 @@ Sometimes a word may be so long that it needs to be split multiple times.
     (13.0, 21.0, 'multi-', Font size=16 weight=normal slant=roman style=None)
     (13.0, 41.0, 'word-', Font size=16 weight=normal slant=roman style=None)
     (13.0, 61.0, 'split', Font size=16 weight=normal slant=roman style=None)
+    >>> browser.set_parameters(WIDTH=800)
