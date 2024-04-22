@@ -73,3 +73,12 @@ Inheritance should be handled.
     >>> wbemocks.print_list(this_browser.display_list)
     DrawText(top=20.25 left=13 bottom=32.25 text=A font=Font size=12 weight=normal slant=roman style=None family=foo)
     DrawText(top=20.25 left=37 bottom=32.25 text=B font=Font size=12 weight=normal slant=roman style=None family=bar)
+
+Ensure browser correctly paints the `foo` web page and check that it produces the appropriate DrawText objects
+
+    >>> content = "<html><body><p>foo</p></body></html>"
+    >>> url = browser.URL(wbemocks.socket.serve(content))
+    >>> this_browser = browser.Browser()
+    >>> this_browser.load(url)
+    >>> wbemocks.print_list(this_browser.display_list)
+    DrawText(top=20.25 left=13 bottom=32.25 text=foo font=Font size=12 weight=normal slant=roman style=None family=Times)
