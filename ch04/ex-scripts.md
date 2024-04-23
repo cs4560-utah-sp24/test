@@ -69,9 +69,10 @@ The script should end only with a complete end script tag.
 
  Test `<script>` tags with attributes
 
-    >>> test_parse("<script defer src='my-script.js'>Should be treated as text</script>")
+    >>> test_parse("<script defer src='my-script.js'>This inequality a<b>c should be treated as text</script>")
      <html>
        <head>
          <script defer="" src="my-script.js">
-           'Should be treated as text'
+           'This inequality a<b>c should be treated as text'
+
 
