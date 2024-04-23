@@ -56,15 +56,23 @@ Any tags that are open when encountering the second paragraph should be closed
              'world'
 
 
+
+
+
 Test when `<p>` tags have different attributes from each other
 
-    >>> test_parse("<p>This is a paragraph with <p>another nested paragraph inside.</p></p>")
+    >>> body = """
+    ... <p style="font-family:foo">
+    ... A
+    ... <p class="diff"> B
+    ... """
+    >>> test_parse(body)
      <html>
        <body>
-         <p>
-           'This is a paragraph with '
-         <p>
-           'another nested paragraph inside.'
+         <p style="font-family:foo">
+           '\nA\n'
+         <p class="diff">
+           ' B \n'
 
 
 Test that parent pointers are set correctly
@@ -79,4 +87,3 @@ Test that parent pointers are set correctly
            ' with '
          <p>
            'nested paragraph two'
-
