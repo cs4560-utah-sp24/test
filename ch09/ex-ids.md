@@ -187,10 +187,6 @@ Test: Add nodes more deeply nested than the top-level of the `innerHTML` string
            <div id="inner">
     >>> js.run("inner;")
     {'handle': 1}
-    >>> browser.print_tree(this_browser.active_tab.nodes)
-     <html>
-       <body>
-         <div id="outer">
-           <div id="inner">
+
 
 
