@@ -124,7 +124,7 @@ Empty the document of ids.
 
 Create the site with an element with ID "alice"
 
-    >>> url = wbemocks.socket.serve("<div id='alice'>Content</div>")
+    >>> url = wbemocks.socket.serve("<div id=outer><div id=alice>Content</div></div>")
     >>> this_browser = browser.Browser()
     >>> this_browser.new_tab(browser.URL(url))
     >>> js = this_browser.active_tab.js
@@ -132,12 +132,13 @@ Create the site with an element with ID "alice"
 Check initial binding for "alice"
 
     >>> js.run("alice;")
-    {'handle': 0}
+    {'handle': 1}
     >>> browser.print_tree(this_browser.active_tab.nodes)
      <html>
        <body>
-         <div id="alice">
-           'Content'
+         <div id="outer">
+           <div id="alice">
+             'Content'
 
 Modify content without changing ID
 
@@ -146,29 +147,30 @@ Modify content without changing ID
 Check binding for "alice" again (should still be valid)
 
     >>> js.run("alice;")
-    {'handle': 0}
+    {'handle': 1}
     >>> browser.print_tree(this_browser.active_tab.nodes)
      <html>
        <body>
-         <div id="alice">
-           <b>
-             'Modified Content'
+         <div id="outer">
+           <div id="alice">
+             <b>
+               'Modified Content'
 
 
 Modify content and add a new element with the same ID "alice"
 
-    >>> js.run("void(alice.outerHTML = '<div id=\"alice\">Replaced Content</div>')")
+    >>> js.run("void(outer.innerHTML = '<div id=\"alice\">Replaced Content</div>')")
 
 Check binding for the new element with ID "alice"
 
     >>> js.run("alice;")
-    {'handle': 0, 'outerHTML': '<div id="alice">Replaced Content</div>'}
+    {'handle': 2}
     >>> browser.print_tree(this_browser.active_tab.nodes)
      <html>
        <body>
-         <div id="alice">
-           <b>
-             'Modified Content'
+         <div id="outer">
+           <div id="alice">
+             'Replaced Content'
 
 
 Test: Add nodes more deeply nested than the top-level of the `innerHTML` string
@@ -187,6 +189,4 @@ Test: Add nodes more deeply nested than the top-level of the `innerHTML` string
            <div id="inner">
     >>> js.run("inner;")
     {'handle': 1}
-
-
 
