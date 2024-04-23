@@ -78,13 +78,16 @@ Test when `<p>` tags have different attributes from each other
 
 Test that parent pointers are set correctly
 
-    >>> test_parse("<p>This is <b>paragraph one</b> with <p>nested paragraph two</p></p>")
-     <html>
-       <body>
-         <p>
-           'This is '
-           <b>
-             'paragraph one'
-           ' with '
-         <p>
-           'nested paragraph two'
+    >>> tree = browser.HTMLParser("<p id=one>This is <b>paragraph one</b> with <p id=two>nested paragraph two</p></p>").parse()
+
+    >>> b_elt = tree.children[0].children[0].children[1]
+    >>> b_elt.parent
+    <p id="one">
+
+    >>> n_elt = tree.children[0].children[1].children[0]
+    >>> n_elt.parent
+    <p id="two">
+
+    >>> p_elt = tree.children[0].children[1]
+    >>> p_elt.parent
+    <body>
