@@ -168,7 +168,8 @@ cookie should *still* be sent:
     True
 
 Finally, let's try a cross-site `POST` request and check that in this
-case the cookie is *not* sent:
+case the cookie is *not* sent. If this test fails, make sure you are
+updating `self.url` *after* you make the request.
 
     >>> tab.load(browser.URL(url4))
     >>> tab.load(browser.URL(url3), payload="who=me")
