@@ -119,5 +119,6 @@ Parse HTML with italic text
 Create a Layout from the parsed tree
 
     >>> lo = browser.Layout(tree)
-    >>> lo.display_list
-    [(13, 21.0, 'Italic', Font size=16 weight=normal slant=italic style=None), (125, 21.0, 'Normal.', Font size=16 weight=normal slant=roman style=None)]
+    >>> wbemocks.print_list(lo.display_list)
+    (13, 21.0, 'Italic', Font size=16 weight=normal slant=italic style=None)
+    (125, 21.0, 'Normal.', Font size=16 weight=normal slant=roman style=None)
