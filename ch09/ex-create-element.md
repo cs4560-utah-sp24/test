@@ -152,7 +152,7 @@ Test `appendChild`
     >>> this_browser.new_tab(browser.URL(html_url))
     >>> this_browser.active_tab.js.run(script)
 
-    >>> print(browser.print_tree(this_browser.active_tab.document))
+    >>> browser.print_tree(this_browser.active_tab.document)
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=30.0, node=<html>)
          BlockLayout(x=13, y=18, width=774, height=30.0, node=<body>)
@@ -164,7 +164,8 @@ Test `appendChild`
              LineLayout(x=13, y=33.0, width=774, height=15.0)
                TextLayout(x=13, y=35.25, width=48, height=12, word=More)
                TextLayout(x=73, y=35.25, width=84, height=12, word=content)
-    None
+               InputLayout(x=169, y=35.25, width=200, height=12, node=<input>)
+
 
 Test `insertBefore`
 
@@ -178,7 +179,7 @@ Test `insertBefore`
     >>> this_browser.new_tab(browser.URL(html_url))
     >>> this_browser.active_tab.js.run(script)
 
-    >>> print(browser.print_tree(this_browser.active_tab.document))
+    >>> browser.print_tree(this_browser.active_tab.document)
      DocumentLayout()
        BlockLayout(x=13, y=18, width=774, height=30.0, node=<html>)
          BlockLayout(x=13, y=18, width=774, height=30.0, node=<body>)
@@ -189,4 +190,5 @@ Test `insertBefore`
              LineLayout(x=13, y=33.0, width=774, height=15.0)
                TextLayout(x=13, y=35.25, width=72, height=12, word=Before)
                TextLayout(x=97, y=35.25, width=84, height=12, word=content)
-    None
+               InputLayout(x=193, y=35.25, width=200, height=12, node=<input>)
+
