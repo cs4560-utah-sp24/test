@@ -161,10 +161,12 @@ Both should be able to work on the same click.
 
 Test: Form submit still works after event bubbling changes
 
+    >>> wbemocks.socket.respond_ok("http://example.com/submit", "")
     >>> body = "<form action='http://example.com/submit' method='post'><button>Click</button></form>"
     >>> html_url = wbemocks.socket.serve(body)
 
     >>> this_browser = browser.Browser()
     >>> this_browser.new_tab(browser.URL(html_url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(18, 25 + this_browser.chrome.bottom))
     >>> this_browser.active_tab.url
-    URL(scheme=http, host=test, port=80, path='/8')
+    URL(scheme=http, host=example.com, port=80, path='/submit')
