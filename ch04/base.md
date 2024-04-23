@@ -90,16 +90,6 @@ Attributes can be set on tags:
              <div name1="value1" name2="value2">
                'text'
 
-Test that the italic `</i>` tag behaves correctly:
-
-        >>> test_parse("<i>A</i>B")
-         <html>
-           <body>
-             <i>
-               'A'
-             'B'
-
-
 Testing Layout
 ==============
 
@@ -119,3 +109,15 @@ explicitly-supported tags like `p`:
     >>> lo = browser.Layout(tree)
     >>> lo.display_list
     [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]
+
+
+Parse HTML with italic text
+
+    >>> parser = browser.HTMLParser("<i>Italic</i> Normal.")
+    >>> tree = parser.parse()
+
+Create a Layout from the parsed tree
+
+    >>> lo = browser.Layout(tree)
+    >>> lo.display_list
+    [(13, 21.0, 'Italic', Font size=16 weight=normal slant=italic style=None), (125, 21.0, 'Normal.', Font size=16 weight=normal slant=roman style=None)]
