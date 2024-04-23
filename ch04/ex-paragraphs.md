@@ -72,7 +72,7 @@ Test when `<p>` tags have different attributes from each other
          <p style="font-family:foo">
            '\nA\n'
          <p class="diff">
-           ' B \n'
+           ' B\n'
 
 
 Test that parent pointers are set correctly
