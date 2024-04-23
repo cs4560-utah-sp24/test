@@ -177,7 +177,7 @@ case the cookie is *not* sent:
     True
     >>> b'content-length: 6' in req
     True
-    >>> req.endswith(b'who=me')
+    >>> b'cookie:' not in req
     True
 
 Testing Content-Security-Policy
