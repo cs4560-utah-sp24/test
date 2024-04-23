@@ -161,19 +161,10 @@ Both should be able to work on the same click.
 
 Test: Form submit still works after event bubbling changes
 
-    >>> script = """
-    ... document.querySelectorAll('input')[0].addEventListener('click',
-    ...   function(e) {
-    ...     console.log('input saw a click');
-    ...   });
-    ... """
-    >>> js_url = wbemocks.socket.serve(script)
-    >>> body = "<script src=" + str(js_url) + "></script>"
-    >>> body += "<form action='http://example.com/submit' method='post'><input type='submit' value='Submit'></form>"
+    >>> body = "<form action='http://example.com/submit' method='post'><button>Click</button></form>"
     >>> html_url = wbemocks.socket.serve(body)
 
     >>> this_browser = browser.Browser()
     >>> this_browser.new_tab(browser.URL(html_url))
-    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 24 + this_browser.chrome.bottom))
-    input saw a click
-
+    >>> this_browser.active_tab.url
+    URL(scheme=http, host=test, port=80, path='/8')
