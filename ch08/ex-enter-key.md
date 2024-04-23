@@ -65,3 +65,18 @@ Examine the post request.
     True
     >>> req.endswith('name=killroy&comment=2%3d3')
     True
+
+Ensure draw() is called when handling the enter key
+
+    >>> url = wbemocks.socket.serve("<form><input type='text' value='Test'></form>")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(50, 50 + this_browser.chrome.bottom))
+    >>> wbemocks.TK_CANVAS_CALLS = []  
+    >>> this_browser.handle_key(wbemocks.KeyEvent('K'))
+    >>> this_browser.handle_enter(wbemocks.Event()) 
+    >>> len(wbemocks.TK_CANVAS_CALLS) > 0
+    True
+    >>> any('create_text' in call for call in wbemocks.TK_CANVAS_CALLS)
+    True
+

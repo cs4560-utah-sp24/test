@@ -138,3 +138,40 @@ POST requsts to other URLs return 404 pages:
     >>> server.do_request("POST", "/", {}, "")
     ('404 Not Found', '<!doctype html><h1>POST / not found!</h1>')
 
+Ensure that within BlockLayout.recurse, there's a restriction to prevent recursion into buttons.
+
+    >>> url = wbemocks.socket.serve("""
+    ... <div>
+    ...   <form action="submit" method="POST">
+    ...     <p>Text before button</p>
+    ...     <button>Submit</button>
+    ...     <p>Text after button</p>
+    ...   </form>
+    ... </div>""")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> layout = this_browser.tabs[0].document.children[0]
+    >>> def check_no_button_layout(layout):
+    ...     if isinstance(layout, browser.BlockLayout) and layout.node.tag == 'button':
+    ...         return False
+    ...     for child in layout.children:
+    ...         if not check_no_button_layout(child):
+    ...             return False
+    ...     return True
+    >>> check_no_button_layout(layout)
+    True
+
+Verify that when clicking anywhere within a form, excluding buttons or input elements, the form isn't submitted.
+
+    >>> form_html = """
+    ... <form action="/submit" method="POST">
+    ...     <p>Click here should do nothing:</p>
+    ...     <div style="width: 300px; height: 100px;"></div>
+    ...     <input type="submit" value="Submit">
+    ... </form>"""
+    >>> url = wbemocks.socket.serve(form_html)
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(150, 60 + this_browser.chrome.bottom))
+    >>> print(this_browser.tabs[0].url)
+    http://test/0
