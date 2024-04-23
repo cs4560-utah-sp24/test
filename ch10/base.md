@@ -233,8 +233,8 @@ Now let's reload the page, but with CSP enabled for `wbemocks.wbemocks.chapter10
     ... body.encode("utf8"))
     >>> this_browser = browser.Browser()
     >>> this_browser.new_tab(browser.URL(url))
-    Blocked script http://other.wbemocks.chapter10/js due to CSP
     Blocked style http://other.wbemocks.chapter10/css due to CSP
+    Blocked script http://other.wbemocks.chapter10/js due to CSP
 
 The URLs on `wbemocks.wbemocks.chapter10` and `library.wbemocks.chapter10` should have been loaded:
 
