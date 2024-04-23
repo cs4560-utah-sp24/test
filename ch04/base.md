@@ -37,66 +37,66 @@ resulting tree.
 
 The implicit ``html` and `body` (and `head` when needed) tags are added:
 
-	>>> test_parse("<html><body>test</body></html>")
-	 <html>
-	   <body>
-	     'test'
+        >>> test_parse("<html><body>test</body></html>")
+         <html>
+           <body>
+             'test'
 
 Quotation marks around `Text` objects should be different depending on if
 there are quotes within:
 
-	>>> test_parse("<html><body>baker's dozen</body></html>")
-	 <html>
-	   <body>
-	     "baker's dozen"
+        >>> test_parse("<html><body>baker's dozen</body></html>")
+         <html>
+           <body>
+             "baker's dozen"
 
 Missing tags are added in:
 
-	>>> test_parse("test")
-	 <html>
-	   <body>
-	     'test'
+        >>> test_parse("test")
+         <html>
+           <body>
+             'test'
 
-	>>> test_parse("<body>test")
-	 <html>
-	   <body>
-	     'test'
+        >>> test_parse("<body>test")
+         <html>
+           <body>
+             'test'
 
 Head tags are put in the head, and other tags, such as `div`, are put
 in the body. Also, tags such as `base` are self-closing:
 
-	>>> test_parse("<base><basefont></basefont><title></title><div></div>")
-	 <html>
-	   <head>
-	     <base>
-	     <basefont>
-	     <title>
- 	   <body>
- 	     <div>
+        >>> test_parse("<base><basefont></basefont><title></title><div></div>")
+         <html>
+           <head>
+             <base>
+             <basefont>
+             <title>
+           <body>
+             <div>
 
 Missing end tags are added:
 
-	>>> test_parse("<div>text")
-	 <html>
-	   <body>
-	     <div>
-	       'text'
+        >>> test_parse("<div>text")
+         <html>
+           <body>
+             <div>
+               'text'
 
 Attributes can be set on tags:
 
-	>>> test_parse("<div name1=value1 name2=value2>text</div")
-	 <html>
-	   <body>
-	     <div name1="value1" name2="value2">
-	       'text'
+        >>> test_parse("<div name1=value1 name2=value2>text</div")
+         <html>
+           <body>
+             <div name1="value1" name2="value2">
+               'text'
 
 Testing Layout
 ==============
 
 First, let's test that basic layout works as expected:
 
-	>>> parser = browser.HTMLParser("<p>text</p>")
-	>>> tree = parser.parse()
+    >>> parser = browser.HTMLParser("<p>text</p>")
+    >>> tree = parser.parse()
     >>> lo = browser.Layout(tree)
     >>> lo.display_list
     [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]
@@ -104,8 +104,21 @@ First, let's test that basic layout works as expected:
 Moreover, layout should work even if we don't use the
 explicitly-supported tags like `p`:
 
-	>>> parser = browser.HTMLParser("<div>text</div>")
-	>>> tree = parser.parse()
+    >>> parser = browser.HTMLParser("<div>text</div>")
+    >>> tree = parser.parse()
     >>> lo = browser.Layout(tree)
     >>> lo.display_list
     [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]
+
+
+Parse HTML with italic text
+
+    >>> parser = browser.HTMLParser("<i>Italic</i> Normal.")
+    >>> tree = parser.parse()
+
+Create a Layout from the parsed tree
+
+    >>> lo = browser.Layout(tree)
+    >>> wbemocks.print_list(lo.display_list)
+    (13, 21.0, 'Italic', Font size=16 weight=normal slant=italic style=None)
+    (125, 21.0, 'Normal.', Font size=16 weight=normal slant=roman style=None)

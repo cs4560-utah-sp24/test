@@ -44,7 +44,7 @@ These two should result in the same parse tree.
 
 Any tags that are open when encountering the second paragraph should be closed
   with the first paragraph, but also reopened and applied to the second.
-    
+
     >>> test_parse("<p><b>hello<p>world</b></p></p>")
      <html>
        <body>
@@ -54,3 +54,40 @@ Any tags that are open when encountering the second paragraph should be closed
          <p>
            <b>
              'world'
+
+
+
+
+
+Test when `<p>` tags have different attributes from each other
+
+    >>> body = """
+    ... <p style="font-family:foo">
+    ... A
+    ... <p class="diff">
+    ... B
+    ... """
+    >>> test_parse(body)
+     <html>
+       <body>
+         <p style="font-family:foo">
+           '\nA\n'
+         <p class="diff">
+           '\nB\n'
+
+
+Test that parent pointers are set correctly
+
+    >>> tree = browser.HTMLParser("<p id=one>This is <b>paragraph one</b> with <p id=two>nested paragraph two</p></p>").parse()
+
+    >>> b_elt = tree.children[0].children[0].children[1]
+    >>> b_elt.parent
+    <p id="one">
+
+    >>> n_elt = tree.children[0].children[1].children[0]
+    >>> n_elt.parent
+    <p id="two">
+
+    >>> p_elt = tree.children[0].children[1]
+    >>> p_elt.parent
+    <body>
