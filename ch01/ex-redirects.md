@@ -69,6 +69,20 @@ This __Location__ header may contain a full URL, as seen above, or
     >>> body
     'You found me again'
     
+Redirects should not modify the original `url` object that is passed in:
+
+    >>> original_url = 'http://wbemocks.test/original_path'
+    >>> redirect_url = 'http://wbemocks.redirect_test/new_path'
+    >>> wbemocks.socket.redirect_url(from_url=original_url, to_url=redirect_url)
+    >>> wbemocks.socket.respond(url=redirect_url, 
+    ...   response=("HTTP/1.0 200 Ok\r\n" +
+    ...             "\r\n" +
+    ...             "Final destination").encode())
+    >>> original_url_obj = browser.URL(original_url)
+    >>> _ = original_url_obj.request()
+    >>> original_url_obj
+    URL(scheme=http, host=wbemocks.test, port=80, path='/original_path')
+    
 The result of a redirect may be another redirect which forms
   a chain to the requested content.
 Now that you have seen the content of the redirect response we
