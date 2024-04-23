@@ -64,7 +64,8 @@ Test when `<p>` tags have different attributes from each other
     >>> body = """
     ... <p style="font-family:foo">
     ... A
-    ... <p class="diff"> B
+    ... <p class="diff">
+    ... B
     ... """
     >>> test_parse(body)
      <html>
@@ -72,7 +73,7 @@ Test when `<p>` tags have different attributes from each other
          <p style="font-family:foo">
            '\nA\n'
          <p class="diff">
-           ' B\n'
+           '\nB\n'
 
 
 Test that parent pointers are set correctly
