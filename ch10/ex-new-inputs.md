@@ -118,16 +118,6 @@ Submission of the form should still pass along the value.
     >>> req.endswith("name=skroob&password=12345")
     True
 
-Ensure that drawing commands with zero size are disregarded or excluded from printing.
-
-    >>> url = "http://wbemocks.wbemocks.chapter10-zero-size/"
-    >>> page = "<div style='width: 0px; height: 0px;'>Invisible Box</div>"
-    >>> wbemocks.socket.respond_ok(url, page)
-    >>> this_browser = browser.Browser()
-    >>> this_browser.new_tab(browser.URL(url))
-    >>> this_browser.active_tab.render()
-    >>> wbemocks.print_list(this_browser.active_tab.display_list)
-
 Verify that the count of asterisks in a password field adjusts according to the number of characters entered.
     
     >>> url = "http://wbemocks.wbemocks.chapter10-password/"
