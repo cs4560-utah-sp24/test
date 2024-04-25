@@ -45,20 +45,20 @@ elements:
     >>> document.layout()
     >>> browser.print_tree(document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=60.0, node=<html>)
-         BlockLayout(x=13, y=18, width=774, height=60.0, node=<body>)
-           BlockLayout(x=13, y=18, width=774, height=20.0, node=<div>)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0, node=<h6>)
-           BlockLayout(x=13, y=58.0, width=774, height=20.0, node=<main>)
+       BlockLayout(x=13, y=18, width=774, height=45.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=45.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node=<div>)
+           BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<h6>)
+           BlockLayout(x=13, y=48.0, width=774, height=15.0, node=<main>)
 
 Let's also make sure that this can be painted:
 
     >>> dl = []
     >>> browser.paint_tree(document, dl)
     >>> wbemocks.print_list(dl)
-    DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=41.0 left=13 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=61.0 left=13 bottom=77.0 text=C font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=20.25 left=13 bottom=32.25 text=A font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=35.25 left=13 bottom=47.25 text=B font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=50.25 left=13 bottom=62.25 text=C font=Font size=12 weight=normal slant=roman style=None)
 
 Next let's test that if you have multiple inline-level elements, that
 only creates one `BlockLayout`:
@@ -68,17 +68,17 @@ only creates one `BlockLayout`:
     >>> document.layout()
     >>> browser.print_tree(document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=20.0, node=<html>)
-         BlockLayout(x=13, y=18, width=774, height=20.0, node=<body>)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
 
 That also can be painted:
 
     >>> dl = []
     >>> browser.paint_tree(document, dl)
     >>> wbemocks.print_list(dl)
-    DrawText(top=21.0 left=13 bottom=37.0 text=A font=Font size=16 weight=normal slant=italic style=None)
-    DrawText(top=21.0 left=45 bottom=37.0 text=B font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=21.0 left=77 bottom=37.0 text=C font=Font size=16 weight=bold slant=roman style=None)
+    DrawText(top=20.25 left=13 bottom=32.25 text=A font=Font size=12 weight=normal slant=italic style=None)
+    DrawText(top=20.25 left=37 bottom=32.25 text=B font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=20.25 left=61 bottom=32.25 text=C font=Font size=12 weight=bold slant=roman style=None)
 
 
 Finally, let's test a simple mix of both:
@@ -88,20 +88,20 @@ Finally, let's test a simple mix of both:
     >>> document.layout()
     >>> browser.print_tree(document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=40.0, node=<html>)
-         BlockLayout(x=13, y=18, width=774, height=40.0, node=<body>)
-           BlockLayout(x=13, y=18, width=774, height=20.0, node=<div>)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0, node=<i>)
+       BlockLayout(x=13, y=18, width=774, height=30.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=30.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node=<div>)
+           BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<i>)
 
 That also can be painted:
 
     >>> dl = []
     >>> browser.paint_tree(document, dl)
     >>> wbemocks.print_list(dl)
-    DrawText(top=21.0 left=13 bottom=37.0 text=hi font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=41.0 left=13 bottom=57.0 text=A font=Font size=16 weight=normal slant=italic style=None)
-    DrawText(top=41.0 left=45 bottom=57.0 text=B font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=41.0 left=77 bottom=57.0 text=C font=Font size=16 weight=bold slant=roman style=None)
+    DrawText(top=20.25 left=13 bottom=32.25 text=hi font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=35.25 left=13 bottom=47.25 text=A font=Font size=12 weight=normal slant=italic style=None)
+    DrawText(top=35.25 left=37 bottom=47.25 text=B font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=35.25 left=61 bottom=47.25 text=C font=Font size=12 weight=bold slant=roman style=None)
 
 One more: let's test it with a complex mix of inline and block:
 
@@ -112,27 +112,27 @@ One more: let's test it with a complex mix of inline and block:
     >>> document.layout()
     >>> browser.print_tree(document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=140.0, node=<html>)
-         BlockLayout(x=13, y=18, width=774, height=140.0, node=<body>)
-           BlockLayout(x=13, y=18, width=774, height=20.0, node='hi')
-           BlockLayout(x=13, y=38.0, width=774, height=20.0, node=<div>)
-           BlockLayout(x=13, y=58.0, width=774, height=20.0, node='is')
-           BlockLayout(x=13, y=78.0, width=774, height=20.0, node=<div>)
-           BlockLayout(x=13, y=98.0, width=774, height=20.0, node=<b>)
-           BlockLayout(x=13, y=118.0, width=774, height=20.0, node=<div>)
-           BlockLayout(x=13, y=138.0, width=774, height=20.0, node=' code')
+       BlockLayout(x=13, y=18, width=774, height=105.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=105.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node='hi')
+           BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<div>)
+           BlockLayout(x=13, y=48.0, width=774, height=15.0, node='is')
+           BlockLayout(x=13, y=63.0, width=774, height=15.0, node=<div>)
+           BlockLayout(x=13, y=78.0, width=774, height=15.0, node=<b>)
+           BlockLayout(x=13, y=93.0, width=774, height=15.0, node=<div>)
+           BlockLayout(x=13, y=108.0, width=774, height=15.0, node=' code')
 
 This, too, can be painted:
 
     >>> dl = []
     >>> browser.paint_tree(document, dl)
     >>> wbemocks.print_list(dl)
-    DrawText(top=21.0 left=13 bottom=37.0 text=hi font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=41.0 left=13 bottom=57.0 text=this font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=61.0 left=13 bottom=77.0 text=is font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=61.0 left=61 bottom=77.0 text=a font=Font size=16 weight=normal slant=italic style=None)
-    DrawText(top=81.0 left=13 bottom=97.0 text=test font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=101.0 left=13 bottom=117.0 text=of font=Font size=16 weight=bold slant=roman style=None)
-    DrawText(top=101.0 left=61 bottom=117.0 text=your font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=121.0 left=13 bottom=137.0 text=browser font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=141.0 left=13 bottom=157.0 text=code font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=20.25 left=13 bottom=32.25 text=hi font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=35.25 left=13 bottom=47.25 text=this font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=50.25 left=13 bottom=62.25 text=is font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=50.25 left=49 bottom=62.25 text=a font=Font size=12 weight=normal slant=italic style=None)
+    DrawText(top=65.25 left=13 bottom=77.25 text=test font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=80.25 left=13 bottom=92.25 text=of font=Font size=12 weight=bold slant=roman style=None)
+    DrawText(top=80.25 left=49 bottom=92.25 text=your font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=95.25 left=13 bottom=107.25 text=browser font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=110.25 left=13 bottom=122.25 text=code font=Font size=12 weight=normal slant=roman style=None)

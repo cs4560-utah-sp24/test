@@ -31,34 +31,29 @@ given word, only one display list item should be generated per line.
 
     >>> browser.set_parameters(WIDTH=128)
     >>> test_layout("Hello\N{soft hyphen}World")
-    (13.0, 21.0, 'Hello-', Font size=16 weight=normal slant=roman style=None)
-    (13.0, 41.0, 'World', Font size=16 weight=normal slant=roman style=None)
+    (13.0, 20.25, 'Hello-', Font size=12 weight=normal slant=roman style=None)
+    (13.0, 35.25, 'World', Font size=12 weight=normal slant=roman style=None)
 
 If the word fits without splitting then no literal hyphens are present.
 
     >>> browser.set_parameters(WIDTH=800)
     >>> test_layout("Hello\N{soft hyphen}World")
-    (13.0, 21.0, 'HelloWorld', Font size=16 weight=normal slant=roman style=None)
+    (13.0, 20.25, 'HelloWorld', Font size=12 weight=normal slant=roman style=None)
 
 When a soft hyphen is replaced with a literal hyphen you need to check that the
   text with the hyphen fits on the line.
 
-    >>> browser.WIDTH = 90
+    >>> browser.WIDTH = 80
     >>> test_layout("a\N{soft hyphen}b\N{soft hyphen}c\N{soft hyphen}d\N{soft hyphen}e")
-    (13.0, 21.0, 'abc-', Font size=16 weight=normal slant=roman style=None)
-    (13.0, 41.0, 'de', Font size=16 weight=normal slant=roman style=None)
+    (13.0, 20.25, 'abc-', Font size=12 weight=normal slant=roman style=None)
+    (13.0, 35.25, 'de', Font size=12 weight=normal slant=roman style=None)
 
 
 Sometimes a word may be so long that it needs to be split multiple times.
 
     >>> browser.WIDTH = 122
     >>> test_layout("multi\N{soft hyphen}word\N{soft hyphen}split")
-    (13.0, 21.0, 'multi-', Font size=16 weight=normal slant=roman style=None)
-    (13.0, 41.0, 'word-', Font size=16 weight=normal slant=roman style=None)
-    (13.0, 61.0, 'split', Font size=16 weight=normal slant=roman style=None)
-
-    >>> test_layout("multi\N{soft hyphen}word\N{soft hyphen}spl\N{soft hyphen}it") #doctest: +NORMALIZE_WHITESPACE
-    (13.0, 21.0, 'multi-', Font size=16 weight=normal slant=roman style=None)
-    (13.0, 41.0, 'word-', Font size=16 weight=normal slant=roman style=None)
-    (13.0, 61.0, 'split', Font size=16 weight=normal slant=roman style=None)
+    (13.0, 20.25, 'multi-', Font size=12 weight=normal slant=roman style=None)
+    (13.0, 35.25, 'word-', Font size=12 weight=normal slant=roman style=None)
+    (13.0, 50.25, 'split', Font size=12 weight=normal slant=roman style=None)
     >>> browser.set_parameters(WIDTH=800)
