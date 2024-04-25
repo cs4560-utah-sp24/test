@@ -14,11 +14,14 @@ input areas, or even paragraphs inside a button.
 
 You also don't need to prevent the button contents from spilling out.
 (It would be make for a very hard execise.) Instead, make all buttons
-`INPUT_WIDHT_PX` by lineheight no matter their content.
+`INPUT_WIDTH_PX` by lineheight no matter their content.
 
 To do so, each `<button>` should create a `BlockLayout` child to draw
 its contents. You'll need to add a little bit of multi-pass layout to
-avoid layout dependency issues.
+avoid layout dependency issues. You'll also need to avoid a simple
+infinite loop. If you implemented the "anonymous block boxes" exercise
+from Chapter 5, this part will be a little easier, but if you haven't,
+you'll need to add an extra check to `recurse`.
 
 Make sure click handling works correctly when buttons contain
 clickable objects like links. For example, in this button

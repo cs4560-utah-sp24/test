@@ -117,3 +117,15 @@ Submission of the form should still pass along the value.
     True
     >>> req.endswith("name=skroob&password=12345")
     True
+
+Verify that the count of asterisks in a password field adjusts according to the number of characters entered.
+    
+    >>> url = "http://wbemocks.wbemocks.chapter10-password/"
+    >>> page = "<form><input type='password' value='password'></form>"
+    >>> wbemocks.socket.respond_ok(url, page)
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> this_browser.active_tab.render()
+    >>> wbemocks.print_list(this_browser.active_tab.display_list)
+    DrawRect(top=20.25 left=13 bottom=32.25 right=213 color=lightblue)
+    DrawText(top=20.25 left=13 bottom=32.25 text=******** font=Font size=12 weight=normal slant=roman style=None)

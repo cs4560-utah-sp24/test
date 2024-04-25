@@ -168,7 +168,8 @@ cookie should *still* be sent:
     True
 
 Finally, let's try a cross-site `POST` request and check that in this
-case the cookie is *not* sent:
+case the cookie is *not* sent. If this test fails, make sure you are
+updating `self.url` *after* you make the request.
 
     >>> tab.load(browser.URL(url4))
     >>> tab.load(browser.URL(url3), payload="who=me")
@@ -177,7 +178,7 @@ case the cookie is *not* sent:
     True
     >>> b'content-length: 6' in req
     True
-    >>> req.endswith(b'who=me')
+    >>> b'cookie:' not in req
     True
 
 Testing Content-Security-Policy
@@ -233,8 +234,8 @@ Now let's reload the page, but with CSP enabled for `wbemocks.wbemocks.chapter10
     ... body.encode("utf8"))
     >>> this_browser = browser.Browser()
     >>> this_browser.new_tab(browser.URL(url))
-    Blocked script http://other.wbemocks.chapter10/js due to CSP
     Blocked style http://other.wbemocks.chapter10/css due to CSP
+    Blocked script http://other.wbemocks.chapter10/js due to CSP
 
 The URLs on `wbemocks.wbemocks.chapter10` and `library.wbemocks.chapter10` should have been loaded:
 
