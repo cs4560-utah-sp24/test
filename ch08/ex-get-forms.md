@@ -10,9 +10,8 @@ Forms define which submission to use with the `method` attribute,
 which will either be `GET` or `POST`. Default to using GET when no
 attribute is present.
 
-Ensure not to modify the signature of the URL.request method while 
-implementing `GET` form submissions, where form data is appended to
-the URL query string.
+Do not modify the signature of the `URL.request` method.
+Instead, append form data to the URL query string.
 
 Test code
 ---------
@@ -82,7 +81,7 @@ Click on the input and type an answer, then submit the result.
        <body>
          'Mmm'
 
-Double-check that GET forms are not accompanied by the Content-Length header in the request.
+Double-check that GET forms are not accompanied by the `Content-Length` header in the request.
 
     >>> url = 'http://test/chapter8-get-form/submit?name=Ned&comment=Howdily'
     >>> wbemocks.socket.respond_200(url, "Doodily")
