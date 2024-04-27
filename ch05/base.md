@@ -118,19 +118,19 @@ Testing the layout tree
 
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=60.0, node=<html>)
-         BlockLayout(x=13, y=18, width=774, height=60.0, node=<body>)
+       BlockLayout(x=13, y=18, width=774, height=45.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=45.0, node=<body>)
            BlockLayout(x=13, y=18, width=774, height=0, node=<div>)
-           BlockLayout(x=13, y=18, width=774, height=20.0, node=<div>)
-           BlockLayout(x=13, y=38.0, width=774, height=20.0, node=<div>)
-             BlockLayout(x=13, y=38.0, width=774, height=0, node=<div>)
-             BlockLayout(x=13, y=38.0, width=774, height=20.0, node='text')
-           BlockLayout(x=13, y=58.0, width=774, height=20.0, node=<span>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node=<div>)
+           BlockLayout(x=13, y=33.0, width=774, height=15.0, node=<div>)
+             BlockLayout(x=13, y=33.0, width=774, height=0, node=<div>)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0, node='text')
+           BlockLayout(x=13, y=48.0, width=774, height=15.0, node=<span>)
 
     >>> wbemocks.print_list(this_browser.display_list)
-    DrawText(top=21.0 left=13 bottom=37.0 text=text font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=41.0 left=13 bottom=57.0 text=text font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=61.0 left=13 bottom=77.0 text=text font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=20.25 left=13 bottom=32.25 text=text font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=35.25 left=13 bottom=47.25 text=text font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=50.25 left=13 bottom=62.25 text=text font=Font size=12 weight=normal slant=roman style=None)
 
 Testing background painting
 ===========================
@@ -149,14 +149,14 @@ Testing background painting
 
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=20.0, node=<html>)
-         BlockLayout(x=13, y=18, width=774, height=20.0, node=<body>)
-           BlockLayout(x=13, y=18, width=774, height=20.0, node=<pre>)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
+           BlockLayout(x=13, y=18, width=774, height=15.0, node=<pre>)
 
 The first display list entry is now a gray rect, since it's for a `<pre>` element:
 
     >>> this_browser.display_list[0]
-    DrawRect(top=18 left=13 bottom=38.0 right=787 color=gray)
+    DrawRect(top=18 left=13 bottom=33.0 right=787 color=gray)
 
 Verify that `<br>` tags effectively create line breaks within the text content.
 
@@ -164,6 +164,6 @@ Verify that `<br>` tags effectively create line breaks within the text content.
     >>> url = browser.URL(wbemocks.socket.serve(html))
     >>> this_browser = browser.Browser()
     >>> this_browser.load(url)
-    >>> this_browser.display_list #doctest: +NORMALIZE_WHITESPACE
-    [DrawText(top=21.0 left=13 bottom=37.0 text=Line1 font=Font size=16 weight=normal slant=roman style=None), 
-    DrawText(top=41.0 left=13 bottom=57.0 text=Line2 font=Font size=16 weight=normal slant=roman style=None)]
+    >>> wbemocks.print_list(this_browser.display_list)
+    DrawText(top=20.25 left=13 bottom=32.25 text=Line1 font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=35.25 left=13 bottom=47.25 text=Line2 font=Font size=12 weight=normal slant=roman style=None)

@@ -77,15 +77,36 @@ when testing:
 
 Both of these fit on one line:
 
-    >>> browser.layout("hello")
-    [(1, 1, 'h'), (2, 1, 'e'), (3, 1, 'l'), (4, 1, 'l'), (5, 1, 'o')]
-    >>> browser.layout("hello mom")
-    [(1, 1, 'h'), (2, 1, 'e'), (3, 1, 'l'), (4, 1, 'l'), (5, 1, 'o'), (6, 1, ' '), (7, 1, 'm'), (8, 1, 'o'), (9, 1, 'm')]
+    >>> wbemocks.print_list(browser.layout("hello"))
+    (1, 1, 'h')
+    (2, 1, 'e')
+    (3, 1, 'l')
+    (4, 1, 'l')
+    (5, 1, 'o')
+    >>> wbemocks.print_list(browser.layout("hello mom"))
+    (1, 1, 'h')
+    (2, 1, 'e')
+    (3, 1, 'l')
+    (4, 1, 'l')
+    (5, 1, 'o')
+    (6, 1, ' ')
+    (7, 1, 'm')
+    (8, 1, 'o')
+    (9, 1, 'm')
 
 This does not though (notice that the `'s'` has a 2 in the `y` coordinate):
 
-    >>> browser.layout("hello moms")
-    [(1, 1, 'h'), (2, 1, 'e'), (3, 1, 'l'), (4, 1, 'l'), (5, 1, 'o'), (6, 1, ' '), (7, 1, 'm'), (8, 1, 'o'), (9, 1, 'm'), (1, 2, 's')]
+    >>> wbemocks.print_list(browser.layout("hello moms"))
+    (1, 1, 'h')
+    (2, 1, 'e')
+    (3, 1, 'l')
+    (4, 1, 'l')
+    (5, 1, 'o')
+    (6, 1, ' ')
+    (7, 1, 'm')
+    (8, 1, 'o')
+    (9, 1, 'm')
+    (1, 2, 's')
 
 
 Testing `Browser`

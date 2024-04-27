@@ -38,15 +38,15 @@ The layout tree should only contain one inline layout object, corresponding to
          
     >>> browser.print_tree(this_browser.document)
      DocumentLayout()
-       BlockLayout(x=13, y=18, width=774, height=20.0, node=<html>)
-         BlockLayout(x=13, y=18, width=774, height=20.0, node=<body>)
+       BlockLayout(x=13, y=18, width=774, height=15.0, node=<html>)
+         BlockLayout(x=13, y=18, width=774, height=15.0, node=<body>)
   
 The display list should only contain `DrawText` objects for the body text.
   
     >>> wbemocks.print_list(this_browser.display_list)
-    DrawText(top=21.0 left=13 bottom=37.0 text=Do font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=21.0 left=61 bottom=37.0 text=display font=Font size=16 weight=normal slant=roman style=None)
-    DrawText(top=21.0 left=189 bottom=37.0 text=me font=Font size=16 weight=normal slant=roman style=None)
+    DrawText(top=20.25 left=13 bottom=32.25 text=Do font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=20.25 left=49 bottom=32.25 text=display font=Font size=12 weight=normal slant=roman style=None)
+    DrawText(top=20.25 left=145 bottom=32.25 text=me font=Font size=12 weight=normal slant=roman style=None)
 
 
 Make sure the layout tree is not in an invalid state.

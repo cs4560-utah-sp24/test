@@ -60,31 +60,30 @@ This chapter also creates a Layout class to output a display list that can
 format text. However, note that this test doesn't use real tkinter fonts, but
 rather a mock font that has faked metrics.
 
-    >>> def test_layout(text):
+    >>> def make_layout(text):
     ...   dl = browser.Layout(browser.lex(text)).display_list
     ...   return wbemocks.normalize_display_list(dl)
+    >>> def test_layout(text):
+    ...   wbemocks.print_list(make_layout(text))
 
     >>> test_layout("abc")
-    [(13.0, 21.0, 'abc', Font size=16 weight=normal slant=roman style=None)]
+    (13.0, 20.25, 'abc', Font size=12 weight=normal slant=roman style=None)
 
     >>> test_layout("<b>abc</b>")
-    [(13.0, 21.0, 'abc', Font size=16 weight=bold slant=roman style=None)]
-
+    (13.0, 20.25, 'abc', Font size=12 weight=bold slant=roman style=None)
+    
     >>> test_layout("<big>abc</big>")
-    [(13.0, 21.75, 'abc', Font size=20 weight=normal slant=roman style=None)]
+    (13.0, 21.0, 'abc', Font size=16 weight=normal slant=roman style=None)
 
     >>> test_layout("<big><big>abc</big></big>")
-    [(13.0, 22.5, 'abc', Font size=24 weight=normal slant=roman style=None)]
+    (13.0, 21.75, 'abc', Font size=20 weight=normal slant=roman style=None)
 
     >>> test_layout("<big><big><i>abc</i></big></big>")
-    [(13.0, 22.5, 'abc', Font size=24 weight=normal slant=italic style=None)]
+    (13.0, 21.75, 'abc', Font size=20 weight=normal slant=italic style=None)
 
-    >>> test_layout("<big><big><i>abc</i></big>def</big>") #doctest: +NORMALIZE_WHITESPACE
-    [(13.0, 22.5, 'abc', Font size=24 weight=normal slant=italic style=None),
-     (109.0, 25.5, 'def', Font size=20 weight=normal slant=roman style=None)]
-
-
-
+    >>> test_layout("<big><big><i>abc</i></big>def</big>")
+    (13.0, 21.75, 'abc', Font size=20 weight=normal slant=italic style=None)
+    (93.0, 24.75, 'def', Font size=16 weight=normal slant=roman style=None)
 
 Lines of text are spaced to make room for the tallest text. Let's lay
 out text with mixed font sizes, and then measure the line heights:
@@ -92,33 +91,32 @@ out text with mixed font sizes, and then measure the line heights:
     >>> def baseline(word):
     ...     return word[1] + word[3].metrics("ascent")
 
-    >>> test_layout("Start<br>Regular<br>Regular <big><big>Big") #doctest: +NORMALIZE_WHITESPACE
-    [(13.0, 21.0, 'Start', Font size=16 weight=normal slant=roman style=None),
-     (13.0, 41.0, 'Regular', Font size=16 weight=normal slant=roman style=None),
-     (13.0, 68.5, 'Regular', Font size=16 weight=normal slant=roman style=None),
-     (141.0, 62.5, 'Big', Font size=24 weight=normal slant=roman style=None)]
+    >>> test_layout("Start<br>Regular<br>Regular <big><big>Big")
+    (13.0, 20.25, 'Start', Font size=12 weight=normal slant=roman style=None)
+    (13.0, 35.25, 'Regular', Font size=12 weight=normal slant=roman style=None)
+    (13.0, 57.75, 'Regular', Font size=12 weight=normal slant=roman style=None)
+    (109.0, 51.75, 'Big', Font size=20 weight=normal slant=roman style=None)
 
-    >>> display_list = test_layout("Start<br>Regular<br>Regular <big><big>Big")
-
+    >>> display_list = make_layout("Start<br>Regular<br>Regular <big><big>Big")
     >>> baseline(display_list[1]) - baseline(display_list[0])
-    20.0
+    15.0
     >>> baseline(display_list[3]) - baseline(display_list[1])
-    27.5
+    22.5
 
 The differing line heights don't occur when text gets smaller:
 
 
-    >>> test_layout("Start<br>Regular<br>Regular <small><small>Small")  #doctest: +NORMALIZE_WHITESPACE
-    [(13.0, 21.0, 'Start', Font size=16 weight=normal slant=roman style=None),
-     (13.0, 41.0, 'Regular', Font size=16 weight=normal slant=roman style=None),
-     (13.0, 61.0, 'Regular', Font size=16 weight=normal slant=roman style=None),
-     (141.0, 64.0, 'Small', Font size=12 weight=normal slant=roman style=None)]
+    >>> test_layout("Start<br>Regular<br>Regular <small><small>Small")
+    (13.0, 20.25, 'Start', Font size=12 weight=normal slant=roman style=None)
+    (13.0, 35.25, 'Regular', Font size=12 weight=normal slant=roman style=None)
+    (13.0, 50.25, 'Regular', Font size=12 weight=normal slant=roman style=None)
+    (109.0, 53.25, 'Small', Font size=8 weight=normal slant=roman style=None)
 
-    >>> display_list = test_layout("Start<br>Regular<br>Regular <small><small>Small")
+    >>> display_list = make_layout("Start<br>Regular<br>Regular <small><small>Small")
     >>> baseline(display_list[1]) - baseline(display_list[0])
-    20.0
+    15.0
     >>> baseline(display_list[3]) - baseline(display_list[1])
-    20.0
+    15.0
 
 
 Testing `Browser`
@@ -132,17 +130,18 @@ Now let's test integration of layout into the Browser class.
 
 Testing the display list output of this URL:
 
-    >>> wbemocks.normalize_display_list(this_browser.display_list)  #doctest: +NORMALIZE_WHITESPACE
-    [(13.0, 20.625, 'abc', Font size=14 weight=normal slant=roman style=None),
-     (69.0, 20.625, 'def', Font size=14 weight=normal slant=italic style=None)]
+    >>> dl = wbemocks.normalize_display_list(this_browser.display_list)
+    >>> wbemocks.print_list(dl)
+    (13.0, 19.875, 'abc', Font size=10 weight=normal slant=roman style=None)
+    (53.0, 19.875, 'def', Font size=10 weight=normal slant=italic style=None)
 
 And the canvas:
 
     >>> wbemocks.patch_canvas()
     >>> this_browser = browser.Browser()
     >>> this_browser.load(browser.URL(url))
-    create_text: x=13 y=20.625 text=abc font=Font size=14 weight=normal slant=roman style=None anchor=nw
-    create_text: x=69 y=20.625 text=def font=Font size=14 weight=normal slant=italic style=None anchor=nw
+    create_text: x=13 y=19.875 text=abc font=Font size=10 weight=normal slant=roman style=None anchor=nw
+    create_text: x=53 y=19.875 text=def font=Font size=10 weight=normal slant=italic style=None anchor=nw
     >>> wbemocks.unpatch_canvas()
 
 
@@ -156,5 +155,5 @@ Test with multiple words (do not forget to split on word)
     ...   dl = browser.Layout(browser.lex(content)).display_list
     ...   wbemocks.print_list(wbemocks.normalize_display_list(dl))
     >>> test_layout(content)
-    (13.0, 21.0, 'hello', Font size=16 weight=normal slant=roman style=None)
-    (109.0, 21.0, 'world', Font size=16 weight=normal slant=roman style=None)
+    (13.0, 20.25, 'hello', Font size=12 weight=normal slant=roman style=None)
+    (85.0, 20.25, 'world', Font size=12 weight=normal slant=roman style=None)

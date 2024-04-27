@@ -99,7 +99,7 @@ First, let's test that basic layout works as expected:
     >>> tree = parser.parse()
     >>> lo = browser.Layout(tree)
     >>> lo.display_list
-    [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]
+    [(13, 20.25, 'text', Font size=12 weight=normal slant=roman style=None)]
 
 Moreover, layout should work even if we don't use the
 explicitly-supported tags like `p`:
@@ -108,7 +108,7 @@ explicitly-supported tags like `p`:
     >>> tree = parser.parse()
     >>> lo = browser.Layout(tree)
     >>> lo.display_list
-    [(13, 21.0, 'text', Font size=16 weight=normal slant=roman style=None)]
+    [(13, 20.25, 'text', Font size=12 weight=normal slant=roman style=None)]
 
 
 Parse HTML with italic text
@@ -120,5 +120,5 @@ Create a Layout from the parsed tree
 
     >>> lo = browser.Layout(tree)
     >>> wbemocks.print_list(lo.display_list)
-    (13, 21.0, 'Italic', Font size=16 weight=normal slant=italic style=None)
-    (125, 21.0, 'Normal.', Font size=16 weight=normal slant=roman style=None)
+    (13, 20.25, 'Italic', Font size=12 weight=normal slant=italic style=None)
+    (97, 20.25, 'Normal.', Font size=12 weight=normal slant=roman style=None)
