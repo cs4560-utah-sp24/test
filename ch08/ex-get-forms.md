@@ -10,6 +10,9 @@ Forms define which submission to use with the `method` attribute,
 which will either be `GET` or `POST`. Default to using GET when no
 attribute is present.
 
+Do not modify the signature of the `URL.request` method.
+Instead, append form data to the URL query string.
+
 Test code
 ---------
 
@@ -77,3 +80,22 @@ Click on the input and type an answer, then submit the result.
      <html>
        <body>
          'Mmm'
+
+Double-check that GET forms are not accompanied by the `Content-Length` header in the request.
+
+    >>> url = 'http://test/chapter8-get-form/submit?name=Ned&comment=Howdily'
+    >>> wbemocks.socket.respond_200(url, "Doodily")
+    >>> form_page_url = wbemocks.socket.serve("""
+    ... <form action="/chapter8-get-form/submit" method="GET">
+    ...   <p>Name: <input name=name value=Ned></p>
+    ...   <p>Comment: <input name=comment value=Howdily></p>
+    ...   <p><button type="submit">Submit!</button></p>
+    ... </form>""")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(form_page_url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(20, 55 + this_browser.chrome.bottom))
+    >>> command, path, version, headers = wbemocks.socket.parse_last_request(url)
+    >>> 'content-length' not in headers
+    True
+    >>> path
+    '/chapter8-get-form/submit?name=Ned&comment=Howdily'

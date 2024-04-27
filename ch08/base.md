@@ -138,3 +138,53 @@ POST requsts to other URLs return 404 pages:
     >>> server.do_request("POST", "/", {}, "")
     ('404 Not Found', '<!doctype html><h1>POST / not found!</h1>')
 
+Ensure that within BlockLayout.recurse, there's a restriction to prevent recursion into buttons.
+
+    >>> url = wbemocks.socket.serve("""
+    ... <div>
+    ...   <form action="submit" method="POST">
+    ...     <p>Text before button</p>
+    ...     <button>Submit</button>
+    ...     <p>Text after button</p>
+    ...   </form>
+    ... </div>""")
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> layout = this_browser.tabs[0].document.children[0]
+    >>> browser.print_tree(layout)
+     BlockLayout(x=13, y=18, width=774, height=45.0)
+       BlockLayout(x=13, y=18, width=774, height=45.0)
+         BlockLayout(x=13, y=18, width=774, height=45.0)
+           BlockLayout(x=13, y=18, width=774, height=45.0)
+             BlockLayout(x=13, y=18, width=774, height=15.0)
+               LineLayout(x=13, y=18, width=774, height=15.0)
+                 TextLayout(x=13, y=20.25, width=48, height=12, word=Text)
+                 TextLayout(x=73, y=20.25, width=72, height=12, word=before)
+                 TextLayout(x=157, y=20.25, width=72, height=12, word=button)
+             BlockLayout(x=13, y=33.0, width=774, height=15.0)
+               LineLayout(x=13, y=33.0, width=774, height=15.0)
+                 InputLayout(x=13, y=35.25, width=200, height=12, tag=button)
+             BlockLayout(x=13, y=48.0, width=774, height=15.0)
+               LineLayout(x=13, y=48.0, width=774, height=15.0)
+                 TextLayout(x=13, y=50.25, width=48, height=12, word=Text)
+                 TextLayout(x=73, y=50.25, width=60, height=12, word=after)
+                 TextLayout(x=145, y=50.25, width=72, height=12, word=button)
+
+Verify that when clicking anywhere within a form, excluding buttons or input elements, the form isn't submitted.
+
+    >>> form_html = """
+    ... <form action="/submit" method="POST">
+    ...     <p>Click here should do nothing:</p>
+    ...     <div style="width: 300px; height: 100px;"></div>
+    ...     <input type="submit" value="Submit">
+    ... </form>"""
+    >>> url = "http://test/test-form-works"
+    >>> wbemocks.socket.respond_ok(url, form_html)
+    >>> this_browser = browser.Browser()
+    >>> this_browser.new_tab(browser.URL(url))
+    >>> this_browser.handle_click(wbemocks.ClickEvent(150, 60 + this_browser.chrome.bottom))
+    >>> print(this_browser.tabs[0].url)
+    http://test/test-form-works
+
+    >>> wbemocks.socket.made_request("http://test/submit")
+    False
