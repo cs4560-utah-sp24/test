@@ -450,7 +450,7 @@ class MockCanvas:
         self._draw(cmd)
         if self._allow("create_oval", max(y1, y2)): print(cmd)
 
-    def create_image(self, x, y, image):
+    def create_image(self, x, y, image, anchor=''):
         x = maybeint(x)
         y = maybeint(y)
         PhotoImage.DO_NOT_GC[image] = True
@@ -470,7 +470,7 @@ class MockCanvas:
         else:
             cmd = "create_text: x={} y={} text={}".format(x, y, text)
         self._draw(cmd)
-        y2 = y + font.metrics("linespace")
+        y2 = y + font.metrics("linespace") if font else y + 20
         if self._allow("create_text", y2): print(cmd)
 
     def pack(self, expand=None, fill=None):

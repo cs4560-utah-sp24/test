@@ -56,10 +56,10 @@ We make the window small and create a test page with several grinning
 faces.
 
 	>>> browser.set_parameters(WIDTH=4, HEIGHT=4, VSTEP=1, HSTEP=1, SCROLL_STEP=4)
-    >>> wbemocks.tkinter.Canvas.require_image_size(16, 16)
+    >>> wbemocks.tkinter.Canvas.require_image_size(72, 72)
     >>> url = 'http://wbemocks.test/chapter2-example6'
-    >>> wbemocks.socket.respond_200(url=url,
-    ...   body="Hi \N{Grinning Face} and our \N{Grinning Face}")
+    >>> content = "Hi \N{Grinning Face} and our \N{Grinning Face}"
+    >>> wbemocks.socket.respond_200(url, content)
 	>>> b = browser.Browser()
 	>>> url = browser.URL(url)
 

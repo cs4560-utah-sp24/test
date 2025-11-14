@@ -35,9 +35,7 @@ when testing:
 Let's mock a URL to load:
 
     >>> url = 'http://wbemocks.test/chapter2-example3'
-    >>> wbemocks.socket.respond_200(url=url,
-    ...   body=("u\n" +
-    ...         "d"))
+    >>> wbemocks.socket.respond_200(url, "u\nd")
 
 Create a browser instance and load the url.
 Even though the visible text could fit on one line it is split into two.
@@ -52,11 +50,7 @@ Note that the newline characters are not present in the output,
 Each additional newline moves the text down by twice `VSTEP`
 
     >>> url = 'http://wbemocks.test/chapter2-example4'
-    >>> wbemocks.socket.respond_200(url=url,
-    ...   body=("u\n" +
-    ...         "\n" +
-    ...         "\n" +
-    ...         "d"))
+    >>> wbemocks.socket.respond_200(url, "u\n" + "\n" + "\n" + "d")
     >>> this_browser.load(browser.URL(url))
     create_text: x=1 y=1 text=u
     create_text: x=1 y=7 text=d
@@ -64,7 +58,7 @@ Each additional newline moves the text down by twice `VSTEP`
 Make sure that `cursor_x` is reset on a line break:
 
     >>> url = 'http://wbemocks.test/cursor-reset-test'
-    >>> wbemocks.socket.respond_200(url=url, body="eren\nmika")
+    >>> wbemocks.socket.respond_200(url, "eren\nmika")
     >>> this_browser = browser.Browser()
     >>> this_browser.load(browser.URL(url))
     create_text: x=1 y=1 text=e
